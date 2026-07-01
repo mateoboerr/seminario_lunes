@@ -1,0 +1,17 @@
+# Núcleo
+pandas
+matplotlib
+
+# LLM (opcional): Gemini se llama por REST (urllib, sin dependencia).
+# Anthropic solo si se usa ese proveedor:
+anthropic
+
+# Notebooks / experimentos (opcional)
+nbformat
+nbconvert
+ipykernel
+
+# El detector clásico "de verdad" de Trust usa estas (en este entorno los
+# modelos no se pudieron descargar por SSL; ver docs/metodologia.md):
+# spacy
+# stanza
