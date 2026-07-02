@@ -48,7 +48,7 @@ detector clásico por reglas en detección de fuentes.
 
 **Qué anduvo.** El LLM **duplica** el F1 del clásico y tiene recall alto (0.78):
 atrapa instituciones y atribuciones parafraseadas que el clásico (solo comillas)
-no ve. Ejemplos concretos en [results/ejemplos.md](../results/ejemplos.md).
+no ve. Ejemplos concretos en [results/ejemplos.md](https://github.com/mateoboerr/seminario_lunes/blob/main/results/ejemplos.md).
 
 **Qué no.** La **precisión es baja (0.44)**: el LLM **sobre-detecta** — marca como
 fuente entidades solo mencionadas o protagonistas sin atribución. Ese es el
@@ -129,7 +129,7 @@ nivel de span por etiqueta, emparejando por solapamiento (IoU ≥ 0.5).
 **Validación sin gastar cuota.** Gracias al cliente inyectable, un **stub** (JSON
 fijo) prueba el pipeline entero de forma determinista:
 `python -m experiments.exp2_salida_v1`. Sobre una nota de ejemplo produce y
-**valida** la salida v1 (ver [ejemplo real](../results/ejemplo_v1.md)). Extracto:
+**valida** la salida v1 (ver [ejemplo real](https://github.com/mateoboerr/seminario_lunes/blob/main/results/ejemplo_v1.md)). Extracto:
 
 ```json
 {

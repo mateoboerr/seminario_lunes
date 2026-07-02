@@ -14,7 +14,7 @@ Cada detector expone dos vistas (ver `trust_sources/detectors/base.py`):
 ## v1 — el objetivo (estructura tipo Trust) — ✅ implementado
 Implementado en `LLMSourceDetectorV1` (misma interfaz que el clásico) + evaluación
 a nivel de span (`evaluation.evaluate_spans`). Ejemplo generado y validado:
-[results/ejemplo_v1.md](../results/ejemplo_v1.md) (ver **Exp 2** en la
+[results/ejemplo_v1.md](https://github.com/mateoboerr/seminario_lunes/blob/main/results/ejemplo_v1.md) (ver **Exp 2** en la
 [bitácora](experimentos.md#exp-2)).
 
 `detect(texto)` devuelve una lista de `Source`. Cada `Source.to_dict()` produce
