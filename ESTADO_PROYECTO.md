@@ -96,7 +96,12 @@ Avance al **2026-07-02** (Etapas 0-3 arrancadas; ver bitácora):
    validados con stub; **medición en vivo pendiente**.
 3. **Multi-LLM** 🟢 — `MultiLLMSourceDetector` (2 pasadas) hecho y validado con
    stub; **comparación en vivo pendiente**.
-4. **Integrar a Trust** — pendiente.
+4. **Integrar a Trust** 🟢 — `TrustSourceAdapter` expone cualquier detector con la
+   interfaz `get_explicit_sources` de Trust (mismo contrato de salida).
+
+**Calidad/ingeniería (sin API):** suite de **tests** (`pytest tests/`, 29 casos),
+**CLI** de demo (`python -m trust_sources`), y **baseline del clásico a nivel de
+span** medido (global F1 0.39; Referenciado 0.09 es su punto débil).
 
 **Cuota:** el free tier de Gemini no alcanza para las corridas grandes (~20 req/min
 + 503). Todo quedó **listo para Anthropic**: `LLM_PROVIDER=anthropic` +

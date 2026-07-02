@@ -13,6 +13,8 @@ from .detectors.base import SourceDetector
 from .detectors.classic import ClassicSourceDetector
 from .detectors.llm import LLMSourceDetector, LLMSourceDetectorV1
 from .detectors.multi_llm import MultiLLMSourceDetector
+from .integration import TrustSourceAdapter
 
 __all__ = ["Source", "Span", "SourceDetector", "ClassicSourceDetector",
-           "LLMSourceDetector", "LLMSourceDetectorV1", "MultiLLMSourceDetector"]
+           "LLMSourceDetector", "LLMSourceDetectorV1", "MultiLLMSourceDetector",
+           "TrustSourceAdapter"]

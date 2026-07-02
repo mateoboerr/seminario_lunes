@@ -33,6 +33,13 @@
   en vivo pendiente. [Exp 2](experimentos.md#exp-2).
 - **Etapa 3 (multi-LLM) 🟢** `MultiLLMSourceDetector` (2 pasadas). Validado con stub;
   comparación en vivo pendiente. [Exp 3](experimentos.md#exp-3).
+- **Etapa 4 (integración a Trust) 🟢** `TrustSourceAdapter` expone cualquier detector
+  con la interfaz `get_explicit_sources` de Trust (mismo contrato de salida), para
+  enchufar el LLM en el pipeline o compararlo contra el clásico.
+- **Baseline de spans (clásico, real) 🟢** El clásico a nivel de span: global **F1
+  0.39** (Afirmacion 0.56, Conector 0.46, Referenciado **0.09** — su punto débil).
+- **Calidad:** suite de **tests** (`pytest tests/`, 29 casos) y **CLI** de demo
+  (`python -m trust_sources`). El clásico y los tests corren **sin API**.
 - **Listo para Anthropic:** `LLM_PROVIDER=anthropic` corre todo con Claude (el free
   tier de Gemini no alcanza para las corridas grandes). Ver README.
 - **Pendiente en vivo (con Anthropic):** completar v2/v3, span-F1 de v1, y la

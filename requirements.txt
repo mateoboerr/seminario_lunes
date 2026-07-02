@@ -6,6 +6,9 @@ matplotlib
 # Anthropic solo si se usa ese proveedor:
 anthropic
 
+# Tests
+pytest
+
 # Notebooks / experimentos (opcional)
 nbformat
 nbconvert

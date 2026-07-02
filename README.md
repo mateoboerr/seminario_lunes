@@ -81,6 +81,32 @@ ANTHROPIC_API_KEY=...
 LLM_PROVIDER=anthropic
 ```
 
+## Demo (CLI) y tests
+
+Correr un detector sobre un texto y ver la salida (forma Trust `get_explicit_sources`):
+```bash
+python -m trust_sources "El ministro aseguró: “la economía mejora”."   # clásico, sin API
+python -m trust_sources --file nota.txt --detector v1                   # LLM v1 (usa la key)
+```
+Detectores: `clasico` (default, sin API) · `v0` · `v1` · `multi`.
+
+Tests (sin API, con stubs):
+```bash
+pip install pytest
+python -m pytest tests/ -q
+```
+
+## Integración con Trust
+
+`TrustSourceAdapter` envuelve cualquier detector y lo expone con la interfaz de Trust
+(`get_explicit_sources`), para enchufar el LLM en su pipeline o compararlo contra el
+clásico usando el mismo contrato de salida:
+```python
+from trust_sources import LLMSourceDetectorV1, TrustSourceAdapter
+adapter = TrustSourceAdapter(LLMSourceDetectorV1(client))
+sources = adapter.get_explicit_sources(texto)   # list[dict] forma Trust
+```
+
 ## Documentación
 
 - [docs/esquema_salida.md](docs/esquema_salida.md) — el formato de salida (v0 → v1, compatible con Trust)

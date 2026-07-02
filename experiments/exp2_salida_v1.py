@@ -24,6 +24,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from trust_sources.detectors.classic import ClassicSourceDetector  # noqa: E402
 from trust_sources.detectors.llm import (LLMSourceDetectorV1,  # noqa: E402
                                          _parse_fuentes_v1)
 from trust_sources.evaluation import evaluate_spans  # noqa: E402
@@ -96,6 +97,26 @@ def _write_ejemplo(dicts: list[dict]) -> None:
     print("  escrito: results/ejemplo_v1.md")
 
 
+def baseline_clasico_spans() -> dict:
+    """Evalúa el detector CLÁSICO a nivel de span (real, sin LLM ni cuota). Es el
+    baseline medible de la salida rica: el clásico ya produce Sources con spans."""
+    arts, _ = load_double_annotated()
+    clasico = ClassicSourceDetector()
+    preds = {a.index: clasico.detect(a.cuerpo) for a in arts}
+    ev = evaluate_spans(arts, preds)
+    md = ["# Exp 2 (baseline) — clásico a nivel de span\n",
+          f"- Artículos: **{len(arts)}** · IoU mínimo 0.5 · sin LLM (reproducible offline)\n",
+          "| Componente | P | R | F1 |", "|---|---|---|---|"]
+    for lab in ["Referenciado", "Conector", "Afirmacion", "global"]:
+        m = ev[lab]
+        md.append(f"| {lab} | {m['P']:.2f} | {m['R']:.2f} | **{m['F1']:.2f}** |")
+    (RESULTS / "exp2_spans_clasico.md").write_text("\n".join(md), encoding="utf-8")
+    g = ev["global"]
+    print(f"  baseline clásico (spans): global P={g['P']:.2f} R={g['R']:.2f} "
+          f"F1={g['F1']:.2f} · escrito results/exp2_spans_clasico.md")
+    return ev
+
+
 def _load_cache() -> dict:
     return json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}
 
@@ -164,6 +185,7 @@ def main() -> None:
     print("Exp 2 — salida rica v1")
     dicts = demo_stub()
     _write_ejemplo(dicts)
+    baseline_clasico_spans()
     corrida_real()
 
 

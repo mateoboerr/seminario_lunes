@@ -150,11 +150,27 @@ tipo. La evaluación a nivel de span funciona (probada con gold sintético: cuen
 bien TP/FP/FN por etiqueta). Todo **sin depender de una API** para la parte de
 ingeniería.
 
+**Baseline medido: el clásico a nivel de span (sin LLM, real).** El detector clásico
+ya produce la salida rica, así que lo evaluamos a nivel de span sobre las 16 notas
+—reproducible offline, sin cuota (`results/exp2_spans_clasico.md`):
+
+| Componente | P | R | F1 |
+|---|---|---|---|
+| Referenciado | 0.11 | 0.08 | **0.09** |
+| Conector | 0.63 | 0.36 | **0.46** |
+| Afirmacion | 0.76 | 0.45 | **0.56** |
+| **global** | 0.51 | 0.32 | **0.39** |
+
+Lectura: el clásico ancla bien la **cita** (Afirmacion 0.56) y el **verbo**
+(Conector 0.46), pero es **muy malo ubicando la fuente** (Referenciado 0.09) — su
+heurística de nombre propio falla seguido. Esa es justo la debilidad que el LLM
+debería cubrir. Es la vara a superar cuando midamos v1 en vivo.
+
 **Qué falta.** **Medir en vivo** `LLMSourceDetectorV1` sobre las 16 notas y reportar
-el span-F1 por componente contra el humano. Se intentó con Gemini pero el free tier
-está agotado/congestionado: solo entraron **3/16** notas (span-F1 global 0.14, **no
-representativo**). También queda cubrir **citas implícitas** más finas y modelar la
-**relación** afirmación↔fuente.
+el span-F1 por componente contra el humano (comparándolo con este baseline clásico).
+Se intentó con Gemini pero el free tier está agotado/congestionado: solo entraron
+**3/16** notas (span-F1 global 0.14, **no representativo**). También queda cubrir
+**citas implícitas** más finas y modelar la **relación** afirmación↔fuente.
 
 **Robustez agregada tras el intento.** La salida v1 es más larga y a veces el modelo
 la **trunca** (se cortó un JSON a mitad → error de parseo). Se hizo el parser
