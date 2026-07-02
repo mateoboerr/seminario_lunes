@@ -12,6 +12,7 @@ from .schema import Source, Span
 from .detectors.base import SourceDetector
 from .detectors.classic import ClassicSourceDetector
 from .detectors.llm import LLMSourceDetector, LLMSourceDetectorV1
+from .detectors.multi_llm import MultiLLMSourceDetector
 
 __all__ = ["Source", "Span", "SourceDetector", "ClassicSourceDetector",
-           "LLMSourceDetector", "LLMSourceDetectorV1"]
+           "LLMSourceDetector", "LLMSourceDetectorV1", "MultiLLMSourceDetector"]

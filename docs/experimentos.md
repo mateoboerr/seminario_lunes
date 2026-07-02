@@ -20,6 +20,7 @@ humana (16 notas doble-anotadas, techo humano **F1 0.71**) y se reproduce con
 | 1 · v2 | 2026-07-02 | LLM · reglas negativas duras | — | — | — | 🚧 parcial 8/16 (free tier rate-limited) |
 | 1 · v3 | 2026-07-02 | LLM · auto-verificación (cita evidencia) | — | — | — | 🚧 parcial 2/16 (free tier rate-limited) |
 | 2 | 2026-07-02 | Salida rica v1 (afirmacion+conector+referenciado+tipo, spans) | — | — | — | pipeline listo y validado (stub); medición en vivo pendiente |
+| 3 | 2026-07-02 | Multi-LLM (afirmaciones → asignar fuente) | — | — | — | pipeline 2 etapas listo y validado (stub); comparación en vivo pendiente |
 
 ---
 
@@ -167,6 +168,30 @@ Claude sin tocar código (ver README). El free tier de Gemini no da abasto para 
 
 **Próximo paso.** Correr `exp2_salida_v1` y `exp1_prompts` con Anthropic (llenan sus
 caches) y volcar acá la tabla de span-F1 y las variantes v2/v3 completas.
+
+## Exp 3 — pipeline multi-LLM (dos pasadas)
+
+**Fecha:** 2026-07-02 · **Estado:** 🟢 pipeline listo y validado (stub) · comparación en vivo pendiente
+
+**Idea (propuesta del profe).** En vez de resolver todo en una sola llamada,
+**separar el problema en dos**: un LLM **lista las afirmaciones** de la nota, y otro
+LLM **les asigna la fuente** (arma la estructura v1). La hipótesis: al enfocar cada
+modelo en una tarea, mejora la calidad frente al single-pass.
+
+**Cómo.** `MultiLLMSourceDetector` (misma interfaz `SourceDetector`, dos clientes
+inyectables; por defecto el mismo modelo en ambas etapas). Son **2 llamadas por
+nota** (extraer afirmaciones + asignar fuentes en una sola pasada sobre la lista),
+para no disparar la cuota. La segunda etapa reusa el parser y el armado de spans de
+v1. Reproducible: `python -m experiments.exp3_multi_llm`.
+
+**Validación sin cuota.** Con **stubs de dos etapas** (uno devuelve afirmaciones,
+otro las fuentes) se valida que el pipeline encadena bien y produce la salida v1 con
+spans correctos — sin llamar a ninguna API.
+
+**Qué falta.** Correr en vivo y **comparar multi-LLM vs single-pass** (`Exp 2`) con
+las mismas métricas (referenciados + spans). Pendiente por el free tier; se hace con
+Anthropic (`LLM_PROVIDER=anthropic`). Ahí se decide cuál conviene y por qué —que es
+lo que pidió el profe.
 
 <!-- PLANTILLA para nuevos experimentos (copiar y completar):
 
