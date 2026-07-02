@@ -85,17 +85,23 @@ Comando: `python -m experiments.run_benchmark` (offline usa cache; con
 - **Windows console:** correr con `PYTHONUTF8=1` y `PYTHONIOENCODING=utf-8`.
 - **No committear:** `trust-monitor/`, `__pycache__`, `.ipynb_checkpoints`.
 
-## 6) Next steps (detalle en docs/roadmap.md)
+## 6) Next steps (detalle y estado en docs/roadmap.md + docs/experimentos.md)
 
-0. Subir a GitHub + activar Pages (apuntando a `docs/`).
-1. **Mejorar el LLM v0:** probar prompts/modelos, subir precisión, documentar cada
-   experimento con su F1 y visualización en la Page.
-2. **Salida rica v1:** afirmacion+conector+referenciado+relación con spans; tipo de
-   fuente; citas implícitas; evaluación a nivel de span.
-3. **Multi-LLM:** pipeline de 2 modelos (detectar/agrupar → procesar).
-4. **Integrar a Trust** como `LLMSourceDetector` con la interfaz del clásico.
+Avance al **2026-07-02** (Etapas 0-3 arrancadas; ver bitácora):
+0. **Subir a GitHub + Pages** — prep local ✅ (`_config.yml`, bitácora); subida
+   **diferida** por decisión del usuario (será público).
+1. **Mejorar el LLM (prompts)** 🟡 — `v1_fewshot` 0.57 vs baseline 0.56 medido y
+   documentado; `v2`/`v3` parciales (free tier agotado).
+2. **Salida rica v1** 🟢 — `LLMSourceDetectorV1` + `evaluate_spans` hechos y
+   validados con stub; **medición en vivo pendiente**.
+3. **Multi-LLM** 🟢 — `MultiLLMSourceDetector` (2 pasadas) hecho y validado con
+   stub; **comparación en vivo pendiente**.
+4. **Integrar a Trust** — pendiente.
+
+**Cuota:** el free tier de Gemini no alcanza para las corridas grandes (~20 req/min
++ 503). Todo quedó **listo para Anthropic**: `LLM_PROVIDER=anthropic` +
+`ANTHROPIC_API_KEY` en `.env` (gitignoreado). Con eso se completan v2/v3, el span-F1
+de v1 y la comparación multi-LLM vs single-pass. Ver README.
 
 ## 7) Pendiente menor
-- Borrar la carpeta `01_benchmark_fuentes/` (quedó un notebook viejo bloqueado por
-  el IDE; `rm -rf 01_benchmark_fuentes` tras cerrarlo).
 - Renombrar la carpeta raíz `prototipos/` a `trust-sources` al crear el repo.

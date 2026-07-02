@@ -21,14 +21,22 @@
 - **Ordenar el repo** con estructura profesional (hecho: paquete `trust_sources`
   + `experiments/` + `docs/` + `results/`). Se descartaron los prototipos 2 y 3.
 
-## Estado actual (v0 — ✅ hecho)
+## Estado actual (avance al 2026-07-02)
 
-- Paquete `trust_sources` con dos detectores (`ClassicSourceDetector`,
-  `LLMSourceDetector`) que comparten interfaz.
-- Benchmark reproducible: Clásico **F1 0.26** · LLM Gemini **0.56** · techo humano
-  **0.71** (16 notas doble-anotadas).
-- Salida ya soporta la forma v1 (`Source.to_dict()`), aunque hoy solo se completa
-  el `referenciado` en el LLM.
+- **v0 ✅** Paquete `trust_sources` con detectores que comparten interfaz. Benchmark
+  reproducible: Clásico **F1 0.26** · LLM Gemini **0.56** · techo humano **0.71**.
+- **Etapa 1 (prompts) 🟡** `v0_estricto` (0.56) vs `v1_fewshot` (0.57): few-shot sube
+  P +0.03 pero F1 casi igual. `v2_reglas_duras` / `v3_justifica` **parciales** (free
+  tier agotado). Ver [bitácora Exp 1](experimentos.md#exp-1).
+- **Etapa 2 (salida rica v1) 🟢** `LLMSourceDetectorV1` (afirmacion+conector+
+  referenciado+tipo, spans por código) + `evaluate_spans`. Validado con stub; medición
+  en vivo pendiente. [Exp 2](experimentos.md#exp-2).
+- **Etapa 3 (multi-LLM) 🟢** `MultiLLMSourceDetector` (2 pasadas). Validado con stub;
+  comparación en vivo pendiente. [Exp 3](experimentos.md#exp-3).
+- **Listo para Anthropic:** `LLM_PROVIDER=anthropic` corre todo con Claude (el free
+  tier de Gemini no alcanza para las corridas grandes). Ver README.
+- **Pendiente en vivo (con Anthropic):** completar v2/v3, span-F1 de v1, y la
+  comparación multi-LLM vs single-pass.
 
 ## Next steps (en orden)
 
