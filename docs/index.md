@@ -20,14 +20,15 @@ El LLM **duplica** al clásico. Tiene recall alto pero sobre-detecta (precisión
 baja) → la línea de trabajo es subir la precisión probando prompts y modelos.
 
 ## Secciones
+- [Bitácora de experimentos](experimentos.md) — **cada prompt/modelo probado, su número y su conclusión** (el corazón del proyecto).
 - [Metodología](metodologia.md) — datasets y cómo evaluamos.
 - [Esquema de salida](esquema_salida.md) — el formato v0 → v1 (compatible con Trust).
 - [Roadmap y next steps](roadmap.md) — plan, experimentos y multi-LLM.
 
-## Experimentos
-_(Se irán agregando acá: cada prompt/modelo probado, su número y su conclusión.)_
+## Experimentos (resumen)
+Detalle completo en la [bitácora](experimentos.md).
 
-| Fecha | Experimento | F1 | Nota |
-|---|---|---|---|
-| — | v0 · prompt estricto · gemini-2.5-flash-lite | 0.56 | baseline LLM |
-| — | v0 · clásico (reglas) | 0.26 | baseline clásico |
+| # | Fecha | Experimento | F1 | Nota |
+|---|---|---|---|---|
+| 0b | 2026-07-01 | v0 · prompt estricto · gemini-2.5-flash-lite | 0.56 | baseline LLM |
+| 0a | 2026-07-01 | v0 · clásico (reglas) | 0.26 | baseline clásico |

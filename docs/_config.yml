@@ -1,0 +1,17 @@
+# Configuración de GitHub Pages (Jekyll).
+# La fuente de la Page es esta carpeta docs/ del repo trust-sources.
+title: "Detección de fuentes periodísticas con LLMs"
+description: "Bitácora de investigación del seminario, sobre trust-monitor."
+theme: jekyll-theme-cayman
+
+# Convierte los links entre .md (metodologia.md -> metodologia.html) al construir.
+plugins:
+  - jekyll-relative-links
+relative_links:
+  enabled: true
+  collections: false
+
+# No procesar estas rutas del repo (solo se publica docs/).
+exclude:
+  - "*.py"
+  - requirements.txt
