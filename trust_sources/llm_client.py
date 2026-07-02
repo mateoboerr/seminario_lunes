@@ -76,6 +76,26 @@ class AnthropicClient(LLMClient):
         return next((b.text for b in resp.content if b.type == "text"), "")
 
 
+def load_dotenv(path: str | os.PathLike = ".env") -> None:
+    """Carga variables `CLAVE=valor` de un archivo .env al entorno (sin dependencias).
+
+    No pisa variables ya seteadas. Pensado para que la API key viva en un `.env`
+    gitignoreado y NUNCA se hardcodee ni se pase por línea de comandos. Es un
+    no-op si el archivo no existe.
+    """
+    import pathlib
+    p = pathlib.Path(path)
+    if not p.exists():
+        return
+    for line in p.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        clave, valor = line.split("=", 1)
+        clave, valor = clave.strip(), valor.strip().strip('"').strip("'")
+        os.environ.setdefault(clave, valor)
+
+
 def default_client() -> LLMClient | None:
     """Devuelve el cliente según qué API key esté seteada. None si no hay ninguna."""
     if os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY"):

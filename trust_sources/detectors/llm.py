@@ -34,9 +34,21 @@ PROMPT_V0 = (
 
 
 def _parse_fuentes(raw: str) -> list[str]:
+    """Extrae los nombres de fuente del JSON del modelo.
+
+    Acepta dos formas de cada item: un string (`"INDEC"`) o un dict con el nombre
+    bajo `nombre`/`fuente`/`name` (p. ej. cuando el prompt pide también evidencia:
+    `{"nombre": "INDEC", "evidencia": "según el INDEC"}`).
+    """
     start, end = raw.find("{"), raw.rfind("}")
     data = json.loads(raw[start:end + 1]) if start >= 0 else {}
-    return [str(x) for x in data.get("fuentes", [])]
+    nombres = []
+    for x in data.get("fuentes", []):
+        if isinstance(x, dict):
+            x = x.get("nombre") or x.get("fuente") or x.get("name") or ""
+        if str(x).strip():
+            nombres.append(str(x).strip())
+    return nombres
 
 
 class LLMSourceDetector(SourceDetector):

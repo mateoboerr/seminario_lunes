@@ -1,12 +1,12 @@
 # Datos: el repo trust-monitor se clona aparte
 trust-monitor/
 
+# Secretos: la API key vive en .env, NUNCA se committea.
+.env
+
 # Python
 **/__pycache__/
 *.pyc
 **/.ipynb_checkpoints/
-
-# Carpeta vieja (a borrar tras cerrar el notebook en el IDE)
-01_benchmark_fuentes/
 
 # Notas: el cache de LLM en experiments/cache/ SÍ se committea (reproducibilidad).
