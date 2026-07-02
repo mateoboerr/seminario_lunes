@@ -16,6 +16,9 @@ humana (16 notas doble-anotadas, techo humano **F1 0.71**) y se reproduce con
 |---|---|---|---|---|---|---|
 | 0a | 2026-07-01 | Clásico (reglas: comillas+verbo+propio) | 0.26 | 0.25 | **0.26** | baseline clásico |
 | 0b | 2026-07-01 | LLM · prompt estricto v0 · `gemini-2.5-flash-lite` | 0.44 | 0.78 | **0.56** | baseline LLM; recall alto, sobre-detecta |
+| 1 · v1 | 2026-07-02 | LLM · few-shot (2 ejemplos) | 0.47 | 0.72 | **0.57** | +0.03 P a costa de −0.06 R; F1 casi igual |
+| 1 · v2 | 2026-07-02 | LLM · reglas negativas duras | — | — | — | 🚧 parcial 8/16 (free tier rate-limited) |
+| 1 · v3 | 2026-07-02 | LLM · auto-verificación (cita evidencia) | — | — | — | 🚧 parcial 2/16 (free tier rate-limited) |
 
 ---
 
@@ -53,6 +56,56 @@ problema a atacar en los próximos experimentos.
 pedir justificación) y comparar modelos, midiendo si sube P sin bajar R.
 
 ---
+
+## Exp 1 — variantes de prompt (subir la precisión del LLM)
+
+**Fecha:** 2026-07-02 · **Estado:** 🟡 parcial (v0/v1 completos; v2/v3 rate-limited)
+
+**Hipótesis.** El baseline (`v0_estricto`) tiene recall alto (0.78) pero
+sobre-detecta (P 0.44). Cambiando el prompt —dándole ejemplos, reglas negativas
+más duras, o pidiéndole que justifique cada fuente— deberíamos **subir la
+precisión sin hundir el recall**.
+
+**Setup.** Mismo detector `LLMSourceDetector` (prompt inyectado), mismo modelo
+`gemini-2.5-flash-lite`, mismas 16 notas. 4 variantes:
+`v0_estricto` (baseline), `v1_fewshot` (baseline + 2 ejemplos: uno con fuente
+clara, uno con entidades solo mencionadas), `v2_reglas_duras` (criterio de
+exclusión reforzado, "ante la duda excluí"), `v3_justifica` (el modelo debe citar
+la **evidencia** —verbo o cita— o descartar el candidato). Reproducible:
+`python -m experiments.exp1_prompts`.
+
+**Resultado (variantes completas).**
+
+| Variante | P | R | F1 | ΔP | ΔF1 |
+|---|---|---|---|---|---|
+| `v1_fewshot` | 0.47 | 0.72 | **0.57** | +0.03 | +0.01 |
+| `v0_estricto` | 0.44 | 0.78 | **0.56** | — | — |
+
+![P/R/F1 por variante](assets/exp1_prompts.png)
+
+**Qué anduvo.** El few-shot **sí mueve la precisión en la dirección buscada**
+(+0.03): los 2 ejemplos negativos ("Milei/Villarruel mencionados pero sin
+atribución") le enseñan a descartar protagonistas. 
+
+**Qué no.** El efecto es **chico** y se paga con recall (−0.06): el F1 queda
+prácticamente igual (0.56 → 0.57). Few-shot solo no alcanza para cerrar la brecha
+con el techo humano (0.71). Las palancas más agresivas contra la sobre-detección
+(`v2_reglas_duras`, `v3_justifica`) son las prometedoras, pero **no se pudieron
+medir completas**: el free tier de Gemini (límite ~20 req/min + 503 por demanda)
+cortó las corridas. Quedaron en 8/16 y 2/16 y sus métricas todavía no son
+comparables (las notas faltantes cuentan como vacío).
+
+**Hallazgo metodológico (una falla que vale documentar).** Reproducir experimentos
+LLM con herramientas **gratuitas** tiene un costo oculto: el rate-limit. Cada
+llamada fallida gatilla reintentos que **queman la cuota por-minuto**, así que hay
+que **pacear** (throttle entre llamadas), **cachear por (variante, artículo)** para
+no repetir, y **cortar** ante fallos en cadena (circuit breaker) para no malgastar
+cuota. Todo eso ya está en `experiments/exp1_prompts.py`.
+
+**Próximo paso.** Completar `v2`/`v3` en una ventana de cuota fresca (re-correr el
+script; el cache retoma donde quedó). Si `v2` sube la precisión de verdad, es la
+base para v1 del esquema. Alternativa: correr con un proveedor de pago para no
+depender del free tier.
 
 <!-- PLANTILLA para nuevos experimentos (copiar y completar):
 

@@ -18,7 +18,9 @@ Uso:  python -m experiments.exp1_prompts
 from __future__ import annotations
 
 import json
+import os
 import sys
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -33,6 +35,14 @@ from trust_sources.llm_client import GeminiClient, default_client, load_dotenv  
 CACHE = Path(__file__).resolve().parent / "cache" / "exp1_prompts.json"
 RESULTS = ROOT / "results"
 ASSETS = ROOT / "docs" / "assets"  # los PNG van a docs/ para verse en la Page
+
+# El free tier de Gemini limita requests/minuto: pausamos entre llamadas EN VIVO
+# para no gatillar 429 (los reintentos con backoff del cliente queman RPM rápido).
+# Configurable con EXP_THROTTLE_S; 0 desactiva. Las lecturas de cache no pausan.
+THROTTLE_S = float(os.environ.get("EXP_THROTTLE_S", "5"))
+# Circuit breaker: tras N fallos seguidos, dejamos de llamar en esa variante para
+# no quemar cuota contra un free tier caído (los faltantes se retoman después).
+MAX_FALLOS_SEGUIDOS = int(os.environ.get("EXP_MAX_FALLOS", "3"))
 
 # --- Variantes de prompt a comparar ---------------------------------------
 # Cada una apunta a subir la PRECISIÓN de una forma distinta. El baseline v0 es
@@ -105,20 +115,35 @@ def _run_variant(variante: dict, arts, cache: dict) -> tuple[dict, str]:
     client = GeminiClient(model=variante["model"]) if default_client() else None
     detector = LLMSourceDetector(client, prompt=variante["prompt"]) if client else None
     pred, origenes = {}, set()
+    fallos_seguidos = 0
+    corto = False  # circuit breaker: si el free tier no responde, dejamos de martillar
     for a in arts:
         if a.index in vcache:
             pred[a.index] = vcache[a.index]; origenes.add("cache")
-        elif detector is not None:
+        elif detector is not None and not corto:
+            # Pausa ANTES de cada llamada en vivo (paceamos éxitos Y fallas) para
+            # no saturar la ventana de 20 req/min del free tier.
+            if THROTTLE_S:
+                time.sleep(THROTTLE_S)
             try:
                 names = detector.referenciados(a.cuerpo)
                 pred[a.index] = names; vcache[a.index] = names
                 origenes.add(f"gemini:{variante['model']}")
+                fallos_seguidos = 0
             except Exception as e:  # noqa: BLE001
                 print(f"  [{vid}] {a.index}: {e}")
                 pred[a.index] = []; origenes.add("error")
+                fallos_seguidos += 1
+                if fallos_seguidos >= MAX_FALLOS_SEGUIDOS:
+                    corto = True
+                    print(f"  [{vid}] {MAX_FALLOS_SEGUIDOS} fallos seguidos: corto "
+                          "las llamadas en vivo (se completan en otra ventana).")
         else:
-            pred[a.index] = []; origenes.add("sin-key")
-    return pred, " + ".join(sorted(origenes))
+            # sin key, o circuit breaker abierto: no cacheamos (reintentable luego)
+            pred[a.index] = []
+            origenes.add("cortado" if corto else "sin-key")
+    n_ok = sum(1 for a in arts if a.index in vcache)  # cobertura real (predicciones)
+    return pred, " + ".join(sorted(origenes)), n_ok
 
 
 def _chart(rows: list[dict]) -> Path | None:
@@ -159,32 +184,56 @@ def main() -> None:
         print("  (sin GEMINI_API_KEY: solo se evalúa lo que ya esté en cache)")
 
     cache = _load_cache()
+
+    # Enfriamiento: si hay key y quedan artículos sin cachear, esperamos a que la
+    # ventana de rate-limit se drene antes de empezar a llamar (evita 429 en cadena).
+    cooldown = float(os.environ.get("EXP_COOLDOWN_S", "0"))
+    if cooldown and default_client() is not None:
+        faltan = sum(1 for v in VARIANTES for a in arts
+                     if a.index not in cache.get(v["id"], {}))
+        if faltan:
+            print(f"  Enfriando {cooldown:.0f}s antes de {faltan} llamadas en vivo...")
+            time.sleep(cooldown)
+
+    n = len(arts)
     rows = []
     for v in VARIANTES:
-        pred, origen = _run_variant(v, arts, cache)
+        pred, origen, n_ok = _run_variant(v, arts, cache)
         m = evaluate_referenciados(arts, pred)
+        completo = n_ok == n
         rows.append({"id": v["id"], "desc": v["desc"], "model": v["model"],
-                     "P": m["P"], "R": m["R"], "F1": m["F1"], "origen": origen})
-        print(f"  {v['id']:16s} P={m['P']:.2f} R={m['R']:.2f} F1={m['F1']:.2f}  ({origen})")
+                     "P": m["P"], "R": m["R"], "F1": m["F1"], "origen": origen,
+                     "cobertura": f"{n_ok}/{n}", "completo": completo})
+        flag = "" if completo else f"  [PARCIAL {n_ok}/{n} — no comparable]"
+        print(f"  {v['id']:16s} P={m['P']:.2f} R={m['R']:.2f} F1={m['F1']:.2f}  ({origen}){flag}")
     _save_cache(cache)
 
-    base_f1 = next((r["F1"] for r in rows if r["id"] == "v0_estricto"), 0.0)
-    base_p = next((r["P"] for r in rows if r["id"] == "v0_estricto"), 0.0)
+    base = next((r for r in rows if r["id"] == "v0_estricto" and r["completo"]), None)
+    base_f1 = base["F1"] if base else 0.0
+    base_p = base["P"] if base else 0.0
+    completos = [r for r in rows if r["completo"]]
+    parciales = [r for r in rows if not r["completo"]]
 
-    # --- Tabla markdown ---
+    # --- Tabla markdown (solo variantes COMPLETAS son comparables) ---
     md = ["# Exp 1 — variantes de prompt (LLM)\n",
-          f"- Artículos: **{len(arts)}** (lote doble-anotado) · techo humano **F1 0.71**",
+          f"- Artículos: **{n}** (lote doble-anotado) · techo humano **F1 0.71**",
           "- Objetivo: subir la **precisión** (baseline 0.44) sin perder recall.\n",
           "| Variante | Descripción | P | R | F1 | ΔP | ΔF1 |",
           "|---|---|---|---|---|---|---|"]
-    for r in sorted(rows, key=lambda r: -r["F1"]):
+    for r in sorted(completos, key=lambda r: -r["F1"]):
         md.append(f"| `{r['id']}` | {r['desc']} | {r['P']:.2f} | {r['R']:.2f} | "
                   f"**{r['F1']:.2f}** | {r['P']-base_p:+.2f} | {r['F1']-base_f1:+.2f} |")
+    if parciales:
+        md += ["", "**Variantes incompletas** (free tier rate-limited; se completan "
+               "en otra ventana de cuota re-corriendo el script — el cache retoma "
+               "donde quedó). Sus métricas NO son comparables todavía:", "",
+               "| Variante | Descripción | Cobertura |", "|---|---|---|"]
+        md += [f"| `{r['id']}` | {r['desc']} | {r['cobertura']} |" for r in parciales]
     md += ["", "![P/R/F1 por variante](../docs/assets/exp1_prompts.png)"]
     (RESULTS / "exp1_prompts.md").write_text("\n".join(md), encoding="utf-8")
     (RESULTS / "exp1_prompts.json").write_text(
         json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
-    _chart(rows)
+    _chart(completos)  # el gráfico solo muestra variantes comparables
     print("Escrito: results/exp1_prompts.md, .json y docs/assets/exp1_prompts.png")
 
 

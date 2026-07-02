@@ -30,5 +30,9 @@ Detalle completo en la [bitácora](experimentos.md).
 
 | # | Fecha | Experimento | F1 | Nota |
 |---|---|---|---|---|
+| 1 · v1 | 2026-07-02 | LLM · few-shot (2 ejemplos) | 0.57 | +0.03 P, pero F1 casi igual |
 | 0b | 2026-07-01 | v0 · prompt estricto · gemini-2.5-flash-lite | 0.56 | baseline LLM |
 | 0a | 2026-07-01 | v0 · clásico (reglas) | 0.26 | baseline clásico |
+
+_Exp 1 · v2 (reglas duras) y v3 (auto-verificación) quedaron parciales por el
+rate-limit del free tier; se completan re-corriendo el script. Ver [bitácora](experimentos.md#exp-1)._
