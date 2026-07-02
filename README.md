@@ -63,6 +63,24 @@ python -m experiments.run_benchmark
 El cliente elige proveedor solo: Gemini si hay `GEMINI_API_KEY`, si no Anthropic
 (`ANTHROPIC_API_KEY`), si no usa el cache.
 
+**Elegir proveedor explícitamente.** Con ambas keys, `LLM_PROVIDER` fuerza cuál usar
+(el free tier de Gemini no alcanza para todas las corridas; Anthropic las completa):
+```bash
+export ANTHROPIC_API_KEY="..."
+export LLM_PROVIDER=anthropic      # gemini | anthropic
+python -m experiments.exp1_prompts    # variantes de prompt
+python -m experiments.exp2_salida_v1  # salida rica v1 + eval de spans
+```
+
+**La API key va en `.env`** (gitignoreado, NUNCA se committea); el paquete lo carga
+con `llm_client.load_dotenv()`. Ejemplo de `.env`:
+```
+GEMINI_API_KEY=...
+# o
+ANTHROPIC_API_KEY=...
+LLM_PROVIDER=anthropic
+```
+
 ## Documentación
 
 - [docs/esquema_salida.md](docs/esquema_salida.md) — el formato de salida (v0 → v1, compatible con Trust)

@@ -1,1 +1,148 @@
-{}
+{
+  "100": [
+    {
+      "referenciado": "la embajada de China en Argentina",
+      "conector": "desmintió",
+      "afirmacion": "este viernes al Gobierno nacional luego de que el vocero Manuel Adorni expresó su sorpresa por la donación de 30 camiones “destinados para enfrentar la pandemia del Covid-19″.",
+      "tipo": "institucion",
+      "explicita": true
+    },
+    {
+      "referenciado": "la embajada del país asiático",
+      "conector": "calificaron",
+      "afirmacion": "de “completamente incorrecta” la supuesta información que brindó el vocero.",
+      "tipo": "institucion",
+      "explicita": true
+    },
+    {
+      "referenciado": "la embajada del país asiático",
+      "conector": "aclararon",
+      "afirmacion": "“Estos camiones son instalaciones logísticas de hospitales móviles de asistencia gratuita de parte del Ministerio de Defensa Nacional de la República Popular China para la Argentina”.",
+      "tipo": "institucion",
+      "explicita": true
+    },
+    {
+      "referenciado": "la embajada del país asiático",
+      "conector": "resaltaron",
+      "afirmacion": "que los camiones “no tienen nada que ver con los supuestos camiones para enfrentar al Covid que han llegado con cierto atraso”.",
+      "tipo": "institucion",
+      "explicita": true
+    },
+    {
+      "referenciado": "la embajada del país asiático",
+      "conector": "cerraron",
+      "afirmacion": "“El Ministerio de Defensa del actual gobierno argentino tiene muy claro el propósito de este lote de materiales”.",
+      "tipo": "institucion",
+      "explicita": true
+    },
+    {
+      "referenciado": "Vocero Presidencial",
+      "conector": "dijo",
+      "afirmacion": "en conferencia de prensa que hay una noticia muy particular de cosas que no dejan de sorprenderles",
+      "tipo": "persona",
+      "explicita": true
+    },
+    {
+      "referenciado": "el vocero presidencial Manuel Adorni",
+      "conector": "dijo",
+      "afirmacion": "“Quiero contarles algunas cosas que no dejan de sorprendernos. Nos han llegado desde la República Popular China, 30 camiones que están destinados para enfrentar la pandemia del Covid-19″,",
+      "tipo": "persona",
+      "explicita": true
+    },
+    {
+      "referenciado": "Adorni",
+      "conector": "agregó",
+      "afirmacion": "“Por supuesto que agradecemos al gobierno de China y a Xi-Jinping por la donación hecha a la Argentina y seguramente esos camiones serán destinados a otras áreas de Gobierno”.",
+      "tipo": "persona",
+      "explicita": true
+    },
+    {
+      "referenciado": "Adorni",
+      "conector": "finalizó",
+      "afirmacion": "“Esto habla a las claras de cómo fue la gestión de la pandemia en el anterior gobierno”,",
+      "tipo": "persona",
+      "explicita": true
+    }
+  ],
+  "104": [
+    {
+      "referenciado": "Secretaria de Derechos Humanos de la Nación",
+      "conector": "fue señalizado",
+      "afirmacion": "como un nuevo espacio de memoria",
+      "tipo": "institucion",
+      "explicita": false
+    },
+    {
+      "referenciado": "Agencia Administradora de Bienes del Estado (AABE)",
+      "conector": "se otorgó un permiso",
+      "afirmacion": "para que se gestara lo sería, luego, el Refugio Libertad, un campo comunitario en el que trabajan unas 50 familias en el cuidado del lugar, pero también en el cultivo y en la apicultura.",
+      "tipo": "institucion",
+      "explicita": false
+    },
+    {
+      "referenciado": "Unión de Trabajadores y Trabajadoras de la Economía Popular (UTEP)",
+      "conector": "es la sede",
+      "afirmacion": "de la Escuela Nacional de Organización Comunitaria y Economía Popular (ENOCEP), de la Unión de Trabajadores y Trabajadoras de la Economía Popular (UTEP).",
+      "tipo": "institucion",
+      "explicita": false
+    },
+    {
+      "referenciado": "legisladores",
+      "conector": "acordaron",
+      "afirmacion": "por unanimidad trasladarse al predio para sesionar el miércoles próximo, a las 10, en el marco de la Semana de la Memoria.",
+      "tipo": "anonima",
+      "explicita": true
+    },
+    {
+      "referenciado": "Matías Chamorro",
+      "conector": "fue quien presentó",
+      "afirmacion": "un proyecto -que fue también elaborado en su momento con el exparlamentario Leandro Carpintero- que estableció que en el ámbito de las dependencias provinciales se realice “la capacitación, sensibilización y concientización obligatoria en materia de Derechos Humanos”.",
+      "tipo": "persona",
+      "explicita": true
+    },
+    {
+      "referenciado": "Matías Chamorro",
+      "conector": "resumió",
+      "afirmacion": "“Este jueves, en comisión, hemos aprobado el despacho por unanimidad y lo vamos a tratar en la sesión especial, donde los legisladores vamos a concurrir al Refugio Libertad, del ex Grupo de Artillería 141, que es un sitio de memoria recientemente señalizado, con todo lo que esto implica para nuestra memoria y que, además, es un espacio socioproductivo para las familias de esta región”",
+      "tipo": "persona",
+      "explicita": true
+    },
+    {
+      "referenciado": "proyecto",
+      "conector": "se detalló en el fundamento",
+      "afirmacion": "“Córdoba construyó una política robusta en derechos humanos, y esta iniciativa pretende seguir fomentando las políticas de Memoria, Verdad y Justicia, brindando herramientas con un profundo sentido pedagógico, que redunden en un fortalecimiento democrático y sus instituciones. He decidido nombrar a este proyecto Ley Sonia Torres, en homenaje a una de nuestros más importantes referentes en derechos humanos, fallecida el 20 de octubre”",
+      "tipo": "documento",
+      "explicita": true
+    }
+  ],
+  "105": [
+    {
+      "referenciado": "Schiaretti",
+      "conector": "publicó",
+      "afirmacion": "“En este Día Nacional de la Memoria reafirmamos el Nunca Más al terrorismo de estado, Nunca Más a los crímenes de lesa humanidad y Nunca Más a una dictadura genocida en nuestra patria”",
+      "tipo": "persona",
+      "explicita": true
+    },
+    {
+      "referenciado": "Schiaretti",
+      "conector": "remarcó",
+      "afirmacion": "“Los pueblos deben tener siempre memoria de estos horrores. Negarlos es correr el riesgo de volver a repetir la tragedia que nos tocó vivir”",
+      "tipo": "persona",
+      "explicita": true
+    },
+    {
+      "referenciado": "Schiaretti",
+      "conector": "cerró",
+      "afirmacion": "“Sí a los derechos humanos, sí a la democracia, sí a la pluralidad de ideas, sí a la tolerancia con quienes piensan distinto”",
+      "tipo": "persona",
+      "explicita": true
+    },
+    {
+      "referenciado": "Victoria Villarruel",
+      "conector": "aseguró",
+      "afirmacion": "“no fueron 30 mil”",
+      "tipo": "persona",
+      "explicita": true
+    }
+  ]
+}

@@ -96,10 +96,23 @@ def load_dotenv(path: str | os.PathLike = ".env") -> None:
         os.environ.setdefault(clave, valor)
 
 
-def default_client() -> LLMClient | None:
-    """Devuelve el cliente según qué API key esté seteada. None si no hay ninguna."""
-    if os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY"):
-        return GeminiClient()
-    if os.environ.get("ANTHROPIC_API_KEY"):
-        return AnthropicClient()
+def make_client(model: str | None = None) -> LLMClient | None:
+    """Fábrica de cliente. Elige proveedor por `LLM_PROVIDER` (gemini|anthropic); si
+    no está, usa el primero con key (Gemini gratis primero). `model` se aplica solo
+    si corresponde al proveedor elegido (así un experimento puede fijar el modelo de
+    Gemini y, al cambiar a Anthropic con LLM_PROVIDER, se ignora sin romper)."""
+    provider = os.environ.get("LLM_PROVIDER", "").strip().lower()
+    has_gemini = bool(os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY"))
+    has_anthropic = bool(os.environ.get("ANTHROPIC_API_KEY"))
+    if not provider:
+        provider = "gemini" if has_gemini else ("anthropic" if has_anthropic else "")
+    if provider == "gemini" and has_gemini:
+        return GeminiClient(model=model) if (model or "").startswith("gemini") else GeminiClient()
+    if provider == "anthropic" and has_anthropic:
+        return AnthropicClient(model=model) if (model or "").startswith("claude") else AnthropicClient()
     return None
+
+
+def default_client() -> LLMClient | None:
+    """Cliente por defecto (respeta LLM_PROVIDER). None si no hay ninguna key."""
+    return make_client()

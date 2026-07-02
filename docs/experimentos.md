@@ -150,12 +150,23 @@ bien TP/FP/FN por etiqueta). Todo **sin depender de una API** para la parte de
 ingeniería.
 
 **Qué falta.** **Medir en vivo** `LLMSourceDetectorV1` sobre las 16 notas y reportar
-el span-F1 por componente contra el humano — pendiente por el rate-limit del free
-tier (se completa al conectar Anthropic). También: cubrir **citas implícitas** de
-forma más fina y modelar explícitamente la **relación** afirmación↔fuente.
+el span-F1 por componente contra el humano. Se intentó con Gemini pero el free tier
+está agotado/congestionado: solo entraron **3/16** notas (span-F1 global 0.14, **no
+representativo**). También queda cubrir **citas implícitas** más finas y modelar la
+**relación** afirmación↔fuente.
 
-**Próximo paso.** Con cuota, correr `exp2_salida_v1` completo (llena
-`cache/exp2_v1.json`) y volcar la tabla de span-F1 acá.
+**Robustez agregada tras el intento.** La salida v1 es más larga y a veces el modelo
+la **trunca** (se cortó un JSON a mitad → error de parseo). Se hizo el parser
+tolerante (`_objetos_sueltos`: rescata los objetos completos y descarta el último a
+medias) y se subió `max_tokens` a 1200.
+
+**Listo para Anthropic.** Se agregó un selector de proveedor: con
+`LLM_PROVIDER=anthropic` y `ANTHROPIC_API_KEY`, todos los experimentos corren con
+Claude sin tocar código (ver README). El free tier de Gemini no da abasto para las
+16 notas × varias variantes; con Anthropic se completa v1/v2/v3 y el span-F1.
+
+**Próximo paso.** Correr `exp2_salida_v1` y `exp1_prompts` con Anthropic (llenan sus
+caches) y volcar acá la tabla de span-F1 y las variantes v2/v3 completas.
 
 <!-- PLANTILLA para nuevos experimentos (copiar y completar):
 

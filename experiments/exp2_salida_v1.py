@@ -16,7 +16,9 @@ Uso:  python -m experiments.exp2_salida_v1
 from __future__ import annotations
 
 import json
+import os
 import sys
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,7 +28,7 @@ from trust_sources.detectors.llm import (LLMSourceDetectorV1,  # noqa: E402
                                          _parse_fuentes_v1)
 from trust_sources.evaluation import evaluate_spans  # noqa: E402
 from trust_sources.io_anotaciones import load_double_annotated  # noqa: E402
-from trust_sources.llm_client import LLMClient, GeminiClient, default_client, load_dotenv  # noqa: E402
+from trust_sources.llm_client import LLMClient, load_dotenv, make_client  # noqa: E402
 from trust_sources.schema import source_from_components  # noqa: E402
 
 RESULTS = ROOT / "results"
@@ -102,21 +104,33 @@ def corrida_real() -> None:
     """Si hay key/cache, corre v1 sobre las 16 notas y evalúa a nivel de span."""
     arts, _ = load_double_annotated()
     cache = _load_cache()
-    client = GeminiClient() if default_client() else None
+    client = make_client()
     detector = LLMSourceDetectorV1(client) if client else None
 
+    throttle = float(os.environ.get("EXP_THROTTLE_S", "5"))
+    max_fallos = int(os.environ.get("EXP_MAX_FALLOS", "4"))
     preds: dict[str, list] = {}
     n_ok = 0
+    fallos_seguidos = 0
+    corto = False
     for a in arts:
         if a.index in cache:
             fuentes = cache[a.index]; n_ok += 1
-        elif detector is not None:
+        elif detector is not None and not corto:
+            if throttle:
+                time.sleep(throttle)  # pace bajo el rate-limit del free tier
             try:
                 raw = client.generate(detector.prompt, a.cuerpo[:detector.max_chars],
-                                      max_tokens=800)
+                                      max_tokens=1200)
                 fuentes = _parse_fuentes_v1(raw); cache[a.index] = fuentes; n_ok += 1
+                fallos_seguidos = 0
             except Exception as e:  # noqa: BLE001
                 print(f"  [v1] {a.index}: {e}"); fuentes = []
+                fallos_seguidos += 1
+                if fallos_seguidos >= max_fallos:
+                    corto = True
+                    print(f"  [v1] {max_fallos} fallos seguidos: corto (se retoma "
+                          "en otra ventana; el cache guarda lo hecho).")
         else:
             fuentes = []
         preds[a.index] = [source_from_components(

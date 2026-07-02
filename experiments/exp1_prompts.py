@@ -30,7 +30,7 @@ from trust_sources import LLMSourceDetector  # noqa: E402
 from trust_sources.detectors.llm import PROMPT_V0  # noqa: E402
 from trust_sources.evaluation import evaluate_referenciados  # noqa: E402
 from trust_sources.io_anotaciones import load_double_annotated  # noqa: E402
-from trust_sources.llm_client import GeminiClient, default_client, load_dotenv  # noqa: E402
+from trust_sources.llm_client import default_client, load_dotenv, make_client  # noqa: E402
 
 CACHE = Path(__file__).resolve().parent / "cache" / "exp1_prompts.json"
 RESULTS = ROOT / "results"
@@ -112,7 +112,7 @@ def _run_variant(variante: dict, arts, cache: dict) -> tuple[dict, str]:
     (pred_por_index, origen)."""
     vid = variante["id"]
     vcache = cache.setdefault(vid, {})
-    client = GeminiClient(model=variante["model"]) if default_client() else None
+    client = make_client(model=variante["model"])
     detector = LLMSourceDetector(client, prompt=variante["prompt"]) if client else None
     pred, origenes = {}, set()
     fallos_seguidos = 0

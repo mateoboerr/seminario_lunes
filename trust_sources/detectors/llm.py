@@ -89,12 +89,49 @@ PROMPT_V1 = (
 _TIPOS = {"persona", "institucion", "documento", "anonima"}
 
 
+def _objetos_sueltos(raw: str) -> list[dict]:
+    """Rescata los objetos del array `fuentes` uno por uno (para salidas TRUNCADAS:
+    si el modelo cortó a mitad, parseamos los completos y descartamos el último a
+    medias). Escanea DENTRO del array balanceando llaves."""
+    m = raw.find('"fuentes"')
+    lb = raw.find("[", m) if m >= 0 else raw.find("[")
+    if lb < 0:
+        return []
+    fuentes, depth, ini = [], 0, -1
+    for i in range(lb + 1, len(raw)):
+        c = raw[i]
+        if c == "{":
+            if depth == 0:
+                ini = i
+            depth += 1
+        elif c == "}" and depth > 0:
+            depth -= 1
+            if depth == 0 and ini >= 0:
+                try:
+                    obj = json.loads(raw[ini:i + 1])
+                    if isinstance(obj, dict):
+                        fuentes.append(obj)
+                except json.JSONDecodeError:
+                    pass
+                ini = -1
+        elif c == "]" and depth == 0:
+            break
+    return fuentes
+
+
 def _parse_fuentes_v1(raw: str) -> list[dict]:
-    """Parsea la salida v1: lista de dicts con las partes de cada fuente."""
+    """Parsea la salida v1: lista de dicts con las partes de cada fuente.
+
+    Tolera respuestas truncadas (por max_tokens): si el JSON global no parsea,
+    rescata los objetos de fuente completos que haya."""
     start, end = raw.find("{"), raw.rfind("}")
-    data = json.loads(raw[start:end + 1]) if start >= 0 else {}
+    try:
+        data = json.loads(raw[start:end + 1]) if start >= 0 else {}
+        items = data.get("fuentes", [])
+    except json.JSONDecodeError:
+        items = _objetos_sueltos(raw)  # salvamos lo que se pueda
     fuentes = []
-    for x in data.get("fuentes", []):
+    for x in items:
         if not isinstance(x, dict):
             x = {"referenciado": str(x)}
         ref = str(x.get("referenciado") or x.get("nombre") or "").strip()
@@ -122,7 +159,7 @@ class LLMSourceDetectorV1(LLMSourceDetector):
         super().__init__(client, prompt=prompt, max_chars=max_chars)
 
     def detect(self, text: str) -> list[Source]:
-        raw = self.client.generate(self.prompt, text[:self.max_chars], max_tokens=800)
+        raw = self.client.generate(self.prompt, text[:self.max_chars], max_tokens=1200)
         fuentes = _parse_fuentes_v1(raw)
         return [source_from_components(
                     text,
