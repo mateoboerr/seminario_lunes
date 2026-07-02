@@ -109,6 +109,8 @@ sources = adapter.get_explicit_sources(texto)   # list[dict] forma Trust
 
 ## Documentación
 
+- 🔬 **[docs/experimentos.md](docs/experimentos.md) — BITÁCORA de experimentos** (el
+  corazón del proyecto: cada prompt/modelo/pipeline probado, qué anduvo y qué no).
 - [docs/esquema_salida.md](docs/esquema_salida.md) — el formato de salida (v0 → v1, compatible con Trust)
 - [docs/metodologia.md](docs/metodologia.md) — datasets y cómo se evalúa
 - [docs/roadmap.md](docs/roadmap.md) — plan, experimentos y **next steps**

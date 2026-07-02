@@ -1,0 +1,21 @@
+# Configuración de GitHub Pages (Jekyll) — el sitio se sirve desde la RAÍZ del repo,
+# así que este archivo (no el de docs/) es el que manda. La home es el README.
+title: "trust-sources — detección de fuentes con LLMs"
+description: "Bitácora de investigación del seminario, sobre trust-monitor."
+theme: jekyll-theme-cayman
+
+# Convierte los links entre .md (docs/experimentos.md -> .html) al construir.
+plugins:
+  - jekyll-relative-links
+relative_links:
+  enabled: true
+  collections: false
+
+# No publicar código/datos como páginas (siguen visibles en el repo de GitHub).
+exclude:
+  - trust_sources/
+  - experiments/
+  - tests/
+  - trust-monitor/
+  - requirements.txt
+  - "*.pyc"
