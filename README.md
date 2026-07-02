@@ -5,12 +5,10 @@ Objetivo: **detectar las fuentes de una noticia** (a quién se le atribuye cada
 información) y superar al detector clásico basado en reglas, usando modelos de
 lenguaje (LLMs). Es una investigación: comparamos enfoques, probamos prompts,
 medimos contra anotaciones humanas y **documentamos aciertos y fallas** en la
-[GitHub Page](docs/).
+**[GitHub Page](https://mateoboerr.github.io/seminario_lunes/)**.
 
-> **Repositorio INDEPENDIENTE** (no es un fork de `trust` ni se pushea ahí). Este
-> directorio es la raíz de un repo nuevo y propio (renombrar a `trust-sources` al
-> crearlo). El repo original se usa **solo como fuente de datos**: se clona aparte
-> en `trust-monitor/` (gitignoreado), no se toca ni se sube.
+> El proyecto **trust-monitor** (repo del profe) se usa **solo como fuente de
+> datos**: se clona aparte en `trust-monitor/` (gitignoreado), no se toca ni se sube.
 
 ## Resultado actual (v0)
 
