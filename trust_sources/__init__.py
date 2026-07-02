@@ -11,7 +11,7 @@ Paquete del Proyecto 1. Expone:
 from .schema import Source, Span
 from .detectors.base import SourceDetector
 from .detectors.classic import ClassicSourceDetector
-from .detectors.llm import LLMSourceDetector
+from .detectors.llm import LLMSourceDetector, LLMSourceDetectorV1
 
-__all__ = ["Source", "Span", "SourceDetector",
-           "ClassicSourceDetector", "LLMSourceDetector"]
+__all__ = ["Source", "Span", "SourceDetector", "ClassicSourceDetector",
+           "LLMSourceDetector", "LLMSourceDetectorV1"]

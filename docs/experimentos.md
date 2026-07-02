@@ -19,6 +19,7 @@ humana (16 notas doble-anotadas, techo humano **F1 0.71**) y se reproduce con
 | 1 · v1 | 2026-07-02 | LLM · few-shot (2 ejemplos) | 0.47 | 0.72 | **0.57** | +0.03 P a costa de −0.06 R; F1 casi igual |
 | 1 · v2 | 2026-07-02 | LLM · reglas negativas duras | — | — | — | 🚧 parcial 8/16 (free tier rate-limited) |
 | 1 · v3 | 2026-07-02 | LLM · auto-verificación (cita evidencia) | — | — | — | 🚧 parcial 2/16 (free tier rate-limited) |
+| 2 | 2026-07-02 | Salida rica v1 (afirmacion+conector+referenciado+tipo, spans) | — | — | — | pipeline listo y validado (stub); medición en vivo pendiente |
 
 ---
 
@@ -106,6 +107,55 @@ cuota. Todo eso ya está en `experiments/exp1_prompts.py`.
 script; el cache retoma donde quedó). Si `v2` sube la precisión de verdad, es la
 base para v1 del esquema. Alternativa: correr con un proveedor de pago para no
 depender del free tier.
+
+## Exp 2 — salida rica v1 (el OUTPUT que pidió el profe)
+
+**Fecha:** 2026-07-02 · **Estado:** 🟢 pipeline listo y validado · medición en vivo pendiente
+
+**Qué es.** Pasar de la salida v0 (solo el nombre de la fuente) a la **v1**: por
+cada fuente, **afirmacion + conector + referenciado**, cada uno **con su posición**
+(span start/end), más el **tipo** (persona / institución / documento / anónima) y
+si la cita es **explícita o implícita**. La forma del dict es idéntica a
+`get_explicit_sources` de Trust → interoperable. Detalle en
+[esquema_salida.md](esquema_salida.md).
+
+**Cómo.** Nuevo `LLMSourceDetectorV1` (misma interfaz `SourceDetector`, cliente
+inyectado): el LLM devuelve las partes copiando el **texto exacto** de la nota, y
+los **spans se calculan con código** (`schema.source_from_components` →
+`find_span`), igual que en el clásico. Nuevo `evaluation.evaluate_spans`: P/R/F1 a
+nivel de span por etiqueta, emparejando por solapamiento (IoU ≥ 0.5).
+
+**Validación sin gastar cuota.** Gracias al cliente inyectable, un **stub** (JSON
+fijo) prueba el pipeline entero de forma determinista:
+`python -m experiments.exp2_salida_v1`. Sobre una nota de ejemplo produce y
+**valida** la salida v1 (ver [ejemplo real](../results/ejemplo_v1.md)). Extracto:
+
+```json
+{
+  "text": "La inflación de junio fue del 4,2%, informó el INDEC",
+  "start_char": 0, "end_char": 52, "pattern": "llm", "explicit": true,
+  "components": {
+    "referenciado": {"text": "el INDEC", "start_char": 44, "end_char": 52, "label": "Referenciado"},
+    "conector":     {"text": "informó",  "start_char": 36, "end_char": 43, "label": "Conector"},
+    "afirmacion":   {"text": "La inflación de junio fue del 4,2%", "start_char": 0, "end_char": 34, "label": "Afirmacion"}
+  },
+  "tipo": "institucion"
+}
+```
+
+**Qué anduvo.** El **output** ya tiene la forma pedida, con posiciones correctas
+(validadas: `nota[start:end] == texto` para cada componente) y clasificación de
+tipo. La evaluación a nivel de span funciona (probada con gold sintético: cuenta
+bien TP/FP/FN por etiqueta). Todo **sin depender de una API** para la parte de
+ingeniería.
+
+**Qué falta.** **Medir en vivo** `LLMSourceDetectorV1` sobre las 16 notas y reportar
+el span-F1 por componente contra el humano — pendiente por el rate-limit del free
+tier (se completa al conectar Anthropic). También: cubrir **citas implícitas** de
+forma más fina y modelar explícitamente la **relación** afirmación↔fuente.
+
+**Próximo paso.** Con cuota, correr `exp2_salida_v1` completo (llena
+`cache/exp2_v1.json`) y volcar la tabla de span-F1 acá.
 
 <!-- PLANTILLA para nuevos experimentos (copiar y completar):
 

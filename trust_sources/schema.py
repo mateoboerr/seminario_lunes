@@ -38,7 +38,8 @@ class Source:
     """Una atribución detectada (una fuente y lo que se le atribuye).
 
     `components` mapea 'afirmacion' / 'conector' / 'referenciado' -> Span.
-    En v0 solo se completa 'referenciado'.
+    En v0 solo se completa 'referenciado'; en v1, los tres.
+    `tipo` (v1): persona / institucion / documento / anonima.
     """
     text: str
     start_char: int
@@ -46,6 +47,7 @@ class Source:
     pattern: str = "llm"          # nombre del patrón (clásico) o "llm"
     explicit: bool = True
     components: dict[str, Span] = field(default_factory=dict)
+    tipo: Optional[str] = None    # v1: tipo de fuente
 
     @property
     def length(self) -> int:
@@ -57,8 +59,12 @@ class Source:
         return ref.text if ref else None
 
     def to_dict(self) -> dict:
-        """Forma de dict idéntica a la de Trust `get_explicit_sources`."""
-        return {
+        """Forma de dict idéntica a la de Trust `get_explicit_sources`.
+
+        `tipo` se agrega solo cuando está presente (v1), para no romper la
+        compatibilidad con la salida v0/Trust cuando no se usa.
+        """
+        d = {
             "text": self.text,
             "start_char": self.start_char,
             "end_char": self.end_char,
@@ -67,6 +73,9 @@ class Source:
             "explicit": self.explicit,
             "components": {k: v.to_dict() for k, v in self.components.items()},
         }
+        if self.tipo is not None:
+            d["tipo"] = self.tipo
+        return d
 
 
 def find_span(full_text: str, substring: str, label: str) -> Optional[Span]:
@@ -97,3 +106,40 @@ def source_from_referenciado(full_text: str, nombre: str,
     return Source(text=span.text, start_char=span.start_char,
                   end_char=span.end_char, pattern=pattern,
                   components={"referenciado": span})
+
+
+# Mapa de clave de componente -> etiqueta del esquema humano de Trust.
+_LABELS = {"afirmacion": "Afirmacion", "conector": "Conector",
+           "referenciado": "Referenciado"}
+
+
+def source_from_components(full_text: str, comps: dict[str, str], *,
+                           tipo: Optional[str] = None, explicit: bool = True,
+                           pattern: str = "llm") -> Source:
+    """Construye una `Source` v1 a partir de los textos de cada componente.
+
+    `comps` mapea 'afirmacion'/'conector'/'referenciado' -> el substring que el LLM
+    copió de la nota. Para cada uno calculamos su span CON CÓDIGO (find_span); así la
+    salida del LLM queda posicionada como la del clásico. El span global de la Source
+    abarca de la primera a la última posición encontrada.
+    """
+    spans: dict[str, Span] = {}
+    for clave, sub in comps.items():
+        if not sub:
+            continue
+        label = _LABELS.get(clave, clave.capitalize())
+        sp = find_span(full_text, sub, label)
+        if sp is None:  # el LLM parafraseó y no calza literal: guardamos sin posición
+            sp = Span(text=sub, start_char=-1, end_char=-1, label=label)
+        spans[clave] = sp
+
+    ubicados = [s for s in spans.values() if s.start_char >= 0]
+    if ubicados:
+        start = min(s.start_char for s in ubicados)
+        end = max(s.end_char for s in ubicados)
+        texto = full_text[start:end]
+    else:
+        start = end = -1
+        texto = comps.get("referenciado", "") or comps.get("afirmacion", "")
+    return Source(text=texto, start_char=start, end_char=end, pattern=pattern,
+                  explicit=explicit, components=spans, tipo=tipo)

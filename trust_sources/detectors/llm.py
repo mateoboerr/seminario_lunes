@@ -13,7 +13,7 @@ from __future__ import annotations
 import json
 
 from ..llm_client import LLMClient
-from ..schema import Source, source_from_referenciado
+from ..schema import Source, source_from_components, source_from_referenciado
 from .base import SourceDetector
 
 PROMPT_V0 = (
@@ -64,3 +64,69 @@ class LLMSourceDetector(SourceDetector):
         raw = self.client.generate(self.prompt, text[:self.max_chars], max_tokens=400)
         nombres = _parse_fuentes(raw)
         return [source_from_referenciado(text, n) for n in nombres]
+
+
+# --- v1: salida rica (afirmacion + conector + referenciado + tipo, con spans) ---
+
+PROMPT_V1 = (
+    "Sos un extractor de FUENTES periodísticas. Para cada fuente a la que la nota le "
+    "atribuye una afirmación, devolvé sus tres partes y su tipo.\n"
+    "Definiciones:\n"
+    "- referenciado: la fuente (persona, institución, documento u organismo).\n"
+    "- conector: el verbo/expresión de atribución (dijo, afirmó, según, sostuvo...).\n"
+    "- afirmacion: lo que se afirma o la cita textual atribuida a esa fuente.\n"
+    "- tipo: uno de persona | institucion | documento | anonima.\n"
+    "- explicita: true si hay verbo de habla o comillas; false si la atribución es "
+    "implícita (dato presentado como de esa fuente sin verbo de habla directo).\n"
+    "REGLA CLAVE: copiá el TEXTO EXACTO de la nota en referenciado/conector/afirmacion "
+    "(mismos caracteres), porque las posiciones se calculan buscando ese texto. Si una "
+    "parte no existe, dejala como cadena vacía.\n"
+    "Unificá menciones de la misma fuente. Si no hay fuentes atribuidas, lista vacía.\n"
+    'Devolvé SOLO JSON: {"fuentes": [{"referenciado": "...", "conector": "...", '
+    '"afirmacion": "...", "tipo": "...", "explicita": true}]}. Sin texto adicional.'
+)
+
+_TIPOS = {"persona", "institucion", "documento", "anonima"}
+
+
+def _parse_fuentes_v1(raw: str) -> list[dict]:
+    """Parsea la salida v1: lista de dicts con las partes de cada fuente."""
+    start, end = raw.find("{"), raw.rfind("}")
+    data = json.loads(raw[start:end + 1]) if start >= 0 else {}
+    fuentes = []
+    for x in data.get("fuentes", []):
+        if not isinstance(x, dict):
+            x = {"referenciado": str(x)}
+        ref = str(x.get("referenciado") or x.get("nombre") or "").strip()
+        if not ref:
+            continue
+        tipo = str(x.get("tipo") or "").strip().lower() or None
+        fuentes.append({
+            "referenciado": ref,
+            "conector": str(x.get("conector") or "").strip(),
+            "afirmacion": str(x.get("afirmacion") or "").strip(),
+            "tipo": tipo if tipo in _TIPOS else None,
+            "explicita": bool(x.get("explicita", True)),
+        })
+    return fuentes
+
+
+class LLMSourceDetectorV1(LLMSourceDetector):
+    """Detector LLM con salida rica (v1): además del referenciado, extrae conector
+    y afirmacion y clasifica el tipo. Los spans se calculan con código (find_span),
+    igual que en el clásico. Misma interfaz `SourceDetector` (intercambiable)."""
+    name = "llm_v1"
+
+    def __init__(self, client: LLMClient, prompt: str = PROMPT_V1,
+                 max_chars: int = 6000):
+        super().__init__(client, prompt=prompt, max_chars=max_chars)
+
+    def detect(self, text: str) -> list[Source]:
+        raw = self.client.generate(self.prompt, text[:self.max_chars], max_tokens=800)
+        fuentes = _parse_fuentes_v1(raw)
+        return [source_from_components(
+                    text,
+                    {"referenciado": f["referenciado"], "conector": f["conector"],
+                     "afirmacion": f["afirmacion"]},
+                    tipo=f["tipo"], explicit=f["explicita"])
+                for f in fuentes]
