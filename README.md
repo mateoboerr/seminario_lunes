@@ -113,3 +113,4 @@ sources = adapter.get_explicit_sources(texto)   # list[dict] forma Trust
 - [docs/metodologia.md](docs/metodologia.md) — datasets y cómo se evalúa
 - [docs/roadmap.md](docs/roadmap.md) — plan, experimentos y **next steps**
 - [ESTADO_PROYECTO.md](ESTADO_PROYECTO.md) — handoff completo (todo lo que se hizo y se sabe)
+- [PENDIENTES.md](PENDIENTES.md) — checklist de lo que falta (casi todo espera Anthropic)
