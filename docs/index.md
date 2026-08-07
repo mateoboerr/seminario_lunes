@@ -45,7 +45,7 @@ Detalle completo en la [bitácora](experimentos.md).
 
 | # | Fecha | Experimento | F1 | Nota |
 |---|---|---|---|---|
-| 5 | 2026-08-07 | **Validación held-out** (75 notas no vistas) | **0.67** | el 0.86 no generaliza (~0.70 vs mismo anotador); el ranking fino de prompts con n=16 era ruido |
+| 5 | 2026-08-07 | **Validación held-out** (75 notas no vistas) | **0.67** | el 0.86 no generaliza (~0.70 vs mismo anotador); la ventaja del mejor prompt no se replica |
 | 4 | 2026-08-07 | Citas implícitas (exploratorio, n=7) | — | LLM atrapa 5/7 vs clásico 2/7 |
 | 3 | 2026-08-07 | Multi-LLM (2 pasadas) vs single-pass | 0.69 | **pierde** vs una pasada (0.73); el bug de truncamiento que casi arruina la comparación está documentado |
 | 2 | 2026-08-07 | Salida rica v1 · span-F1 (sonnet) | 0.54 | supera al clásico (0.39) en los 3 componentes; [ejemplo de salida](https://github.com/mateoboerr/seminario_lunes/blob/main/results/ejemplo_v1.md) |

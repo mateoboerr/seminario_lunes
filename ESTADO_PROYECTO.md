@@ -162,10 +162,13 @@ el `index` crudo colisiona entre archivos).
 
 - **Resultado: el 0.86 NO generaliza** — held-out 0.67 (few-shot) / 0.66 (v0);
   clásico 0.24 (cae solo −0.02). Descomposición: contra **lch** (misma vara que
-  la selección) da **0.70** estable (0.69–0.73 por batch); contra **jcc** 0.56,
-  pero jcc marca 2,5 fuentes/nota donde lch marca 4,4 (criterio, no modelo).
-- La ventaja del few-shot sobre v0 pasa de +0.04 a +0.01: **el ranking fino de
-  prompts con n=16 era ruido de selección.**
+  la selección) da **0.70** estable (0.69–0.73 por batch, excluido un resto de
+  n=1); contra **jcc** 0.57, pero jcc marca 2,5 fuentes/nota donde lch marca 4,4
+  (criterio, no modelo). El residuo contra lch mezcla sesgo del lote (13/16 con
+  fuentes también en xig) y ruido del gold single-anotado — no separables sin
+  doble anotación.
+- La ventaja del few-shot sobre v0 pasa de +0.04 a +0.02: **la ventaja del
+  ganador no se replica — el orden fino de prompts con n=16 no es confiable.**
 - **El número honesto del proyecto es ~0.70**, y así quedó reportado en README,
   index y bitácora (Exp 5). El LLM sigue casi triplicando al clásico.
 - Nuevos: `experiments/exp5_heldout.py` (cache propio por modelo/variante/nota,

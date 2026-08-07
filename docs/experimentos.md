@@ -2,9 +2,11 @@
 
 Registro cronológico de cada experimento: **qué probamos, con qué config, qué dio
 y qué concluimos**. Es el corazón del entregable — el valor no es solo "que
-funcione", sino *haber investigado*. Cada entrada se mide contra la anotación
-humana (16 notas doble-anotadas, techo humano **F1 0.71**) y se reproduce con
-`python -m experiments.run_benchmark`.
+funcione", sino *haber investigado*. Cada entrada se mide contra anotación
+humana — el lote de 16 notas doble-anotadas (acuerdo entre anotadores **F1
+0.71**) y, desde el Exp 5, un held-out de 75 notas — y cada experimento es
+reproducible con su propio script (`python -m experiments.<exp>`; sin API keys
+corren offline desde los caches).
 
 > **Cómo leer las métricas:** P = precisión (de lo que detecté, cuánto era fuente
 > real), R = recall (de las fuentes reales, cuántas atrapé), F1 = media armónica.
@@ -23,7 +25,7 @@ humana (16 notas doble-anotadas, techo humano **F1 0.71**) y se reproduce con
 | 2 | 2026-08-07 | Salida rica v1 · sonnet · span-F1 | 0.49 | 0.59 | **0.54** | supera al clásico (0.39); Referenciado 0.27 vs 0.09 |
 | 3 | 2026-08-07 | Multi-LLM (2 pasadas) · sonnet | 0.62 | 0.78 | **0.69** | pierde contra single-pass (0.73 refs / 0.54 spans vs 0.42) |
 | 4 | 2026-08-07 | Citas implícitas (exploratorio, n=7) | — | — | — | LLM atrapa 5/7 débiles vs clásico 2/7; el flag `explicita` casi no se usa |
-| 5 | 2026-08-07 | **Validación held-out** (75 notas no vistas) · sonnet | 0.71 | 0.64 | **0.67** | el 0.86 no generaliza: ~0.70 contra el mismo anotador; el ranking de prompts con n=16 era ruido |
+| 5 | 2026-08-07 | **Validación held-out** (75 notas no vistas) · sonnet | 0.71 | 0.64 | **0.67** | el 0.86 no generaliza: ~0.70 contra el mismo anotador; la ventaja del mejor prompt no se replica (orden fino con n=16 no confiable) |
 
 ---
 
@@ -119,8 +121,9 @@ Reproducible: `python -m experiments.exp1_prompts`.
   lch** — a partir de acá, la evaluación está limitada por el ruido de la
   anotación, no por el modelo: mejoras por encima de ~0.85 no son distinguibles
   del desacuerdo humano con 16 notas. **Y el 0.86 no viaja: el [Exp 5](#exp-5--validación-held-out-el-086-generaliza)
-  lo midió sobre 75 notas nunca vistas y da 0.67** — el número de la selección
-  estaba inflado por haber elegido prompts ahí y por el sesgo del propio lote.
+  lo midió sobre 75 notas nunca vistas y da 0.67** — inflado sobre todo por el
+  sesgo del propio lote y el ruido del gold, y solo marginalmente por haber
+  elegido prompts ahí.
 
 **Qué no (dos fallas que valen documentar).**
 - **`v3_justifica` se caía por nuestra propia config, no (solo) por el modelo:**
@@ -335,8 +338,9 @@ y quizá un prompt que defina "implícita" con ejemplos.
 **Motivación.** El Exp 1 dejó dos sospechas metodológicas sobre el F1 0.86 de
 Sonnet: (a) los prompts se **eligieron** mirando esas mismas 16 notas —
 sobreajuste de selección—, y (b) las 16 doble-anotadas son un subconjunto
-**sesgado**: solo entraron notas donde *ambos* anotadores encontraron fuentes,
-es decir, los casos de atribución más clara. Un evaluador preguntaría: ¿cuánto
+**sesgado**: entraron las notas con fuentes según lch dentro del lote que xig
+también anotó — y en 13 de las 16, xig también marcó fuentes: casos de
+atribución comparativamente clara. Un evaluador preguntaría: ¿cuánto
 de ese número es el modelo y cuánto es haber medido en el lote equivocado?
 
 **Setup.** Las **75 notas anotadas restantes** (de los 6 archivos de Label
@@ -352,7 +356,7 @@ Reproducible: `python -m experiments.exp5_heldout`.
 
 | Detector | F1 selección (16) | F1 held-out (75) | Δ |
 |---|---|---|---|
-| `v0_estricto` (sonnet) | 0.82 | **0.66** | −0.16 |
+| `v0_estricto` (sonnet) | 0.82 | **0.66** | −0.17 |
 | `v1_fewshot` (sonnet) | 0.86 | **0.67** | −0.19 |
 | clásico (reglas) | 0.26 | **0.24** | −0.02 |
 
@@ -361,21 +365,25 @@ Reproducible: `python -m experiments.exp5_heldout`.
 **Qué dio (la lectura fina está en la descomposición por anotador,
 [results/exp5_heldout.md](https://github.com/mateoboerr/seminario_lunes/blob/main/results/exp5_heldout.md)):**
 
-- **El 0.86 no viaja: en notas no vistas es 0.67.** Pero la brecha se separa en
-  tres componentes de tamaño muy distinto:
+- **El 0.86 no viaja: en notas no vistas es 0.67.** Pero la brecha se reparte
+  entre tres componentes de tamaño muy distinto:
   1. **Sobreajuste de selección: chico.** La ventaja del few-shot sobre v0 pasa
-     de +0.04 (selección) a +0.01 (held-out). Elegir el prompt "ganador" con 16
-     notas fue, sobre todo, ajustar ruido — pero costó poco.
+     de +0.04 (selección) a +0.02 (held-out). Elegir el prompt "ganador" con 16
+     notas fue, en buena parte, ajustar ruido — pero costó poco.
   2. **Heterogeneidad del gold: grande.** jcc marca **2,5** fuentes/nota donde
      lch marca **4,4**. Contra el gold de jcc la precisión cae a 0.54 aunque el
      modelo prediga lo mismo: es diferencia de *criterio de anotación*, no de
      detección. Contra **lch** — la misma vara que la selección — el held-out da
-     **F1 0.70**, estable entre batches (0.69–0.73).
-  3. **Sesgo del lote de selección: el resto.** Aun contra lch queda una brecha
-     real (0.86 → 0.70). Las 16 de selección son las notas donde dos anotadores
-     coincidieron: atribuciones claras. En las no seleccionadas, lch marca
-     fuentes más marginales que el modelo no ve (predice 2,6/nota contra un gold
-     de 4,4; el recall baja de 0.80 a 0.66).
+     **F1 0.70**, estable entre batches (0.69–0.73; excluido un resto de n=1).
+  3. **Sesgo del lote + ruido del gold single-anotado: el resto.** Aun contra
+     lch queda una brecha real (0.86 → 0.70) que mezcla dos causas **no
+     separables sin doble anotación** (ver Qué no): las 16 de selección tienden
+     a casos de atribución clara (en 13 de 16, xig también marcó fuentes), y el
+     gold del held-out no pasó por el cruce con un segundo anotador. Lo
+     observado: el modelo predice 2,6 fuentes/nota contra un gold de 4,4 y el
+     recall baja de 0.80 a 0.66. Que esas fuentes perdidas sean "más marginales"
+     es hipótesis, no observación — la densidad del gold es casi igual (4,0
+     fuentes/nota en la selección vs 4,4 en el held-out de lch).
 - **El número honesto del proyecto es ~0.70** (contra el mismo anotador, en
   notas no vistas), no 0.86. Así se reporta de acá en adelante.
 - **El orden no cambia:** el LLM (0.66–0.67) casi triplica al clásico (0.24) en
@@ -386,8 +394,9 @@ Reproducible: `python -m experiments.exp5_heldout`.
 **Qué no.** Con gold de un solo anotador no se puede separar del todo "el modelo
 se equivoca" de "el anotador tiene otro criterio" — eso pide doble anotación o
 adjudicación de una muestra del held-out (trabajo futuro). Y el ranking fino de
-prompts medido con n=16 queda invalidado: diferencias de ±0.04 entre variantes
-son ruido de selección.
+prompts medido con n=16 no es confiable: la ventaja del ganador (+0.04) no se
+replicó en el held-out (+0.02), y las demás variantes (v2/v3, y todo el ranking
+de Gemini) no se re-midieron acá.
 
 **Moraleja metodológica (la tercera del proyecto, y la más general).** Ya
 aprendimos que el harness puede disfrazar fallas de infraestructura de

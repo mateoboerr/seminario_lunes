@@ -19,7 +19,7 @@ def test_heldout_sin_duplicados_y_con_fuentes():
     """Links únicos, índices sintéticos únicos (el `index` crudo colisiona entre
     archivos) y todas las notas con al menos una fuente gold."""
     heldout = load_heldout()
-    assert len(heldout) > 50  # con los 6 archivos actuales son 75
+    assert len(heldout) == 75  # con los 6 archivos de anotación actuales
     links = [a.link for a in heldout]
     assert len(links) == len(set(links))
     indexes = [a.index for a in heldout]

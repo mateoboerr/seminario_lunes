@@ -118,7 +118,8 @@ def _clasico(arts) -> dict:
     return evaluate_referenciados(arts, preds)
 
 
-def _chart(rows: list[dict], clasico_sel: float, clasico_held: float) -> None:
+def _chart(rows: list[dict], clasico_sel: float, clasico_held: float,
+           n_sel: int, n_held: int) -> None:
     """Barras agrupadas: F1 selección vs held-out por variante (+ clásico).
     Paleta/estilo del repo (validados); dos series → azul/naranja del orden fijo."""
     try:
@@ -135,8 +136,8 @@ def _chart(rows: list[dict], clasico_sel: float, clasico_held: float) -> None:
     x, w = range(len(ids)), 0.36
     fig, ax = plt.subplots(figsize=(1.9 * len(ids) + 2.4, 4.2))
     fig.patch.set_facecolor("white")
-    ax.bar([i - w / 2 for i in x], sel, w, label="selección (16 notas)", color=C_SEL)
-    ax.bar([i + w / 2 for i in x], held, w, label="held-out (75 notas)", color=C_HELD)
+    ax.bar([i - w / 2 for i in x], sel, w, label=f"selección ({n_sel} notas)", color=C_SEL)
+    ax.bar([i + w / 2 for i in x], held, w, label=f"held-out ({n_held} notas)", color=C_HELD)
     for i, (s, h) in enumerate(zip(sel, held)):
         ax.text(i - w / 2, s + 0.02, f"{s:.2f}", ha="center", fontsize=8, color=INK)
         ax.text(i + w / 2, h + 0.02, f"{h:.2f}", ha="center", fontsize=8, color=INK)
@@ -227,7 +228,7 @@ def main() -> None:
     (RESULTS / "exp5_heldout.md").write_text("\n".join(md), encoding="utf-8")
 
     if all(r["completo"] and r["F1_sel"] is not None for r in rows):
-        _chart(rows, cl_sel, cl_held)
+        _chart(rows, cl_sel, cl_held, len(arts_sel), len(arts_held))
     print("Escrito: results/exp5_heldout.md y docs/assets/exp5_heldout.png")
 
 

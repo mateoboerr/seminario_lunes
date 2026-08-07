@@ -26,7 +26,8 @@ El campo `index` es un **contador por archivo**, no una clave global. El archivo
 `xig_20_39` en realidad anota los **mismos artículos que `lch_100_119`** (19/20
 links compartidos). Para cruzar anotadores hay que alinear por **`link`**, no por
 `index`. El par realmente doble-anotado (para el techo humano) es
-**lch_100_119 ↔ xig_20_39**; 16 tienen fuentes en ambos.
+**lch_100_119 ↔ xig_20_39**; 16 tienen fuentes según lch y están en ambos
+archivos (en 13 de esas 16, xig también marcó fuentes).
 (Ver `trust_sources/io_anotaciones.load_double_annotated`.)
 
 ## Cómo se evalúa (v0)
