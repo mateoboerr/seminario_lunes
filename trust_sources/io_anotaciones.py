@@ -60,3 +60,35 @@ def load_double_annotated() -> tuple[list[Articulo], dict[str, Articulo]]:
     xig = {a.link: a for a in load_batch("xig", "20_39")}
     lch = [a for a in lch if a.link in xig]
     return lch, xig
+
+
+# Todos los archivos de anotación disponibles, en orden de PREFERENCIA de
+# anotador (lch primero: es el gold de las 16 de selección, así el gold del
+# held-out queda lo más homogéneo posible). Los nombres de batch son engañosos
+# (el gotcha del `index` por archivo), así que la dedup es SIEMPRE por link.
+_BATCHES = [("lch", "100_119"), ("lch", "120_139"), ("lch", "20_39"),
+            ("lch", "40_59"), ("xig", "20_39"), ("jcc", "80_99")]
+
+
+def load_heldout() -> list[Articulo]:
+    """Notas anotadas NO usadas para elegir prompts: el conjunto held-out.
+
+    Junta todos los archivos de anotación, se queda con las notas con fuentes,
+    excluye por link las 16 doble-anotadas (con ellas se seleccionaron los
+    prompts → medir ahí sobreestima) y dedup por link prefiriendo lch. Como el
+    `index` original es contador POR ARCHIVO (colisiona entre archivos), acá el
+    index pasa a ser sintético y único: "<anotador>_<batch>_<index>".
+    Gold de UN solo anotador por nota (más ruidoso que el lote doble-anotado:
+    acá no hay techo humano).
+    """
+    seleccion = {a.link for a in load_double_annotated()[0]}
+    vistos: set[str] = set()
+    out: list[Articulo] = []
+    for anotador, batch in _BATCHES:
+        for a in load_batch(anotador, batch):
+            if not a.referenciados or a.link in seleccion or a.link in vistos:
+                continue
+            vistos.add(a.link)
+            a.index = f"{anotador}_{batch}_{a.index}"
+            out.append(a)
+    return out

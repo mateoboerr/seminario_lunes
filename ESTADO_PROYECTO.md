@@ -150,3 +150,27 @@ ya no depende de `LLM_PROVIDER`). Resultados y decisiones:
 
 **Pendiente:** solo las celdas de Gemini que esperan ventana de cuota — ver
 `PENDIENTES.md`.
+
+## 9) Actualización 2026-08-07 (2ª tanda) — Exp 5: validación held-out
+
+El 0.86 de Sonnet tenía dos sospechas encima: los prompts se **eligieron** con
+esas 16 notas, y las 16 doble-anotadas son los casos claros (solo entraron notas
+donde ambos anotadores hallaron fuentes). El **Exp 5** midió los mismos prompts
+sobre las **75 notas anotadas restantes** (nunca vistas; `load_heldout()` en
+`io_anotaciones.py`, dedup por link, índice sintético `anotador_batch_n` porque
+el `index` crudo colisiona entre archivos).
+
+- **Resultado: el 0.86 NO generaliza** — held-out 0.67 (few-shot) / 0.66 (v0);
+  clásico 0.24 (cae solo −0.02). Descomposición: contra **lch** (misma vara que
+  la selección) da **0.70** estable (0.69–0.73 por batch); contra **jcc** 0.56,
+  pero jcc marca 2,5 fuentes/nota donde lch marca 4,4 (criterio, no modelo).
+- La ventaja del few-shot sobre v0 pasa de +0.04 a +0.01: **el ranking fino de
+  prompts con n=16 era ruido de selección.**
+- **El número honesto del proyecto es ~0.70**, y así quedó reportado en README,
+  index y bitácora (Exp 5). El LLM sigue casi triplicando al clásico.
+- Nuevos: `experiments/exp5_heldout.py` (cache propio por modelo/variante/nota,
+  reporte con descomposición por anotador, gráfico `exp5_heldout.png`),
+  `tests/test_io_anotaciones.py` (**32 tests**; se saltan sin el clon de datos).
+
+**Pendiente que abre:** doble anotación o adjudicación de una muestra del
+held-out para separar error del modelo vs criterio del anotador.

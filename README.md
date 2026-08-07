@@ -16,17 +16,21 @@ medimos contra anotaciones humanas y **documentamos aciertos y fallas** en la
 |---|---|---|---|
 | Clásico (reglas) | 0.26 | 0.25 | **0.26** |
 | LLM `gemini-2.5-flash-lite` (mejor prompt) | 0.50 | 0.72 | **0.59** |
-| LLM `claude-sonnet-5` (mejor prompt) | 0.94 | 0.80 | **0.86** |
+| LLM `claude-sonnet-5` (mejor prompt, 16 notas de selección) | 0.94 | 0.80 | **0.86** |
 | Acuerdo entre anotadores | — | — | **0.71** |
+| **LLM `claude-sonnet-5` · held-out (75 notas no vistas)** | 0.71 | 0.64 | **0.67** |
 
 **El modelo importa más que el prompt** (+0.26 de F1 al cambiar de modelo, vs
-+0.03/+0.06 de la mejor variante de prompt), y Sonnet queda por encima del
-acuerdo entre los dos anotadores humanos. En salida rica (spans), v1 con Sonnet
-da **0.54** vs **0.39** del clásico; y el pipeline multi-LLM de dos pasadas
-**pierde** contra la pasada única (0.69 vs 0.73). Detalle, fallas incluidas, en
-la [bitácora](docs/experimentos.md).
++0.03/+0.06 de la mejor variante de prompt). **Y la validación held-out cambia
+la conclusión principal:** el 0.86 medido sobre las 16 notas con las que se
+eligieron los prompts no generaliza — sobre 75 notas nunca vistas da **0.67**
+(~0.70 contra el mismo anotador). Aun así el LLM casi triplica al clásico
+(0.24) en el held-out. En salida rica (spans), v1 con Sonnet da **0.54** vs
+**0.39** del clásico; y el pipeline multi-LLM de dos pasadas **pierde** contra
+la pasada única (0.69 vs 0.73). Detalle, fallas incluidas, en la
+[bitácora](docs/experimentos.md).
 
-![F1 por variante y modelo](docs/assets/exp1_modelos.png)
+![F1 selección vs held-out](docs/assets/exp5_heldout.png)
 
 ## Estructura
 

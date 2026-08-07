@@ -39,11 +39,15 @@
   sonnet asigna) espera cuota. [Exp 3](experimentos.md#exp-3).
 - **Citas implícitas (exploratorio) ✅** LLM atrapa 5/7 débiles vs clásico 2/7
   (n chico; el flag `explicita` del modelo casi no se usa). [Exp 4](experimentos.md#exp-4).
+- **Validación held-out ✅** Los mismos prompts sobre **75 notas nunca vistas**:
+  el 0.86 de la selección **no generaliza** (held-out 0.67; ~0.70 contra el
+  mismo anotador). El número honesto del proyecto es ~0.70; el LLM igual casi
+  triplica al clásico (0.24). [Exp 5](experimentos.md#exp-5--validación-held-out-el-086-generaliza).
 - **Visualizaciones ✅** Barras P/R/F1 por variante y por modelo + **matriz de
   aciertos/fallas por nota** (la prometida acá abajo). `experiments/viz_matriz.py`.
 - **Etapa 4 (integración a Trust) 🟢** `TrustSourceAdapter` expone cualquier detector
   con la interfaz `get_explicit_sources` de Trust (mismo contrato de salida).
-- **Calidad:** suite de **tests** (`pytest tests/`, 30 casos) y **CLI** de demo
+- **Calidad:** suite de **tests** (`pytest tests/`, 32 casos) y **CLI** de demo
   (`python -m trust_sources`). El clásico y los tests corren **sin API**; los
   experimentos son reproducibles offline desde los caches (por modelo).
 - **Pendiente:** las celdas de Gemini que esperan cuota (ver

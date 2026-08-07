@@ -63,11 +63,20 @@ humano y se calcula:
 - **Throttle solo donde hace falta:** 5 s entre llamadas de Gemini (free tier,
   ~20 req/min) y sin pausa para Anthropic (de pago). Circuit breaker tras N
   fallos seguidos para no quemar cuota contra un tier caído.
+- **El set de selección no da el número final.** Los prompts se eligieron
+  mirando las 16 notas doble-anotadas → medir ahí sobreestima (nos pasó: 0.86
+  que en notas nunca vistas es 0.67; Exp 5). El número que se reporta como
+  resultado sale del **held-out** (`load_heldout()`: las ~75 notas anotadas que
+  no participaron de ninguna decisión, dedup por link, índice sintético
+  `anotador_batch_n` porque el `index` crudo colisiona entre archivos).
 
 ### Hacia v1 (evaluación más estricta)
 - Medir a **nivel de span** (posición exacta), no solo la lista de nombres.
 - Evaluar los tres componentes (afirmacion/conector/referenciado) y la relación.
-- Usar **más lotes** (de los 106) y **los dos anotadores**.
+- ~~Usar **más lotes** (de los 106)~~ → hecho en el Exp 5 (held-out de 75 notas).
+  Queda: **doble anotación o adjudicación** de una muestra del held-out, para
+  separar error del modelo vs criterio del anotador (jcc marca 2,5 fuentes/nota
+  donde lch marca 4,4).
 - **Análisis de errores**: catalogar dónde falla (fuentes anónimas, entidades
   mencionadas pero no citadas, citas implícitas) para guiar mejoras.
 

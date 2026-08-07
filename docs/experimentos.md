@@ -23,6 +23,7 @@ humana (16 notas doble-anotadas, techo humano **F1 0.71**) y se reproduce con
 | 2 | 2026-08-07 | Salida rica v1 · sonnet · span-F1 | 0.49 | 0.59 | **0.54** | supera al clásico (0.39); Referenciado 0.27 vs 0.09 |
 | 3 | 2026-08-07 | Multi-LLM (2 pasadas) · sonnet | 0.62 | 0.78 | **0.69** | pierde contra single-pass (0.73 refs / 0.54 spans vs 0.42) |
 | 4 | 2026-08-07 | Citas implícitas (exploratorio, n=7) | — | — | — | LLM atrapa 5/7 débiles vs clásico 2/7; el flag `explicita` casi no se usa |
+| 5 | 2026-08-07 | **Validación held-out** (75 notas no vistas) · sonnet | 0.71 | 0.64 | **0.67** | el 0.86 no generaliza: ~0.70 contra el mismo anotador; el ranking de prompts con n=16 era ruido |
 
 ---
 
@@ -117,7 +118,9 @@ Reproducible: `python -m experiments.exp1_prompts`.
   modelo dé 0.86 contra lch significa que **coincide con lch más que xig con
   lch** — a partir de acá, la evaluación está limitada por el ruido de la
   anotación, no por el modelo: mejoras por encima de ~0.85 no son distinguibles
-  del desacuerdo humano con 16 notas.
+  del desacuerdo humano con 16 notas. **Y el 0.86 no viaja: el [Exp 5](#exp-5--validación-held-out-el-086-generaliza)
+  lo midió sobre 75 notas nunca vistas y da 0.67** — el número de la selección
+  estaba inflado por haber elegido prompts ahí y por el sesgo del propio lote.
 
 **Qué no (dos fallas que valen documentar).**
 - **`v3_justifica` se caía por nuestra propia config, no (solo) por el modelo:**
@@ -145,7 +148,8 @@ minutos.
 
 **Próximo paso.** Completar `v3` de Gemini en una ventana de cuota fresca
 (re-correr el script). La brecha restante contra la anotación es ruido de gold
-con n=16: si se quiere más señal, anotar más notas (hay 106 disponibles).
+con n=16 — el **Exp 5** ataca exactamente eso midiendo sobre las ~75 notas
+anotadas que no se usaron para elegir prompts.
 
 ## Exp 2 — salida rica v1 (el OUTPUT que pidió el profe)
 
@@ -323,6 +327,74 @@ predichas, el modelo marcó **1** como implícita. O sea: *captura* las
 atribuciones implícitas pero no las *etiqueta* como tales — el flag hoy no es
 confiable como clasificador. Para medirlo en serio: más notas anotadas (hay 106)
 y quizá un prompt que defina "implícita" con ejemplos.
+
+## Exp 5 — validación held-out: ¿el 0.86 generaliza?
+
+**Fecha:** 2026-08-07 · **Estado:** ✅ medido (16/16 → 75/75)
+
+**Motivación.** El Exp 1 dejó dos sospechas metodológicas sobre el F1 0.86 de
+Sonnet: (a) los prompts se **eligieron** mirando esas mismas 16 notas —
+sobreajuste de selección—, y (b) las 16 doble-anotadas son un subconjunto
+**sesgado**: solo entraron notas donde *ambos* anotadores encontraron fuentes,
+es decir, los casos de atribución más clara. Un evaluador preguntaría: ¿cuánto
+de ese número es el modelo y cuánto es haber medido en el lote equivocado?
+
+**Setup.** Las **75 notas anotadas restantes** (de los 6 archivos de Label
+Studio, dedup por link, excluyendo por link las 16 de selección) — notas que el
+modelo nunca vio y que **no** participaron de ninguna decisión de diseño. Gold
+de UN solo anotador por nota (lch 56 · jcc 16 · xig 3): más ruidoso, sin techo
+humano. Dos variantes **a propósito**: `v0_estricto` (nunca se eligió mirando
+las 16 → su caída mide solo gold/dificultad) y `v1_fewshot` (el ganador elegido
+→ su caída *extra* mide el sobreajuste de selección). Clásico de referencia.
+Reproducible: `python -m experiments.exp5_heldout`.
+
+**Resultado.**
+
+| Detector | F1 selección (16) | F1 held-out (75) | Δ |
+|---|---|---|---|
+| `v0_estricto` (sonnet) | 0.82 | **0.66** | −0.16 |
+| `v1_fewshot` (sonnet) | 0.86 | **0.67** | −0.19 |
+| clásico (reglas) | 0.26 | **0.24** | −0.02 |
+
+![F1 selección vs held-out](assets/exp5_heldout.png)
+
+**Qué dio (la lectura fina está en la descomposición por anotador,
+[results/exp5_heldout.md](https://github.com/mateoboerr/seminario_lunes/blob/main/results/exp5_heldout.md)):**
+
+- **El 0.86 no viaja: en notas no vistas es 0.67.** Pero la brecha se separa en
+  tres componentes de tamaño muy distinto:
+  1. **Sobreajuste de selección: chico.** La ventaja del few-shot sobre v0 pasa
+     de +0.04 (selección) a +0.01 (held-out). Elegir el prompt "ganador" con 16
+     notas fue, sobre todo, ajustar ruido — pero costó poco.
+  2. **Heterogeneidad del gold: grande.** jcc marca **2,5** fuentes/nota donde
+     lch marca **4,4**. Contra el gold de jcc la precisión cae a 0.54 aunque el
+     modelo prediga lo mismo: es diferencia de *criterio de anotación*, no de
+     detección. Contra **lch** — la misma vara que la selección — el held-out da
+     **F1 0.70**, estable entre batches (0.69–0.73).
+  3. **Sesgo del lote de selección: el resto.** Aun contra lch queda una brecha
+     real (0.86 → 0.70). Las 16 de selección son las notas donde dos anotadores
+     coincidieron: atribuciones claras. En las no seleccionadas, lch marca
+     fuentes más marginales que el modelo no ve (predice 2,6/nota contra un gold
+     de 4,4; el recall baja de 0.80 a 0.66).
+- **El número honesto del proyecto es ~0.70** (contra el mismo anotador, en
+  notas no vistas), no 0.86. Así se reporta de acá en adelante.
+- **El orden no cambia:** el LLM (0.66–0.67) casi triplica al clásico (0.24) en
+  el held-out. Y que el clásico caiga solo −0.02 descarta que el held-out sea
+  "más difícil" en general — es más exigente con el *acuerdo fino* contra el
+  gold, justo donde el LLM aparentaba más de lo que tenía.
+
+**Qué no.** Con gold de un solo anotador no se puede separar del todo "el modelo
+se equivoca" de "el anotador tiene otro criterio" — eso pide doble anotación o
+adjudicación de una muestra del held-out (trabajo futuro). Y el ranking fino de
+prompts medido con n=16 queda invalidado: diferencias de ±0.04 entre variantes
+son ruido de selección.
+
+**Moraleja metodológica (la tercera del proyecto, y la más general).** Ya
+aprendimos que el harness puede disfrazar fallas de infraestructura de
+resultados (Exp 1 y 3); acá la lección es del lado de la evaluación: **un score
+alto sobre el set con el que se tomaron decisiones no es un resultado — es una
+hipótesis.** La validación held-out costó 150 llamadas (~medio dólar) y cambió
+la conclusión principal del proyecto.
 
 ## Matriz de aciertos y fallas (transversal)
 

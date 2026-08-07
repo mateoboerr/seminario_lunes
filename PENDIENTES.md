@@ -24,9 +24,11 @@ solo llama lo que falta:
 - [ ] **Flag `explicita` poco confiable** (Exp 4: marcó 1/94 como implícita):
       probar un prompt que defina "implícita" con ejemplos, y medir contra más
       anotación.
-- [ ] **Bajar el ruido del gold:** con 16 notas, F1 > 0.85 ya no se distingue del
-      desacuerdo entre anotadores. Anotar más notas (hay 106 con fuentes) es la
-      única forma de seguir midiendo mejoras.
+- [ ] **Bajar el ruido del gold:** el Exp 5 ya explotó las ~75 notas
+      single-anotadas como held-out (resultado: el 0.86 no generaliza, ~0.70
+      real). Lo que queda es **doble anotación o adjudicación** de una muestra
+      del held-out, para separar "el modelo se equivoca" de "el anotador tiene
+      otro criterio" (jcc marca 2,5 fuentes/nota donde lch marca 4,4).
 
 ## 🟢 Opcionales / cosméticos
 
@@ -42,6 +44,7 @@ solo llama lo que falta:
 v0 (benchmark) · Exp 1 completo con **dos modelos** (grilla de 4 prompts ×
 Gemini/Sonnet; Sonnet 0.86) · Exp 2 span-F1 en vivo (Sonnet 0.54 vs clásico
 0.39) · Exp 3 multi-LLM vs single-pass (gana single-pass; bug de truncamiento
-documentado) · Exp 4 citas implícitas (exploratorio) · matriz de aciertos/fallas ·
-cache por (modelo, variante, nota) con migración · métricas de calidad separadas
-de cobertura · 30 tests + CLI (sin API) · GitHub Page en vivo.
+documentado) · Exp 4 citas implícitas (exploratorio) · **Exp 5 validación
+held-out (75 notas no vistas: 0.67; el 0.86 no generaliza)** · matriz de
+aciertos/fallas · cache por (modelo, variante, nota) con migración · métricas de
+calidad separadas de cobertura · 32 tests + CLI (sin API) · GitHub Page en vivo.
