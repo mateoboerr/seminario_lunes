@@ -104,7 +104,14 @@ Reproducible: `python -m experiments.exp1_prompts`.
 | `v0_estricto` | 0.91 | 0.75 | **0.82** | — | — |
 | `v3_justifica` | 0.88 | 0.75 | **0.81** | −0.03 | −0.01 |
 
+![P/R/F1 por variante — Sonnet](assets/exp1_prompts_sonnet.png)
+
+**Las dos grillas, lado a lado** (mismos prompts, distinto modelo):
+
 ![F1 por variante y modelo](assets/exp1_modelos.png)
+
+Tablas completas, con cobertura por celda:
+[results/exp1_prompts.md](https://github.com/mateoboerr/seminario_lunes/blob/main/results/exp1_prompts.md).
 
 **Qué anduvo.**
 - **El modelo importa más que el prompt.** Con prompts idénticos, Sonnet le saca
@@ -288,6 +295,9 @@ spans correctos — sin llamar a ninguna API.
 | **una pasada** (v1, Exp 2) | **0.73** (P 0.69 / R 0.78) | **0.54** |
 | **dos pasadas** (afirmaciones → fuentes) | 0.69 (P 0.62 / R 0.78) | 0.42 |
 
+Spans por componente en
+[results/exp3_multi.md](https://github.com/mateoboerr/seminario_lunes/blob/main/results/exp3_multi.md).
+
 **Conclusión: con el mismo modelo, separar la tarea en dos pasadas NO mejora —
 empeora.** Mismo recall de fuentes (0.78) pero menos precisión (0.62 vs 0.69) y
 spans mucho peores (0.42 vs 0.54). La hipótesis de "cada modelo enfocado en una
@@ -330,6 +340,9 @@ que esto es exploratorio, no concluyente. Reproducible sin cuota:
 |---|---|---|
 | clásico (reglas) | 35/76 (0.46) | 2/7 (0.29) |
 | v1 `claude-sonnet-5` | 57/76 (0.75) | **5/7 (0.71)** |
+
+Detalle en
+[results/exp4_implicitas.md](https://github.com/mateoboerr/seminario_lunes/blob/main/results/exp4_implicitas.md).
 
 **Qué anduvo.** La dirección esperada se confirma: el clásico (que necesita
 comillas o verbo de habla por diseño) pierde las implícitas (0.29), mientras el
