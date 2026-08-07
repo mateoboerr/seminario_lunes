@@ -47,13 +47,38 @@ PROMPT_ASIGNAR = (
 )
 
 
+def _strings_sueltos(raw: str) -> list[str]:
+    """Rescata los strings COMPLETOS del array `afirmaciones` de un JSON
+    truncado (mismo espíritu que `_objetos_sueltos` en llm.py): si el modelo
+    cortó a mitad, salvamos las afirmaciones enteras y descartamos la última a
+    medias. Sin esto, una respuesta truncada devolvía [] EN SILENCIO y el
+    pipeline entero reportaba "0 fuentes" sin ningún error visible."""
+    m = raw.find('"afirmaciones"')
+    lb = raw.find("[", m) if m >= 0 else raw.find("[")
+    if lb < 0:
+        return []
+    dec = json.JSONDecoder()
+    out, i = [], lb + 1
+    while i < len(raw):
+        while i < len(raw) and raw[i] in " \t\r\n,":
+            i += 1
+        if i >= len(raw) or raw[i] != '"':
+            break  # fin del array (']') o basura: no hay más strings completos
+        try:
+            s, i = dec.raw_decode(raw, i)
+        except json.JSONDecodeError:
+            break  # string cortado a mitad
+        out.append(s)
+    return out
+
+
 def _parse_afirmaciones(raw: str) -> list[str]:
     start, end = raw.find("{"), raw.rfind("}")
     try:
         data = json.loads(raw[start:end + 1]) if start >= 0 else {}
         items = data.get("afirmaciones", [])
     except json.JSONDecodeError:
-        items = []
+        items = _strings_sueltos(raw)  # salida truncada: salvamos lo que se pueda
     return [str(x).strip() for x in items if str(x).strip()]
 
 
@@ -72,7 +97,10 @@ class MultiLLMSourceDetector(SourceDetector):
 
     def detect(self, text: str) -> list[Source]:
         recorte = text[:self.max_chars]
-        raw1 = self.c1.generate(self.prompt1, recorte, max_tokens=800)
+        # 1200 y no 800: listar TODAS las afirmaciones copiando texto exacto es
+        # largo; con 800 el JSON se truncaba en 10/16 notas (y sin parser
+        # tolerante eso se veía como "0 fuentes", no como error).
+        raw1 = self.c1.generate(self.prompt1, recorte, max_tokens=1200)
         afirmaciones = _parse_afirmaciones(raw1)
         if not afirmaciones:
             return []

@@ -55,13 +55,17 @@ class LLMSourceDetector(SourceDetector):
     name = "llm"
 
     def __init__(self, client: LLMClient, prompt: str = PROMPT_V0,
-                 max_chars: int = 6000):
+                 max_chars: int = 6000, max_tokens: int = 400):
         self.client = client
         self.prompt = prompt
         self.max_chars = max_chars
+        # Presupuesto de salida: los prompts que piden campos extra (p. ej.
+        # evidencia) necesitan más — con 400 el JSON se TRUNCA y no parsea.
+        self.max_tokens = max_tokens
 
     def detect(self, text: str) -> list[Source]:
-        raw = self.client.generate(self.prompt, text[:self.max_chars], max_tokens=400)
+        raw = self.client.generate(self.prompt, text[:self.max_chars],
+                                   max_tokens=self.max_tokens)
         nombres = _parse_fuentes(raw)
         return [source_from_referenciado(text, n) for n in nombres]
 

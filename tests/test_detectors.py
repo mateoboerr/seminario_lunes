@@ -55,6 +55,13 @@ def test_parse_afirmaciones():
     assert _parse_afirmaciones('{"afirmaciones": ["a", "b", ""]}') == ["a", "b"]
 
 
+def test_parse_afirmaciones_rescata_truncado():
+    # Regresión: una respuesta truncada por max_tokens devolvía [] EN SILENCIO
+    # y el pipeline multi-LLM reportaba "0 fuentes" sin error visible.
+    truncado = '{"afirmaciones": ["completa una", "completa \\"dos\\"", "cortada a mit'
+    assert _parse_afirmaciones(truncado) == ["completa una", 'completa "dos"']
+
+
 # --- detectores ---
 
 def test_llm_v0_devuelve_referenciados_con_span():

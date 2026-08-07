@@ -29,11 +29,16 @@ from trust_sources.detectors.llm import (LLMSourceDetectorV1,  # noqa: E402
                                          _parse_fuentes_v1)
 from trust_sources.evaluation import evaluate_spans  # noqa: E402
 from trust_sources.io_anotaciones import load_double_annotated  # noqa: E402
-from trust_sources.llm_client import LLMClient, load_dotenv, make_client  # noqa: E402
+from trust_sources.llm_client import LLMClient, client_for_model, load_dotenv  # noqa: E402
 from trust_sources.schema import source_from_components  # noqa: E402
 
 RESULTS = ROOT / "results"
 CACHE = ROOT / "experiments" / "cache" / "exp2_v1.json"
+
+# Modelos sobre los que se mide la salida v1 (cache separado por modelo).
+MODELO_GEMINI = "gemini-2.5-flash-lite"
+MODELO_SONNET = "claude-sonnet-5"
+MODELOS = [MODELO_GEMINI, MODELO_SONNET]
 
 
 class StubClient(LLMClient):
@@ -118,66 +123,113 @@ def baseline_clasico_spans() -> dict:
 
 
 def _load_cache() -> dict:
-    return json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}
+    """Cache {modelo: {index: [fuentes]}}. Migra el formato viejo (plano, por
+    index), que era 100% Gemini — mezclar modelos bajo la misma clave haría
+    imposible saber qué respondió cada uno."""
+    if not CACHE.exists():
+        return {}
+    cache = json.loads(CACHE.read_text(encoding="utf-8"))
+    if cache and not any(k.startswith(("gemini", "claude")) for k in cache):
+        cache = {MODELO_GEMINI: cache}
+    return cache
 
 
-def corrida_real() -> None:
-    """Si hay key/cache, corre v1 sobre las 16 notas y evalúa a nivel de span."""
-    arts, _ = load_double_annotated()
-    cache = _load_cache()
-    client = make_client()
+def _predecir_modelo(modelo: str, arts, cache: dict) -> dict[str, list]:
+    """Completa el cache del modelo (vivo si hay key) y devuelve las fuentes
+    crudas por index — SOLO de las notas cubiertas."""
+    mcache = cache.setdefault(modelo, {})
+    client = client_for_model(modelo)
     detector = LLMSourceDetectorV1(client) if client else None
-
-    throttle = float(os.environ.get("EXP_THROTTLE_S", "5"))
+    throttle = (float(os.environ.get("EXP_THROTTLE_S", "5"))
+                if (client and client.name == "gemini") else 0.0)
     max_fallos = int(os.environ.get("EXP_MAX_FALLOS", "4"))
-    preds: dict[str, list] = {}
-    n_ok = 0
     fallos_seguidos = 0
     corto = False
     for a in arts:
-        if a.index in cache:
-            fuentes = cache[a.index]; n_ok += 1
-        elif detector is not None and not corto:
-            if throttle:
-                time.sleep(throttle)  # pace bajo el rate-limit del free tier
-            try:
-                raw = client.generate(detector.prompt, a.cuerpo[:detector.max_chars],
-                                      max_tokens=1200)
-                fuentes = _parse_fuentes_v1(raw); cache[a.index] = fuentes; n_ok += 1
-                fallos_seguidos = 0
-            except Exception as e:  # noqa: BLE001
-                print(f"  [v1] {a.index}: {e}"); fuentes = []
-                fallos_seguidos += 1
-                if fallos_seguidos >= max_fallos:
-                    corto = True
-                    print(f"  [v1] {max_fallos} fallos seguidos: corto (se retoma "
-                          "en otra ventana; el cache guarda lo hecho).")
-        else:
-            fuentes = []
-        preds[a.index] = [source_from_components(
+        if a.index in mcache or detector is None or corto:
+            continue
+        if throttle:
+            time.sleep(throttle)  # pace bajo el rate-limit del free tier
+        try:
+            raw = client.generate(detector.prompt, a.cuerpo[:detector.max_chars],
+                                  max_tokens=1200)
+            mcache[a.index] = _parse_fuentes_v1(raw)
+            fallos_seguidos = 0
+        except Exception as e:  # noqa: BLE001
+            print(f"  [v1/{modelo}] {a.index}: {e}")
+            fallos_seguidos += 1
+            if fallos_seguidos >= max_fallos:
+                corto = True
+                print(f"  [v1/{modelo}] {max_fallos} fallos seguidos: corto (se "
+                      "retoma en otra ventana; el cache guarda lo hecho).")
+        CACHE.parent.mkdir(parents=True, exist_ok=True)
+        CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=2),
+                         encoding="utf-8")
+    return {a.index: mcache[a.index] for a in arts if a.index in mcache}
+
+
+def corrida_real(ev_clasico: dict | None = None) -> None:
+    """Corre v1 sobre las 16 notas POR MODELO y evalúa a nivel de span.
+
+    Regla de reporte: las métricas se calculan SOLO sobre las notas con
+    predicción (calidad); la cobertura va aparte. Una corrida parcial se marca
+    como no comparable — nunca se publica recall aplastado por cobertura."""
+    arts, _ = load_double_annotated()
+    cache = _load_cache()
+    n = len(arts)
+
+    md = ["# Exp 2 — salida v1: evaluación a nivel de span\n",
+          f"- Notas: **{n}** · solapamiento mínimo (IoU) para acierto: 0.5",
+          "- Métricas calculadas **solo sobre las notas con predicción** (la "
+          "cobertura se reporta aparte). Corridas parciales: no comparables.",
+          "- Baseline clásico (sin LLM): global F1 **{:.2f}** — ver "
+          "[exp2_spans_clasico.md](exp2_spans_clasico.md).\n".format(
+              ev_clasico["global"]["F1"] if ev_clasico else 0.39)]
+    resumen = []
+    for modelo in MODELOS:
+        crudas = _predecir_modelo(modelo, arts, cache)
+        if not crudas:
+            print(f"  [v1/{modelo}] sin datos (falta key o cuota); se omite.")
+            continue
+        arts_cov = [a for a in arts if a.index in crudas]
+        preds = {a.index: [source_from_components(
             a.cuerpo, {"referenciado": f["referenciado"], "conector": f["conector"],
                        "afirmacion": f["afirmacion"]},
-            tipo=f.get("tipo"), explicit=f.get("explicita", True)) for f in fuentes]
+            tipo=f.get("tipo"), explicit=f.get("explicita", True))
+            for f in crudas[a.index]] for a in arts_cov}
+        ev = evaluate_spans(arts_cov, preds)
+        completo = len(arts_cov) == n
+        estado = "" if completo else " · **PARCIAL, no comparable**"
+        md += [f"## `{modelo}` — cobertura {len(arts_cov)}/{n}{estado}\n",
+               "| Componente | P | R | F1 |", "|---|---|---|---|"]
+        for lab in ["Referenciado", "Conector", "Afirmacion", "global"]:
+            m = ev[lab]
+            md.append(f"| {lab} | {m['P']:.2f} | {m['R']:.2f} | **{m['F1']:.2f}** |")
+        md.append("")
+        resumen.append({"modelo": modelo, "cobertura": f"{len(arts_cov)}/{n}",
+                        "completo": completo, "ev": ev})
+        print(f"  [v1/{modelo}] {len(arts_cov)}/{n} notas · span-F1 global "
+              f"{ev['global']['F1']:.2f}{' (parcial)' if not completo else ''}")
 
-    CACHE.parent.mkdir(parents=True, exist_ok=True)
-    CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=2), encoding="utf-8")
-
-    if n_ok == 0:
-        print("  corrida real: sin datos (falta GEMINI_API_KEY o cuota); "
-              "el pipeline v1 quedó listo, se completa al conectar un proveedor.")
+    if not resumen:
+        print("  corrida real: sin datos (faltan keys o cuota); el pipeline v1 "
+              "quedó listo, se completa al conectar un proveedor.")
         return
 
-    ev = evaluate_spans(arts, preds)
-    md = ["# Exp 2 — salida v1: evaluación a nivel de span\n",
-          f"- Notas con predicción v1: **{n_ok}/{len(arts)}**",
-          f"- Solapamiento mínimo (IoU) para acierto: 0.5\n",
-          "| Componente | P | R | F1 |", "|---|---|---|---|"]
-    for lab in ["Referenciado", "Conector", "Afirmacion", "global"]:
-        m = ev[lab]
-        md.append(f"| {lab} | {m['P']:.2f} | {m['R']:.2f} | **{m['F1']:.2f}** |")
+    completos = [r for r in resumen if r["completo"]]
+    if completos and ev_clasico:
+        md += ["## Resumen (corridas completas vs baseline clásico)\n",
+               "| Detector | Referenciado F1 | Conector F1 | Afirmacion F1 | global F1 |",
+               "|---|---|---|---|---|",
+               "| clásico (reglas) | {:.2f} | {:.2f} | {:.2f} | **{:.2f}** |".format(
+                   *(ev_clasico[k]["F1"] for k in
+                     ("Referenciado", "Conector", "Afirmacion", "global")))]
+        for r in completos:
+            md.append("| v1 `{}` | {:.2f} | {:.2f} | {:.2f} | **{:.2f}** |".format(
+                r["modelo"], *(r["ev"][k]["F1"] for k in
+                               ("Referenciado", "Conector", "Afirmacion", "global"))))
     (RESULTS / "exp2_spans.md").write_text("\n".join(md), encoding="utf-8")
-    print(f"  corrida real: {n_ok}/{len(arts)} notas · span-F1 global "
-          f"{ev['global']['F1']:.2f} · escrito results/exp2_spans.md")
+    print("  escrito: results/exp2_spans.md")
 
 
 def main() -> None:
@@ -185,8 +237,8 @@ def main() -> None:
     print("Exp 2 — salida rica v1")
     dicts = demo_stub()
     _write_ejemplo(dicts)
-    baseline_clasico_spans()
-    corrida_real()
+    ev_clasico = baseline_clasico_spans()
+    corrida_real(ev_clasico)
 
 
 if __name__ == "__main__":

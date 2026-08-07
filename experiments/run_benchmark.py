@@ -27,8 +27,19 @@ CACHE = Path(__file__).resolve().parent / "cache" / "llm_sources.json"
 RESULTS = ROOT / "results"
 
 
+GEMINI_LEGACY = "gemini-2.5-flash-lite"  # modelo de las corridas pre-namespace
+
+
 def _load_cache() -> dict:
-    return json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}
+    """Cache {modelo: {index: [fuentes]}}. Migra el formato viejo (plano), que
+    era 100% Gemini — sin el namespace, correr con otro proveedor PISABA las
+    respuestas del anterior y mezclaba modelos en la misma tabla."""
+    if not CACHE.exists():
+        return {}
+    cache = json.loads(CACHE.read_text(encoding="utf-8"))
+    if cache and not any(k.startswith(("gemini", "claude")) for k in cache):
+        cache = {GEMINI_LEGACY: cache}
+    return cache
 
 
 def main() -> None:
@@ -40,23 +51,25 @@ def main() -> None:
     client = default_client()
     llm = LLMSourceDetector(client) if client else None
     cache = _load_cache()
+    modelo = getattr(client, "model", None) or GEMINI_LEGACY
+    mcache = cache.setdefault(modelo, {})
     origenes: set[str] = set()
 
     pred_clasico, pred_llm = {}, {}
     for a in arts:
         pred_clasico[a.index] = clasico.referenciados(a.cuerpo)
-        if a.index in cache and llm is None:
-            pred_llm[a.index] = cache[a.index]; origenes.add("cache")
+        if a.index in mcache:  # el cache SIEMPRE manda (reproducible, sin cuota)
+            pred_llm[a.index] = mcache[a.index]; origenes.add("cache")
         elif llm is not None:
             try:
                 names = llm.referenciados(a.cuerpo)
                 pred_llm[a.index] = names
-                cache[a.index] = names; origenes.add(client.name)
+                mcache[a.index] = names; origenes.add(f"{client.name}:{modelo}")
             except Exception as e:  # noqa: BLE001
-                print(f"  [llm] {a.index}: {e}; uso cache")
-                pred_llm[a.index] = cache.get(a.index, []); origenes.add("cache")
+                print(f"  [llm] {a.index}: {e}; queda sin predicción")
+                pred_llm[a.index] = []; origenes.add("error")
         else:
-            pred_llm[a.index] = cache.get(a.index, []); origenes.add("cache")
+            pred_llm[a.index] = []; origenes.add("sin-key")
     CACHE.parent.mkdir(exist_ok=True)
     CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=2), encoding="utf-8")
 
