@@ -110,3 +110,43 @@ de v1 y la comparación multi-LLM vs single-pass. Ver README.
 
 ## 7) Pendiente menor
 - Renombrar la carpeta raíz `prototipos/` a `trust-sources` al crear el repo.
+
+## 8) Actualización 2026-08-07 — corridas en vivo con Claude Sonnet completadas
+
+Todo lo que en las secciones de arriba figura como "pendiente con Anthropic" se
+corrió hoy con **`claude-sonnet-5`** (elegido explícitamente en los experimentos;
+ya no depende de `LLM_PROVIDER`). Resultados y decisiones:
+
+- **Exp 1 (grilla de prompts × modelos):** Sonnet — v0 0.82, few-shot **0.86**,
+  reglas duras **0.86**, justifica 0.81 (16/16). Gemini — v2 completada: **0.59**
+  (su mejor variante); v3 quedó 8/16 (cuota diaria agotada). Conclusión: **el
+  modelo mueve más que el prompt** (+0.26 vs +0.06) y Sonnet supera el acuerdo
+  entre anotadores (0.71) — el gold de 16 notas ya es el límite de la medición.
+- **Exp 2 (v1 span-F1, Sonnet 16/16):** global **0.54** vs clásico 0.39;
+  Referenciado 0.27 vs 0.09.
+- **Exp 3 (multi-LLM):** dos pasadas Sonnet+Sonnet **0.69** referenciados / 0.42
+  spans — **pierde contra single-pass** (0.73 / 0.54). La config cross-model
+  (gemini extrae + sonnet asigna) espera cuota de Gemini (0/16).
+- **Exp 4 (citas implícitas, nuevo, exploratorio):** LLM 5/7 débiles vs clásico
+  2/7 (n=7 — leer con cautela); el flag `explicita` casi no se usa (1/94).
+- **Matriz de aciertos/fallas por nota** (nueva, `viz_matriz.py`) →
+  `docs/assets/matriz_aciertos.png`.
+
+**Cambios de ingeniería importantes (el porqué está en `docs/metodologia.md`):**
+- **Cache por (modelo, variante, nota)** en los 4 scripts de experimentos, con
+  migración automática del formato viejo (que era 100% Gemini). Antes, correr con
+  otro proveedor mezclaba/pisaba respuestas sin rastro.
+- **Métricas solo sobre notas con predicción; cobertura aparte.** Corrige la
+  métrica engañosa publicada (span-F1 0.14 que era cobertura, no calidad).
+- **Dos bugs de truncamiento de JSON encontrados y corregidos** (documentados en
+  la bitácora): `v3_justifica` con `max_tokens=400` (ahora presupuesto por
+  variante) y la etapa 1 del multi-LLM (parser tolerante `_strings_sueltos` +
+  presupuesto 1200; antes 10/16 notas devolvían 0 fuentes EN SILENCIO y la
+  primera medición dio 0.37 en vez de 0.69).
+- `AnthropicClient` valida TLS vía `truststore` (middlebox de Windows) y su
+  default es `claude-sonnet-5`; razonamiento apagado a propósito (presupuesto de
+  tokens + comparación pareja con Gemini). **30 tests** (se sumó regresión del
+  parser truncado).
+
+**Pendiente:** solo las celdas de Gemini que esperan ventana de cuota — ver
+`PENDIENTES.md`.

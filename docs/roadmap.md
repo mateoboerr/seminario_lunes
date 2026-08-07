@@ -21,29 +21,33 @@
 - **Ordenar el repo** con estructura profesional (hecho: paquete `trust_sources`
   + `experiments/` + `docs/` + `results/`). Se descartaron los prototipos 2 y 3.
 
-## Estado actual (avance al 2026-07-02)
+## Estado actual (avance al 2026-08-07)
 
 - **v0 ✅** Paquete `trust_sources` con detectores que comparten interfaz. Benchmark
-  reproducible: Clásico **F1 0.26** · LLM Gemini **0.56** · techo humano **0.71**.
-- **Etapa 1 (prompts) 🟡** `v0_estricto` (0.56) vs `v1_fewshot` (0.57): few-shot sube
-  P +0.03 pero F1 casi igual. `v2_reglas_duras` / `v3_justifica` **parciales** (free
-  tier agotado). Ver [bitácora Exp 1](experimentos.md#exp-1).
-- **Etapa 2 (salida rica v1) 🟢** `LLMSourceDetectorV1` (afirmacion+conector+
-  referenciado+tipo, spans por código) + `evaluate_spans`. Validado con stub; medición
-  en vivo pendiente. [Exp 2](experimentos.md#exp-2).
-- **Etapa 3 (multi-LLM) 🟢** `MultiLLMSourceDetector` (2 pasadas). Validado con stub;
-  comparación en vivo pendiente. [Exp 3](experimentos.md#exp-3).
+  reproducible: Clásico **F1 0.26** · LLM Gemini **0.56** · acuerdo humano **0.71**.
+- **Etapa 1 (prompts × modelos) ✅** Grilla de 4 prompts en **dos modelos**.
+  Gemini: mejor variante `v2_reglas_duras` **0.59**. Sonnet: `v1_fewshot` /
+  `v2_reglas_duras` **0.86** (v0 solo ya da 0.82) — por encima del acuerdo entre
+  anotadores. Conclusión: **el modelo mueve más que el prompt** (+0.26 vs +0.06).
+  Solo falta `v3` de Gemini (8/16, cuota). [Bitácora Exp 1](experimentos.md#exp-1).
+- **Etapa 2 (salida rica v1) ✅** Medida en vivo con Sonnet (16/16): span-F1
+  global **0.54** vs clásico **0.39**; Referenciado 0.27 vs 0.09 (×3). Gemini
+  parcial (3/16, cuota). [Exp 2](experimentos.md#exp-2).
+- **Etapa 3 (multi-LLM) ✅** Medido con Sonnet: dos pasadas **0.69** pierde contra
+  single-pass **0.73** (spans 0.42 vs 0.54) — con el bug de truncamiento silencioso
+  encontrado y documentado en el camino. Config cross-model (gemini extrae +
+  sonnet asigna) espera cuota. [Exp 3](experimentos.md#exp-3).
+- **Citas implícitas (exploratorio) ✅** LLM atrapa 5/7 débiles vs clásico 2/7
+  (n chico; el flag `explicita` del modelo casi no se usa). [Exp 4](experimentos.md#exp-4).
+- **Visualizaciones ✅** Barras P/R/F1 por variante y por modelo + **matriz de
+  aciertos/fallas por nota** (la prometida acá abajo). `experiments/viz_matriz.py`.
 - **Etapa 4 (integración a Trust) 🟢** `TrustSourceAdapter` expone cualquier detector
-  con la interfaz `get_explicit_sources` de Trust (mismo contrato de salida), para
-  enchufar el LLM en el pipeline o compararlo contra el clásico.
-- **Baseline de spans (clásico, real) 🟢** El clásico a nivel de span: global **F1
-  0.39** (Afirmacion 0.56, Conector 0.46, Referenciado **0.09** — su punto débil).
-- **Calidad:** suite de **tests** (`pytest tests/`, 29 casos) y **CLI** de demo
-  (`python -m trust_sources`). El clásico y los tests corren **sin API**.
-- **Listo para Anthropic:** `LLM_PROVIDER=anthropic` corre todo con Claude (el free
-  tier de Gemini no alcanza para las corridas grandes). Ver README.
-- **Pendiente en vivo (con Anthropic):** completar v2/v3, span-F1 de v1, y la
-  comparación multi-LLM vs single-pass.
+  con la interfaz `get_explicit_sources` de Trust (mismo contrato de salida).
+- **Calidad:** suite de **tests** (`pytest tests/`, 30 casos) y **CLI** de demo
+  (`python -m trust_sources`). El clásico y los tests corren **sin API**; los
+  experimentos son reproducibles offline desde los caches (por modelo).
+- **Pendiente:** las celdas de Gemini que esperan cuota (ver
+  [PENDIENTES.md](https://github.com/mateoboerr/seminario_lunes/blob/main/PENDIENTES.md)).
 
 ## Next steps (en orden)
 

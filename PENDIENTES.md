@@ -3,47 +3,45 @@
 Checklist vivo de lo que falta. Estado general y detalle en
 [docs/roadmap.md](docs/roadmap.md) y la [bitácora](docs/experimentos.md).
 
-## 🔴 Requiere Anthropic (el free tier de Gemini no alcanza)
+## 🟠 Espera cuota de Gemini (el free tier diario se agotó el 2026-08-07)
 
-Poné la key en `.env` y elegí proveedor (ver [README](README.md#instalación-y-uso)):
-```
-ANTHROPIC_API_KEY=...
-LLM_PROVIDER=anthropic
-```
-Cada script retoma desde su cache (solo llama lo que falta):
+Las corridas con `claude-sonnet-5` están completas; faltan las celdas de Gemini.
+Re-correr en una ventana de cuota fresca — cada script retoma desde su cache y
+solo llama lo que falta:
 
-- [ ] **Etapa 1 — completar variantes de prompt.** `python -m experiments.exp1_prompts`
-      → llena `v2_reglas_duras` (8/16) y `v3_justifica` (2/16) y actualiza la tabla
-      comparativa + el gráfico.
-- [ ] **Etapa 2 — span-F1 de v1 en vivo.** `python -m experiments.exp2_salida_v1`
-      → mide `LLMSourceDetectorV1` a nivel de span y lo compara contra el **baseline
-      clásico (global F1 0.39; Referenciado 0.09)**.
-- [ ] **Etapa 3 — multi-LLM vs single-pass.** `python -m experiments.exp3_multi_llm`
-      → corre el pipeline de 2 pasadas y lo compara contra v1. Decidir cuál conviene.
-- [ ] **Volcar los números nuevos a la bitácora** (`docs/experimentos.md`) y a las
-      tablas de `docs/index.md`.
+- [ ] **`v3_justifica` de Gemini (8/16).** `python -m experiments.exp1_prompts`
+- [ ] **v1 a nivel de span con Gemini (3/16).** `python -m experiments.exp2_salida_v1`
+- [ ] **Multi-LLM cross-model (0/16)** — `gemini` extrae afirmaciones + `sonnet`
+      asigna fuentes (la lectura literal de la propuesta del profe).
+      `python -m experiments.exp3_multi_llm`
+- [ ] Tras completar: re-correr `python -m experiments.viz_matriz` (suma columnas
+      nuevas) y volcar los números a la bitácora.
 
 ## 🟡 Mejoras de modelado (código + medición)
 
-- [ ] **Citas implícitas:** evaluar aparte las fuentes con `explicit=false` (hoy se
-      capturan pero no se miden por separado).
-- [ ] **Relación afirmación↔fuente:** hoy está implícita dentro de cada `Source`;
-      modelarla/evaluarla de forma explícita si aporta.
-- [ ] **Comparar modelos** (Etapa 1, punto 3): correr las variantes con distintos
-      modelos (el harness ya lo soporta vía `make_client(model=...)`).
+- [ ] **Relación afirmación↔fuente explícita:** hoy va implícita dentro de cada
+      `Source`; modelarla/evaluarla aparte si aporta.
+- [ ] **Flag `explicita` poco confiable** (Exp 4: marcó 1/94 como implícita):
+      probar un prompt que defina "implícita" con ejemplos, y medir contra más
+      anotación.
+- [ ] **Bajar el ruido del gold:** con 16 notas, F1 > 0.85 ya no se distingue del
+      desacuerdo entre anotadores. Anotar más notas (hay 106 con fuentes) es la
+      única forma de seguir midiendo mejoras.
 
 ## 🟢 Opcionales / cosméticos
 
-- [ ] **Landing curado en la Page:** cambiar en GitHub *Settings → Pages → Source* a
-      la carpeta `/docs` para que la home sea `docs/index.md` (tema Cayman + tabla de
-      experimentos al frente) en vez del README. Es un clic; el `docs/_config.yml` ya
-      está listo para eso.
-- [ ] **Integración end-to-end a Trust:** el `TrustSourceAdapter` ya expone la
-      interfaz `get_explicit_sources`; enchufarlo en el pipeline real de Trust
-      requiere su entorno (usa stanza, que acá no baja por SSL).
+- [ ] **Landing curado en la Page:** cambiar en GitHub *Settings → Pages → Source*
+      a la carpeta `/docs` para que la home sea `docs/index.md` (tema Cayman +
+      tablas al frente) en vez del README. El `docs/_config.yml` ya está listo.
+- [ ] **Integración end-to-end a Trust:** `TrustSourceAdapter` ya expone
+      `get_explicit_sources`; enchufarlo al pipeline real de Trust requiere su
+      entorno (usa stanza, que acá no baja por SSL).
 
 ## ✅ Hecho (para referencia)
 
-v0 (benchmark) · Etapa 1 v0-vs-v1 medido · Etapa 2 salida rica v1 (código + eval de
-spans + baseline clásico) · Etapa 3 pipeline multi-LLM · Etapa 4 adaptador a Trust ·
-29 tests + CLI (sin API) · GitHub Page en vivo.
+v0 (benchmark) · Exp 1 completo con **dos modelos** (grilla de 4 prompts ×
+Gemini/Sonnet; Sonnet 0.86) · Exp 2 span-F1 en vivo (Sonnet 0.54 vs clásico
+0.39) · Exp 3 multi-LLM vs single-pass (gana single-pass; bug de truncamiento
+documentado) · Exp 4 citas implícitas (exploratorio) · matriz de aciertos/fallas ·
+cache por (modelo, variante, nota) con migración · métricas de calidad separadas
+de cobertura · 30 tests + CLI (sin API) · GitHub Page en vivo.

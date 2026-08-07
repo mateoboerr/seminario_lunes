@@ -16,11 +16,13 @@ humana (16 notas doble-anotadas, techo humano **F1 0.71**) y se reproduce con
 |---|---|---|---|---|---|---|
 | 0a | 2026-07-01 | Clásico (reglas: comillas+verbo+propio) | 0.26 | 0.25 | **0.26** | baseline clásico |
 | 0b | 2026-07-01 | LLM · prompt estricto v0 · `gemini-2.5-flash-lite` | 0.44 | 0.78 | **0.56** | baseline LLM; recall alto, sobre-detecta |
-| 1 · v1 | 2026-07-02 | LLM · few-shot (2 ejemplos) | 0.47 | 0.72 | **0.57** | +0.03 P a costa de −0.06 R; F1 casi igual |
-| 1 · v2 | 2026-07-02 | LLM · reglas negativas duras | — | — | — | 🚧 parcial 8/16 (free tier rate-limited) |
-| 1 · v3 | 2026-07-02 | LLM · auto-verificación (cita evidencia) | — | — | — | 🚧 parcial 2/16 (free tier rate-limited) |
-| 2 | 2026-07-02 | Salida rica v1 (afirmacion+conector+referenciado+tipo, spans) | — | — | — | pipeline listo y validado (stub); medición en vivo pendiente |
-| 3 | 2026-07-02 | Multi-LLM (afirmaciones → asignar fuente) | — | — | — | pipeline 2 etapas listo y validado (stub); comparación en vivo pendiente |
+| 1 · v1 | 2026-07-02 | LLM · few-shot · gemini | 0.47 | 0.72 | **0.57** | +0.03 P a costa de −0.06 R; F1 casi igual |
+| 1 · v2 | 2026-08-07 | LLM · reglas negativas duras · gemini | 0.50 | 0.72 | **0.59** | la mejor variante en Gemini: +0.06 P sin hundir R |
+| 1 · v3 | 2026-08-07 | LLM · auto-verificación · gemini | — | — | — | 🚧 8/16: JSON truncado (falla nuestra, corregida) + cuota diaria agotada |
+| 1 · S | 2026-08-07 | **misma grilla · `claude-sonnet-5`** | 0.94 | 0.80 | **0.86** | few-shot y reglas duras empatan en 0.86 — por encima del acuerdo entre anotadores (0.71) |
+| 2 | 2026-08-07 | Salida rica v1 · sonnet · span-F1 | 0.49 | 0.59 | **0.54** | supera al clásico (0.39); Referenciado 0.27 vs 0.09 |
+| 3 | 2026-08-07 | Multi-LLM (2 pasadas) · sonnet | 0.62 | 0.78 | **0.69** | pierde contra single-pass (0.73 refs / 0.54 spans vs 0.42) |
+| 4 | 2026-08-07 | Citas implícitas (exploratorio, n=7) | — | — | — | LLM atrapa 5/7 débiles vs clásico 2/7; el flag `explicita` casi no se usa |
 
 ---
 
@@ -59,55 +61,91 @@ pedir justificación) y comparar modelos, midiendo si sube P sin bajar R.
 
 ---
 
-## Exp 1 — variantes de prompt (subir la precisión del LLM)
+## Exp 1 — variantes de prompt × modelos (subir la precisión del LLM)
 
-**Fecha:** 2026-07-02 · **Estado:** 🟡 parcial (v0/v1 completos; v2/v3 rate-limited)
+**Fecha:** 2026-07-02 → 2026-08-07 · **Estado:** ✅ (solo `v3` de Gemini quedó
+parcial, por cuota)
 
 **Hipótesis.** El baseline (`v0_estricto`) tiene recall alto (0.78) pero
 sobre-detecta (P 0.44). Cambiando el prompt —dándole ejemplos, reglas negativas
 más duras, o pidiéndole que justifique cada fuente— deberíamos **subir la
 precisión sin hundir el recall**.
 
-**Setup.** Mismo detector `LLMSourceDetector` (prompt inyectado), mismo modelo
-`gemini-2.5-flash-lite`, mismas 16 notas. 4 variantes:
+**Setup.** Mismo detector `LLMSourceDetector` (prompt inyectado), mismas 16
+notas, y la **misma grilla de 4 prompts en dos modelos**:
+`gemini-2.5-flash-lite` (free tier) y `claude-sonnet-5` (de pago). Variantes:
 `v0_estricto` (baseline), `v1_fewshot` (baseline + 2 ejemplos: uno con fuente
 clara, uno con entidades solo mencionadas), `v2_reglas_duras` (criterio de
 exclusión reforzado, "ante la duda excluí"), `v3_justifica` (el modelo debe citar
-la **evidencia** —verbo o cita— o descartar el candidato). Reproducible:
-`python -m experiments.exp1_prompts`.
+la **evidencia** —verbo o cita— o descartar el candidato). El cache es por
+**(modelo, variante, nota)**: cada celda de la tabla es 100% de un modelo.
+Reproducible: `python -m experiments.exp1_prompts`.
 
-**Resultado (variantes completas).**
+**Resultado — `gemini-2.5-flash-lite`.**
 
 | Variante | P | R | F1 | ΔP | ΔF1 |
 |---|---|---|---|---|---|
+| `v2_reglas_duras` | 0.50 | 0.72 | **0.59** | +0.06 | +0.03 |
 | `v1_fewshot` | 0.47 | 0.72 | **0.57** | +0.03 | +0.01 |
 | `v0_estricto` | 0.44 | 0.78 | **0.56** | — | — |
+| `v3_justifica` | — | — | 🚧 | 8/16 | no comparable |
 
-![P/R/F1 por variante](assets/exp1_prompts.png)
+![P/R/F1 por variante — Gemini](assets/exp1_prompts_gemini.png)
 
-**Qué anduvo.** El few-shot **sí mueve la precisión en la dirección buscada**
-(+0.03): los 2 ejemplos negativos ("Milei/Villarruel mencionados pero sin
-atribución") le enseñan a descartar protagonistas. 
+**Resultado — `claude-sonnet-5` (misma grilla).**
 
-**Qué no.** El efecto es **chico** y se paga con recall (−0.06): el F1 queda
-prácticamente igual (0.56 → 0.57). Few-shot solo no alcanza para cerrar la brecha
-con el techo humano (0.71). Las palancas más agresivas contra la sobre-detección
-(`v2_reglas_duras`, `v3_justifica`) son las prometedoras, pero **no se pudieron
-medir completas**: el free tier de Gemini (límite ~20 req/min + 503 por demanda)
-cortó las corridas. Quedaron en 8/16 y 2/16 y sus métricas todavía no son
-comparables (las notas faltantes cuentan como vacío).
+| Variante | P | R | F1 | ΔP | ΔF1 |
+|---|---|---|---|---|---|
+| `v1_fewshot` | 0.94 | 0.80 | **0.86** | +0.03 | +0.04 |
+| `v2_reglas_duras` | 0.94 | 0.80 | **0.86** | +0.03 | +0.04 |
+| `v0_estricto` | 0.91 | 0.75 | **0.82** | — | — |
+| `v3_justifica` | 0.88 | 0.75 | **0.81** | −0.03 | −0.01 |
 
-**Hallazgo metodológico (una falla que vale documentar).** Reproducir experimentos
-LLM con herramientas **gratuitas** tiene un costo oculto: el rate-limit. Cada
-llamada fallida gatilla reintentos que **queman la cuota por-minuto**, así que hay
-que **pacear** (throttle entre llamadas), **cachear por (variante, artículo)** para
-no repetir, y **cortar** ante fallos en cadena (circuit breaker) para no malgastar
-cuota. Todo eso ya está en `experiments/exp1_prompts.py`.
+![F1 por variante y modelo](assets/exp1_modelos.png)
 
-**Próximo paso.** Completar `v2`/`v3` en una ventana de cuota fresca (re-correr el
-script; el cache retoma donde quedó). Si `v2` sube la precisión de verdad, es la
-base para v1 del esquema. Alternativa: correr con un proveedor de pago para no
-depender del free tier.
+**Qué anduvo.**
+- **El modelo importa más que el prompt.** Con prompts idénticos, Sonnet le saca
+  **+0.26 a +0.29 de F1** a Gemini en todas las variantes. La palanca de prompt
+  más grande (reglas duras en Gemini: +0.03) es un orden de magnitud menor que
+  cambiar de modelo. La sobre-detección que intentábamos arreglar con prompts es,
+  sobre todo, una limitación del modelo chico: Sonnet parte de P 0.91 sin ayuda.
+- **La dirección del prompt se confirma en ambos modelos:** few-shot y reglas
+  duras suben precisión en Gemini (+0.03/+0.06) y en Sonnet (+0.03 ambas). En
+  Sonnet, few-shot además sube recall (+0.05): F1 0.86.
+- **Sonnet supera el "techo humano" (0.71).** Leerlo con cuidado: ese techo es el
+  **acuerdo entre los dos anotadores** (lch vs xig), no un máximo teórico. Que el
+  modelo dé 0.86 contra lch significa que **coincide con lch más que xig con
+  lch** — a partir de acá, la evaluación está limitada por el ruido de la
+  anotación, no por el modelo: mejoras por encima de ~0.85 no son distinguibles
+  del desacuerdo humano con 16 notas.
+
+**Qué no (dos fallas que valen documentar).**
+- **`v3_justifica` se caía por nuestra propia config, no (solo) por el modelo:**
+  pedir `{"nombre", "evidencia"}` por fuente alarga el JSON y con el presupuesto
+  default (`max_tokens=400`) la respuesta se **truncaba** y no parseaba
+  (`Expecting ',' delimiter`). Le pasó a los dos modelos. Corregido dando
+  presupuesto por variante (800 para v3) y re-midiendo Sonnet completo. La
+  moraleja: **un error de parseo puede disfrazarse de "el modelo es malo"** —
+  antes de concluir, mirar la respuesta cruda.
+- **La auto-verificación no ayudó (en Sonnet):** v3 con presupuesto corregido da
+  0.81 — baja recall (0.75) sin ganar precisión (0.88 < 0.94). Pedir evidencia
+  hace al modelo más conservador de lo que conviene acá.
+- **La cuota diaria del free tier de Gemini se agotó** a mitad de corrida (429
+  sostenido, ya no por-minuto): `v3` de Gemini quedó 8/16 (sus métricas parciales
+  no se publican como comparables). Se completa en otra ventana; el cache retoma.
+
+**Hallazgo metodológico (de la primera tanda, sigue vigente).** Reproducir
+experimentos LLM con herramientas **gratuitas** tiene un costo oculto: el
+rate-limit. Cada llamada fallida gatilla reintentos que **queman la cuota
+por-minuto**, así que hay que **pacear** (throttle entre llamadas), **cachear por
+(modelo, variante, artículo)** para no repetir, y **cortar** ante fallos en
+cadena (circuit breaker). Con un proveedor de pago (~USD 2 en total para todo lo
+corrido hoy, estimado) todo esto desaparece: la grilla completa de Sonnet tardó
+minutos.
+
+**Próximo paso.** Completar `v3` de Gemini en una ventana de cuota fresca
+(re-correr el script). La brecha restante contra la anotación es ruido de gold
+con n=16: si se quiere más señal, anotar más notas (hay 106 disponibles).
 
 ## Exp 2 — salida rica v1 (el OUTPUT que pidió el profe)
 
@@ -166,28 +204,49 @@ Lectura: el clásico ancla bien la **cita** (Afirmacion 0.56) y el **verbo**
 heurística de nombre propio falla seguido. Esa es justo la debilidad que el LLM
 debería cubrir. Es la vara a superar cuando midamos v1 en vivo.
 
-**Qué falta.** **Medir en vivo** `LLMSourceDetectorV1` sobre las 16 notas y reportar
-el span-F1 por componente contra el humano (comparándolo con este baseline clásico).
-Se intentó con Gemini pero el free tier está agotado/congestionado: solo entraron
-**3/16** notas (span-F1 global 0.14, **no representativo**). También queda cubrir
-**citas implícitas** más finas y modelar la **relación** afirmación↔fuente.
+**Resultado en vivo (2026-08-07, `claude-sonnet-5`, 16/16).** Span-F1 contra la
+anotación humana (IoU ≥ 0.5), al lado del baseline clásico:
 
-**Robustez agregada tras el intento.** La salida v1 es más larga y a veces el modelo
-la **trunca** (se cortó un JSON a mitad → error de parseo). Se hizo el parser
-tolerante (`_objetos_sueltos`: rescata los objetos completos y descarta el último a
-medias) y se subió `max_tokens` a 1200.
+| Componente | clásico (reglas) | v1 `claude-sonnet-5` |
+|---|---|---|
+| Referenciado | 0.09 | **0.27** |
+| Conector | 0.46 | **0.60** |
+| Afirmacion | 0.56 | **0.72** |
+| **global** | **0.39** | **0.54** |
 
-**Listo para Anthropic.** Se agregó un selector de proveedor: con
-`LLM_PROVIDER=anthropic` y `ANTHROPIC_API_KEY`, todos los experimentos corren con
-Claude sin tocar código (ver README). El free tier de Gemini no da abasto para las
-16 notas × varias variantes; con Anthropic se completa v1/v2/v3 y el span-F1.
+(Gemini quedó **3/16** por la cuota — parcial, no comparable; detalle en
+[results/exp2_spans.md](https://github.com/mateoboerr/seminario_lunes/blob/main/results/exp2_spans.md).)
 
-**Próximo paso.** Correr `exp2_salida_v1` y `exp1_prompts` con Anthropic (llenan sus
-caches) y volcar acá la tabla de span-F1 y las variantes v2/v3 completas.
+**Qué anduvo.** El LLM supera al clásico **en los tres componentes**, y justo
+donde el clásico es inútil (Referenciado 0.09 → 0.27, ×3) es donde más mejora.
+La Afirmacion llega a 0.72: cuando hay cita o declaración, el modelo la delimita
+casi como el humano.
+
+**Qué no — y por qué el Referenciado "solo" da 0.27 en spans.** A nivel de
+**lista** de fuentes, este mismo modelo da F1 0.73–0.86 (Exp 1/3); a nivel de
+**span** cae a 0.27. La diferencia es la **frontera de la mención**: el humano
+marca "el gobernador Martín Llaryora" y el modelo copia "Llaryora" (o al revés) —
+con IoU ≥ 0.5 eso cuenta como error aunque la fuente esté bien identificada. El
+span exacto es un problema de *alineación con la convención del anotador*, no de
+detección.
+
+**Una falla nuestra que vale documentar (métrica engañosa, ya corregida).** La
+primera versión de este reporte publicó span-F1 **0.14** para v1 al lado del 0.39
+del clásico. Ese 0.14 estaba **aplastado por cobertura**: el recall se calculaba
+contra el gold de las 16 notas cuando solo 3 tenían predicción — medía "faltan 13
+notas", no calidad, y se leía como "el LLM es 3× peor que las reglas" (falso:
+sobre las mismas 3 notas cubiertas daba 0.47). Regla adoptada en todos los
+reportes: **las métricas se calculan solo sobre notas con predicción y la
+cobertura se reporta aparte** (ver [metodología](metodologia.md)).
+
+**Próximo paso.** Completar Gemini 16/16 para la comparación de modelos a nivel
+de span; modelar la **relación** afirmación↔fuente explícita (hoy va implícita
+dentro de cada `Source`). Citas implícitas: medidas aparte en el Exp 4.
 
 ## Exp 3 — pipeline multi-LLM (dos pasadas)
 
-**Fecha:** 2026-07-02 · **Estado:** 🟢 pipeline listo y validado (stub) · comparación en vivo pendiente
+**Fecha:** 2026-07-02 → 2026-08-07 · **Estado:** ✅ medido con Sonnet (la config
+cross-model espera cuota de Gemini)
 
 **Idea (propuesta del profe).** En vez de resolver todo en una sola llamada,
 **separar el problema en dos**: un LLM **lista las afirmaciones** de la nota, y otro
@@ -204,10 +263,80 @@ v1. Reproducible: `python -m experiments.exp3_multi_llm`.
 otro las fuentes) se valida que el pipeline encadena bien y produce la salida v1 con
 spans correctos — sin llamar a ninguna API.
 
-**Qué falta.** Correr en vivo y **comparar multi-LLM vs single-pass** (`Exp 2`) con
-las mismas métricas (referenciados + spans). Pendiente por el free tier; se hace con
-Anthropic (`LLM_PROVIDER=anthropic`). Ahí se decide cuál conviene y por qué —que es
-lo que pidió el profe.
+**Resultado (2026-08-07, `claude-sonnet-5` en ambas etapas, 16/16).**
+
+| Pipeline | Referenciados F1 | span-F1 global |
+|---|---|---|
+| **una pasada** (v1, Exp 2) | **0.73** (P 0.69 / R 0.78) | **0.54** |
+| **dos pasadas** (afirmaciones → fuentes) | 0.69 (P 0.62 / R 0.78) | 0.42 |
+
+**Conclusión: con el mismo modelo, separar la tarea en dos pasadas NO mejora —
+empeora.** Mismo recall de fuentes (0.78) pero menos precisión (0.62 vs 0.69) y
+spans mucho peores (0.42 vs 0.54). La hipótesis de "cada modelo enfocado en una
+tarea rinde más" no se sostiene acá: la segunda etapa hereda los errores de la
+primera (afirmaciones mal recortadas → spans corridos) y el requisito de "copiá
+el texto exacto" se degrada al pasar por dos manos. Además cuesta el doble de
+llamadas. Para este problema y este modelo, **single-pass gana**.
+
+**La falla que casi arruina la comparación (documentada porque es la más
+instructiva del proyecto).** La primera medición dio **0.37** de F1 — el pipeline
+parecía un desastre. Pero mirando el cache: **10 de las 16 notas devolvían 0
+fuentes**, sin ningún error visible. Causa: la etapa 1 ("listá TODAS las
+afirmaciones copiando el texto exacto") excedía su `max_tokens` (800), el JSON
+llegaba **truncado**, y el parser lo convertía en `[]` **en silencio** — con
+lista vacía, la etapa 2 ni se llamaba. Un bug de presupuesto de tokens
+disfrazado de resultado experimental. Fix doble: presupuesto 1200 para la etapa
+1 + parser tolerante a truncamiento (`_strings_sueltos`, con test de regresión).
+Re-medido: 0.69. **Moraleja repetida** (ya pasó en Exp 1 con v3): cuando un LLM
+"rinde mal", primero descartar que el harness lo esté degradando — cobertura,
+truncamiento, parseo.
+
+**Qué falta.** La config **cross-model** (`gemini` extrae + `sonnet` asigna — la
+lectura literal de la propuesta del profe, con el modelo barato en la etapa
+barata) quedó **0/16**: la cuota diaria de Gemini se agotó. El harness ya la
+soporta (`CONFIGS` en `exp3_multi_llm.py`); se corre en una ventana fresca.
+
+## Exp 4 — citas implícitas (exploratorio)
+
+**Fecha:** 2026-08-07 · **Estado:** ✅ medido · **n chico: leer con cautela**
+
+**Qué es.** El profe pidió tener en cuenta las **citas implícitas** (atribución
+sin verbo de habla directo). El gold las marca como `Afirmacion Debil` — pero hay
+**muy pocas** en el lote doble-anotado (n=7): cada acierto mueve ~15 puntos, así
+que esto es exploratorio, no concluyente. Reproducible sin cuota:
+`python -m experiments.exp4_citas_implicitas` (usa los caches).
+
+**Resultado.** Recall de afirmaciones por tipo (IoU ≥ 0.5):
+
+| Detector | Afirm. fuertes (n=76) | Afirm. débiles/implícitas (n=7) |
+|---|---|---|
+| clásico (reglas) | 35/76 (0.46) | 2/7 (0.29) |
+| v1 `claude-sonnet-5` | 57/76 (0.75) | **5/7 (0.71)** |
+
+**Qué anduvo.** La dirección esperada se confirma: el clásico (que necesita
+comillas o verbo de habla por diseño) pierde las implícitas (0.29), mientras el
+LLM las atrapa casi al mismo nivel que las explícitas (0.71 vs 0.75). Es el
+argumento central a favor del LLM para este problema.
+
+**Qué no.** El **flag `explicita`** de la salida v1 casi no se usa: de 94 fuentes
+predichas, el modelo marcó **1** como implícita. O sea: *captura* las
+atribuciones implícitas pero no las *etiqueta* como tales — el flag hoy no es
+confiable como clasificador. Para medirlo en serio: más notas anotadas (hay 106)
+y quizá un prompt que defina "implícita" con ejemplos.
+
+## Matriz de aciertos y fallas (transversal)
+
+La visualización prometida en el roadmap: F1 de referenciados **por nota**, para
+cada corrida completa (16/16). Filas ordenadas de fácil a difícil; se ve qué
+notas saca todo el mundo, cuáles no saca nadie, y dónde el LLM le gana al
+clásico. Reproducible offline: `python -m experiments.viz_matriz`.
+
+![Matriz de aciertos/fallas por nota](assets/matriz_aciertos.png)
+
+Lecturas rápidas: la columna del clásico es casi toda pálida (7 de 16 notas en
+0.00); Gemini resuelve las notas "fáciles" pero se cae en el tramo difícil de
+abajo (≤0.33 en cinco notas); Sonnet es el único que se mantiene ≥0.5 en **todas**
+las notas; y la 107 es la de peor promedio general.
 
 <!-- PLANTILLA para nuevos experimentos (copiar y completar):
 

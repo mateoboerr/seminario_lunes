@@ -10,16 +10,23 @@ medimos contra anotaciones humanas y **documentamos aciertos y fallas** en la
 > El proyecto **trust-monitor** (repo del profe) se usa **solo como fuente de
 > datos**: se clona aparte en `trust-monitor/` (gitignoreado), no se toca ni se sube.
 
-## Resultado actual (v0)
+## Resultado actual
 
 | Detector | Precisión | Recall | F1 |
 |---|---|---|---|
 | Clásico (reglas) | 0.26 | 0.25 | **0.26** |
-| LLM (Gemini gratis, en vivo) | 0.44 | 0.78 | **0.56** |
-| Techo humano (2 anotadores) | — | — | **0.71** |
+| LLM `gemini-2.5-flash-lite` (mejor prompt) | 0.50 | 0.72 | **0.59** |
+| LLM `claude-sonnet-5` (mejor prompt) | 0.94 | 0.80 | **0.86** |
+| Acuerdo entre anotadores | — | — | **0.71** |
 
-El LLM **duplica** al clásico; tiene recall alto pero sobre-detecta (precisión más
-baja). Detalle en [results/benchmark_v0.md](results/benchmark_v0.md).
+**El modelo importa más que el prompt** (+0.26 de F1 al cambiar de modelo, vs
++0.03/+0.06 de la mejor variante de prompt), y Sonnet queda por encima del
+acuerdo entre los dos anotadores humanos. En salida rica (spans), v1 con Sonnet
+da **0.54** vs **0.39** del clásico; y el pipeline multi-LLM de dos pasadas
+**pierde** contra la pasada única (0.69 vs 0.73). Detalle, fallas incluidas, en
+la [bitácora](docs/experimentos.md).
+
+![F1 por variante y modelo](docs/assets/exp1_modelos.png)
 
 ## Estructura
 
@@ -33,10 +40,16 @@ trust_sources/            # paquete (código reusable)
   detectors/
     base.py               # interfaz SourceDetector (Strategy)
     classic.py            # detector clásico por reglas
-    llm.py                # detector LLM (v0)
+    llm.py                # detector LLM (v0 y v1 con spans)
+    multi_llm.py          # pipeline de dos LLMs (afirmaciones → fuentes)
 experiments/
   run_benchmark.py        # experimento base (v0)
-  cache/llm_sources.json  # cache de detecciones LLM
+  exp1_prompts.py         # variantes de prompt × modelos (Gemini vs Claude)
+  exp2_salida_v1.py       # salida rica v1 + evaluación a nivel de span
+  exp3_multi_llm.py       # multi-LLM (2 pasadas) vs single-pass
+  exp4_citas_implicitas.py# citas implícitas (Afirmacion Debil, exploratorio)
+  viz_matriz.py           # matriz de aciertos/fallas por nota (heatmap)
+  cache/                  # caches por (modelo, variante, nota) — reproducible sin key
 results/                  # métricas y gráficos generados
 docs/                     # contenido de la GitHub Page (experimentos, metodología)
 trust-monitor/            # repo de datos (gitignoreado; se clona)
