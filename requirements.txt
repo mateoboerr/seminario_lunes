@@ -5,6 +5,10 @@ matplotlib
 # LLM (opcional): Gemini se llama por REST (urllib, sin dependencia).
 # Anthropic solo si se usa ese proveedor:
 anthropic
+# Hace que el SDK valide TLS contra el almacén de certificados del sistema.
+# Necesario en Windows con antivirus/proxy que intercepta TLS: sin esto el SDK
+# muere con CERTIFICATE_VERIFY_FAILED (certifi no trae esa raíz). Ver README.
+truststore
 
 # Tests
 pytest

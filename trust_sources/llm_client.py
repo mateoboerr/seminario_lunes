@@ -62,15 +62,44 @@ class GeminiClient(LLMClient):
 class AnthropicClient(LLMClient):
     name = "anthropic"
 
-    def __init__(self, model: str = "claude-haiku-4-5", temperature: float = 0.0):
-        self.model = model
+    def __init__(self, model: str | None = None, temperature: float = 0.0):
+        # Default: el modelo elegido para el proyecto (los experimentos igual lo
+        # fijan explícito; esto cubre CLI/integración sin ANTHROPIC_MODEL en .env).
+        self.model = model or os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-5")
         self.temperature = temperature
+        self._client = None
+
+    def _cliente(self):
+        """Cliente SDK, creado una sola vez y reusado.
+
+        Usa el almacén de certificados del SISTEMA (vía `truststore`): en Windows
+        con antivirus o proxy que intercepta TLS, la raíz que firma esa
+        intercepción está en el almacén de Windows pero NO en el bundle de
+        `certifi` que usa httpx, y toda llamada muere con
+        CERTIFICATE_VERIFY_FAILED. Si `truststore` no está, cae al bundle normal.
+        """
+        if self._client is None:
+            import anthropic
+            kwargs = {}
+            try:
+                import ssl
+
+                import truststore
+                kwargs["http_client"] = anthropic.DefaultHttpxClient(
+                    verify=truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT))
+            except ImportError:
+                pass
+            self._client = anthropic.Anthropic(**kwargs)
+        return self._client
 
     def generate(self, system: str, user: str, max_tokens: int = 500) -> str:
-        import anthropic
-        client = anthropic.Anthropic()
-        resp = client.messages.create(
+        resp = self._cliente().messages.create(
             model=self.model, max_tokens=max_tokens, system=system,
+            # Razonamiento apagado a propósito: los modelos nuevos razonan por
+            # defecto y esos tokens salen del mismo `max_tokens` que la respuesta,
+            # así que truncarían el JSON. Además deja la comparación con Gemini
+            # pareja: una sola pasada, sin razonamiento, en ambos proveedores.
+            thinking={"type": "disabled"},
             messages=[{"role": "user", "content": user}],
         )
         return next((b.text for b in resp.content if b.type == "text"), "")
@@ -110,6 +139,22 @@ def make_client(model: str | None = None) -> LLMClient | None:
         return GeminiClient(model=model) if (model or "").startswith("gemini") else GeminiClient()
     if provider == "anthropic" and has_anthropic:
         return AnthropicClient(model=model) if (model or "").startswith("claude") else AnthropicClient()
+    return None
+
+
+def client_for_model(model: str) -> LLMClient | None:
+    """Cliente para un modelo CONCRETO, ignorando `LLM_PROVIDER`.
+
+    Los experimentos comparan proveedores entre sí, así que el modelo tiene que
+    ser explícito y determinista (con `make_client`, la misma corrida cambiaría
+    de modelo según el entorno — y el cache quedaría mezclado sin rastro).
+    None si falta la key del proveedor correspondiente.
+    """
+    if model.startswith("claude"):
+        return AnthropicClient(model=model) if os.environ.get("ANTHROPIC_API_KEY") else None
+    if model.startswith("gemini"):
+        has = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+        return GeminiClient(model=model) if has else None
     return None
 
 
