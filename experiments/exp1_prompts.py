@@ -104,9 +104,11 @@ VARIANTES = [
      "desc": "baseline + 2 ejemplos (few-shot)"},
     {"id": "v2_reglas_duras", "prompt": _REGLAS_DURAS,
      "desc": "reglas negativas duras (ante la duda, excluir)"},
-    # v3 devuelve un objeto por fuente (nombre + evidencia): con el presupuesto
-    # default (400 tokens) el JSON se truncaba y no parseaba — necesita más.
-    {"id": "v3_justifica", "prompt": _JUSTIFICA, "max_tokens": 800,
+    # v3 devuelve un objeto por fuente (nombre + evidencia): con el default
+    # (400) el JSON se truncaba y no parseaba. 800 alcanzó para Sonnet pero NO
+    # para Gemini, que es más verboso acá (cortes en ~790 tokens). 1500 le da
+    # aire a ambos; es un tope, no un objetivo, así que no encarece nada.
+    {"id": "v3_justifica", "prompt": _JUSTIFICA, "max_tokens": 1500,
      "desc": "auto-verificación: citar evidencia o descartar"},
 ]
 

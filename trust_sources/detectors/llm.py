@@ -33,17 +33,57 @@ PROMPT_V0 = (
 )
 
 
+def items_sueltos(raw: str, clave: str) -> list:
+    """Rescata los items COMPLETOS del array `clave` de un JSON TRUNCADO.
+
+    Cuando el modelo excede su presupuesto de tokens, el JSON llega cortado a
+    mitad y `json.loads` falla por completo: se pierde la nota entera. Acá
+    escaneamos el array item por item con `raw_decode` y devolvemos los que
+    cerraron bien, descartando el último a medias.
+
+    Sirve para cualquier forma de item (strings, dicts, anidados) porque
+    `raw_decode` parsea el siguiente valor JSON sea cual sea. Nota: escanear
+    balanceando llaves a mano —como hacía la primera versión— se descuadra si
+    hay una `}` DENTRO de un string; `raw_decode` no tiene ese problema.
+    """
+    m = raw.find(f'"{clave}"')
+    lb = raw.find("[", m) if m >= 0 else raw.find("[")
+    if lb < 0:
+        return []
+    dec = json.JSONDecoder()
+    out, i = [], lb + 1
+    while i < len(raw):
+        while i < len(raw) and raw[i] in " \t\r\n,":
+            i += 1
+        if i >= len(raw) or raw[i] == "]":
+            break  # fin del array
+        try:
+            val, i = dec.raw_decode(raw, i)
+        except json.JSONDecodeError:
+            break  # item cortado a mitad: descartamos y cortamos
+        out.append(val)
+    return out
+
+
 def _parse_fuentes(raw: str) -> list[str]:
     """Extrae los nombres de fuente del JSON del modelo.
 
     Acepta dos formas de cada item: un string (`"INDEC"`) o un dict con el nombre
     bajo `nombre`/`fuente`/`name` (p. ej. cuando el prompt pide también evidencia:
     `{"nombre": "INDEC", "evidencia": "según el INDEC"}`).
+
+    Tolera respuestas truncadas: si el JSON global no parsea, rescata los items
+    completos en vez de perder la nota entera (le pasó a `v3_justifica`, cuyo
+    JSON con evidencia excede presupuestos chicos).
     """
     start, end = raw.find("{"), raw.rfind("}")
-    data = json.loads(raw[start:end + 1]) if start >= 0 else {}
+    try:
+        data = json.loads(raw[start:end + 1]) if start >= 0 else {}
+        items = data.get("fuentes", [])
+    except json.JSONDecodeError:
+        items = items_sueltos(raw, "fuentes")
     nombres = []
-    for x in data.get("fuentes", []):
+    for x in items:
         if isinstance(x, dict):
             x = x.get("nombre") or x.get("fuente") or x.get("name") or ""
         if str(x).strip():
@@ -94,33 +134,8 @@ _TIPOS = {"persona", "institucion", "documento", "anonima"}
 
 
 def _objetos_sueltos(raw: str) -> list[dict]:
-    """Rescata los objetos del array `fuentes` uno por uno (para salidas TRUNCADAS:
-    si el modelo cortó a mitad, parseamos los completos y descartamos el último a
-    medias). Escanea DENTRO del array balanceando llaves."""
-    m = raw.find('"fuentes"')
-    lb = raw.find("[", m) if m >= 0 else raw.find("[")
-    if lb < 0:
-        return []
-    fuentes, depth, ini = [], 0, -1
-    for i in range(lb + 1, len(raw)):
-        c = raw[i]
-        if c == "{":
-            if depth == 0:
-                ini = i
-            depth += 1
-        elif c == "}" and depth > 0:
-            depth -= 1
-            if depth == 0 and ini >= 0:
-                try:
-                    obj = json.loads(raw[ini:i + 1])
-                    if isinstance(obj, dict):
-                        fuentes.append(obj)
-                except json.JSONDecodeError:
-                    pass
-                ini = -1
-        elif c == "]" and depth == 0:
-            break
-    return fuentes
+    """Objetos completos del array `fuentes` de una salida TRUNCADA (v1)."""
+    return [x for x in items_sueltos(raw, "fuentes") if isinstance(x, dict)]
 
 
 def _parse_fuentes_v1(raw: str) -> list[dict]:

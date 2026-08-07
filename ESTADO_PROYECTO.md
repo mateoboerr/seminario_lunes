@@ -177,3 +177,31 @@ el `index` crudo colisiona entre archivos).
 
 **Pendiente que abre:** doble anotación o adjudicación de una muestra del
 held-out para separar error del modelo vs criterio del anotador.
+
+## 10) Actualización 2026-08-07 (3ª tanda) — auditoría, Page /docs y robustez
+
+- **Auditoría externa** de la tanda Sonnet + Exp 5: números verificados al
+  centésimo desde los caches, sin hallazgos críticos, veredicto "listo para
+  presentar". Se aplicaron sus correcciones: la premisa del Exp 5 decía "notas
+  donde ambos anotadores encontraron fuentes" y el filtro real es *fuentes según
+  lch dentro del lote que xig también anotó* (**13 de 16** con fuentes en ambos);
+  el residuo de la descomposición ahora declara que mezcla sesgo del lote **y**
+  ruido del gold single-anotado (no separables sin doble anotación); y se
+  calibraron dos claims (+0.02 en vez de +0.01; "la ventaja del ganador no se
+  replica" en vez de "el ranking era ruido" — v2/v3 y Gemini no se re-midieron).
+- **La Page pasó a servirse desde `/docs`** (Settings→Pages): home =
+  `docs/index.md`, manda `docs/_config.yml` (el de la raíz se borró) y las URLs
+  perdieron el prefijo `/docs/`. Los anclajes cortos (`#exp-1`…) apuntaban a IDs
+  inexistentes: se reemplazaron por los IDs reales de kramdown, extraídos del
+  HTML publicado y verificados en vivo (7/7 resuelven).
+- **Reintento de las celdas Gemini: sin datos nuevos** (429 desde la primera
+  llamada; ver `PENDIENTES.md`). Los tres scripts reprodujeron resultados
+  **byte-idénticos** desde cache — buena verificación de reproducibilidad.
+- **Tercera aparición de la familia "JSON truncado"**, ahora en el parser de
+  v0/v3: `_parse_fuentes` hacía `json.loads` estricto y un corte perdía la nota
+  entera. Se unificaron los tres rescatadores duplicados en un único
+  `items_sueltos(raw, clave)` basado en `raw_decode` (sirve para strings y para
+  dicts), y de paso se eliminó un defecto latente del escaneo por balanceo de
+  llaves: una `}` **dentro de un string** lo descuadraba. Presupuesto de v3 a
+  1500. **34 tests** (+2 de regresión). Verificado que los resultados publicados
+  se regeneran idénticos tras el refactor.

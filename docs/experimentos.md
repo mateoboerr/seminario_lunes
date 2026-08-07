@@ -129,9 +129,14 @@ Reproducible: `python -m experiments.exp1_prompts`.
 - **`v3_justifica` se caía por nuestra propia config, no (solo) por el modelo:**
   pedir `{"nombre", "evidencia"}` por fuente alarga el JSON y con el presupuesto
   default (`max_tokens=400`) la respuesta se **truncaba** y no parseaba
-  (`Expecting ',' delimiter`). Le pasó a los dos modelos. Corregido dando
-  presupuesto por variante (800 para v3) y re-midiendo Sonnet completo. La
-  moraleja: **un error de parseo puede disfrazarse de "el modelo es malo"** —
+  (`Expecting ',' delimiter`). Le pasó a los dos modelos. Se subió a 800 y Sonnet
+  completó 16/16 — pero al reintentar Gemini (2026-08-07, 2ª tanda) **volvió a
+  truncar, ahora contra los 800** (cortes en char ~3100 ≈ 790 tokens): Gemini es
+  bastante más verboso en esta variante. Arreglo definitivo en dos frentes:
+  presupuesto a **1500** (es un tope, no un objetivo: no encarece nada) y el
+  parser de v0/v3 pasó a **tolerar truncamiento** — antes un corte tiraba
+  excepción y se perdía la nota entera; ahora rescata las fuentes completas.
+  La moraleja: **un error de parseo puede disfrazarse de "el modelo es malo"** —
   antes de concluir, mirar la respuesta cruda.
 - **La auto-verificación no ayudó (en Sonnet):** v3 con presupuesto corregido da
   0.81 — baja recall (0.75) sin ganar precisión (0.88 < 0.94). Pedir evidencia
@@ -148,6 +153,12 @@ por-minuto**, así que hay que **pacear** (throttle entre llamadas), **cachear p
 cadena (circuit breaker). Con un proveedor de pago (~USD 2 en total para todo lo
 corrido hoy, estimado) todo esto desaparece: la grilla completa de Sonnet tardó
 minutos.
+
+**Corolario (aprendido al reintentar).** Sondear la cuota con **una** llamada no
+sirve: al día siguiente el ping de prueba respondió OK y las corridas sostenidas
+dieron 429 desde la primera nota. El límite **diario** puede estar agotado
+mientras el **por-minuto** deja pasar alguna suelta. Para saber si hay cuota de
+verdad hay que mirar si aguanta una tanda, no un ping.
 
 **Próximo paso.** Completar `v3` de Gemini en una ventana de cuota fresca
 (re-correr el script). La brecha restante contra la anotación es ruido de gold

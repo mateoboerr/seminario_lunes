@@ -21,7 +21,7 @@ import json
 from ..llm_client import LLMClient
 from ..schema import Source, source_from_components
 from .base import SourceDetector
-from .llm import _parse_fuentes_v1
+from .llm import _parse_fuentes_v1, items_sueltos
 
 PROMPT_AFIRMACIONES = (
     "Sos un extractor de AFIRMACIONES de una noticia. Una afirmación es una "
@@ -48,28 +48,10 @@ PROMPT_ASIGNAR = (
 
 
 def _strings_sueltos(raw: str) -> list[str]:
-    """Rescata los strings COMPLETOS del array `afirmaciones` de un JSON
-    truncado (mismo espíritu que `_objetos_sueltos` en llm.py): si el modelo
-    cortó a mitad, salvamos las afirmaciones enteras y descartamos la última a
-    medias. Sin esto, una respuesta truncada devolvía [] EN SILENCIO y el
-    pipeline entero reportaba "0 fuentes" sin ningún error visible."""
-    m = raw.find('"afirmaciones"')
-    lb = raw.find("[", m) if m >= 0 else raw.find("[")
-    if lb < 0:
-        return []
-    dec = json.JSONDecoder()
-    out, i = [], lb + 1
-    while i < len(raw):
-        while i < len(raw) and raw[i] in " \t\r\n,":
-            i += 1
-        if i >= len(raw) or raw[i] != '"':
-            break  # fin del array (']') o basura: no hay más strings completos
-        try:
-            s, i = dec.raw_decode(raw, i)
-        except json.JSONDecodeError:
-            break  # string cortado a mitad
-        out.append(s)
-    return out
+    """Afirmaciones completas de un JSON truncado. Sin esto, una respuesta
+    cortada devolvía [] EN SILENCIO y el pipeline reportaba "0 fuentes" sin
+    ningún error visible (ver bitácora, Exp 3)."""
+    return [x for x in items_sueltos(raw, "afirmaciones") if isinstance(x, str)]
 
 
 def _parse_afirmaciones(raw: str) -> list[str]:

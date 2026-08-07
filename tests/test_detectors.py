@@ -32,6 +32,24 @@ def test_parse_fuentes_v0_strings_y_dicts():
     assert _parse_fuentes('{"fuentes": [{"nombre": "INDEC"}]}') == ["INDEC"]
 
 
+def test_parse_fuentes_v0_rescata_truncado():
+    # Regresión (3ª aparición de la familia): con `v3_justifica` (nombre +
+    # evidencia por fuente) Gemini excedía max_tokens y el JSON llegaba cortado;
+    # el parser estricto tiraba JSONDecodeError y se perdía la nota ENTERA.
+    truncado = ('{"fuentes": [{"nombre": "el INDEC", "evidencia": "informó"}, '
+                '{"nombre": "Llaryora", "evide')
+    assert _parse_fuentes(truncado) == ["el INDEC"]  # descarta el objeto a medias
+    # también con items string sueltos
+    assert _parse_fuentes('{"fuentes": ["INDEC", "Llaryo') == ["INDEC"]
+
+
+def test_items_sueltos_no_se_descuadra_con_llaves_en_strings():
+    # El escaneo por balanceo de llaves (versión vieja) contaba la "}" DENTRO
+    # del string y cerraba el objeto antes de tiempo; raw_decode no.
+    raw = '{"fuentes": [{"nombre": "A}B", "evidencia": "dijo {x}"}, {"nombre": "C'
+    assert _parse_fuentes(raw) == ["A}B"]
+
+
 def test_parse_fuentes_v1_bien_formado():
     raw = json.dumps({"fuentes": [{"referenciado": "el INDEC", "conector": "informó",
                                    "afirmacion": "x", "tipo": "institucion"}]})

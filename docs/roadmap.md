@@ -47,7 +47,7 @@
   aciertos/fallas por nota** (la prometida acá abajo). `experiments/viz_matriz.py`.
 - **Etapa 4 (integración a Trust) 🟢** `TrustSourceAdapter` expone cualquier detector
   con la interfaz `get_explicit_sources` de Trust (mismo contrato de salida).
-- **Calidad:** suite de **tests** (`pytest tests/`, 32 casos) y **CLI** de demo
+- **Calidad:** suite de **tests** (`pytest tests/`, 34 casos) y **CLI** de demo
   (`python -m trust_sources`). El clásico y los tests corren **sin API**; los
   experimentos son reproducibles offline desde los caches (por modelo).
 - **Pendiente:** las celdas de Gemini que esperan cuota (ver

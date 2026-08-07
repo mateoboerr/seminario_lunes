@@ -64,6 +64,12 @@ humano y se calcula:
 - **Throttle solo donde hace falta:** 5 s entre llamadas de Gemini (free tier,
   ~20 req/min) y sin pausa para Anthropic (de pago). Circuit breaker tras N
   fallos seguidos para no quemar cuota contra un tier caído.
+- **Nunca dejar que un JSON truncado se lea como un mal resultado.** Cuando el
+  modelo excede su presupuesto de tokens, la respuesta llega cortada: el parser
+  estricto o bien tira excepción (se pierde la nota) o bien devuelve `[]` en
+  silencio (se publica un F1 falso — nos pasó, ver Exp 3). Todos los parsers
+  rescatan los items completos de un array cortado vía
+  `detectors.llm.items_sueltos`, y cada variante fija su propio presupuesto.
 - **El set de selección no da el número final.** Los prompts se eligieron
   mirando las 16 notas doble-anotadas → medir ahí sobreestima (nos pasó: 0.86
   que en notas nunca vistas es 0.67; Exp 5). El número que se reporta como
