@@ -1,1 +1,898 @@
-{}
+{
+  "multi_gemini_sonnet": {},
+  "multi_sonnet": {
+    "100": [
+      {
+        "referenciado": "el vocero Manuel Adorni",
+        "conector": "expresó su sorpresa por",
+        "afirmacion": "expresó su sorpresa por la donación de 30 camiones “destinados para enfrentar la pandemia del Covid-19″",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "la embajada del país asiático",
+        "conector": "calificaron de",
+        "afirmacion": "calificaron de “completamente incorrecta” la supuesta información que brindó el vocero",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "la embajada del país asiático",
+        "conector": "aclararon",
+        "afirmacion": "“Estos camiones son instalaciones logísticas de hospitales móviles de asistencia gratuita de parte del Ministerio de Defensa Nacional de la República Popular China para la Argentina”",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "la embajada del país asiático",
+        "conector": "resaltaron que",
+        "afirmacion": "resaltaron que los camiones “no tienen nada que ver con los supuestos camiones para enfrentar al Covid que han llegado con cierto atraso”",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "la embajada del país asiático",
+        "conector": "cerraron",
+        "afirmacion": "“El Ministerio de Defensa del actual gobierno argentino tiene muy claro el propósito de este lote de materiales”",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "La embajada de China en Argentina",
+        "conector": "dijo",
+        "afirmacion": "Hemos tomado nota de que 22 de marzo, Vocero Presidencial dijo en conferencia de prensa que hay una noticia muy particular de cosas que no dejan de sorprenderles",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "el vocero presidencial Manuel Adorni",
+        "conector": "dijo",
+        "afirmacion": "“Quiero contarles algunas cosas que no dejan de sorprendernos. Nos han llegado desde la República Popular China, 30 camiones que están destinados para enfrentar la pandemia del Covid-19″",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Adorni",
+        "conector": "agregó",
+        "afirmacion": "“Por supuesto que agradecemos al gobierno de China y a Xi-Jinping por la donación hecha a la Argentina y seguramente esos camiones serán destinados a otras áreas de Gobierno”",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Adorni",
+        "conector": "finalizó",
+        "afirmacion": "“Esto habla a las claras de cómo fue la gestión de la pandemia en el anterior gobierno”",
+        "tipo": "persona",
+        "explicita": true
+      }
+    ],
+    "101": [
+      {
+        "referenciado": "Villarruel",
+        "conector": "apuntó",
+        "afirmacion": "No, lo dije en campaña y lo sigo sosteniendo. La función de las Fuerzas Armadas no es combatir a civiles, creo que había quedado claro con el tema de los ‘70. El narco es un civil para el derecho",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "los ministros",
+        "conector": "anunciaron",
+        "afirmacion": "Este jueves, los ministros anunciaron que buscarán cambiar las leyes para que las Fuerzas Armadas puedan actuar en seguridad interior.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Villarruel",
+        "conector": "agregó",
+        "afirmacion": "Me parece que si vos vas a enviar a un agente del Estado a luchar contra un terrorista, un narcoterrorista, o lo que consideres, primero el plexo legal actual no te lo permite",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Villarruel",
+        "conector": "condenó",
+        "afirmacion": "Los militares solo pueden combatir dentro de nuestro país ante una declaración de estado de sitio o ante un enemigo estatal del exterior",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Villarruel",
+        "conector": "habló sobre",
+        "afirmacion": "En primer lugar, Villarruel habló sobre el aumento salarial que iban a dar a diputados y senadores y que, finalmente, el presidente Javier Milei ordenó dar marcha atrás.",
+        "tipo": "persona",
+        "explicita": false
+      },
+      {
+        "referenciado": "Villarruel",
+        "conector": "reconoció",
+        "afirmacion": "Durante la entrevista, Villarruel reconoció que ella quería dar el aumento, pero que no lo hizo porque se lo “pidió el presidente”.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Villarruel",
+        "conector": "apuntó",
+        "afirmacion": "Creo que todos tienen que ganar de acuerdo a la responsabilidad que tienen",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Villarruel",
+        "conector": "apuntó",
+        "afirmacion": "Yo lo que creía es que el aumento que se les dio estaba por debajo de la inflación. Si acá hay empleados públicos de la casa, es decir del Senado, que van a cobrar más que un senador, se rompió cualquier paridad",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "la vicepresidenta",
+        "conector": "apuntó",
+        "afirmacion": "Está bien. Somos dos personas que se complementan. Él es más vehemente en la vida pública y más tranquilo en la privada y yo soy al revés. Soy más templada en la vida pública y en privado soy más extrovertida",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Villarruel",
+        "conector": "",
+        "afirmacion": "Nació para eso, yo también y por eso nos complementamos. Creo que por eso nos eligió el pueblo argentino",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "la vicepresidenta",
+        "conector": "apuntó",
+        "afirmacion": "Yo no me sentí tocada por el comunicado. No siento que me haya equivocado por convocar a sesión por el DNU",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Villarruel",
+        "conector": "mencionó",
+        "afirmacion": "Esto no es un reino, esto es un poder deliberativo. Acá se dirimen las leyes que van a regular la vida de cualquiera de los argentinos y extranjeros que viven en el país. Tiene que funcionar y debatirse y yo tengo que regular eso",
+        "tipo": "persona",
+        "explicita": true
+      }
+    ],
+    "102": [
+      {
+        "referenciado": "el Presidente",
+        "conector": "escribió",
+        "afirmacion": "El aborto es un asesinato agravado por el vínculo y la desproporción de las fuerzas.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "el Presidente",
+        "conector": "escribió",
+        "afirmacion": "Si Usted está viendo este post y es de los que pondera positivamente este tipo de aberraciones, agradezca a su madre por no pensar del mismo modo.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "el Presidente",
+        "conector": "escribió",
+        "afirmacion": "VIDA, LIBERTAD Y PROPIEDAD...!!!VLLC !!!",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "la Vicepresidente",
+        "conector": "escribió",
+        "afirmacion": "Terminar con la vida de un ser humano indefenso no es un derecho. Argentina siempre debe ser tierra de Vida.",
+        "tipo": "persona",
+        "explicita": true
+      }
+    ],
+    "104": [
+      {
+        "referenciado": "la Secretaria de Derechos Humanos de la Nación",
+        "conector": "fue señalizado por",
+        "afirmacion": "Este espacio fue señalizado por la Secretaria de Derechos Humanos de la Nación en julio de 2022 como un nuevo espacio de memoria",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "Registro Único de Víctimas del Terrorismo de Estado",
+        "conector": "cuenta con el reconocimiento del",
+        "afirmacion": "Desde 2018 cuenta con el reconocimiento del Registro Único de Víctimas del Terrorismo de Estado",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "la reunión de Comisión de Derechos Humanos de la Legislatura de Córdoba",
+        "conector": "acordaron",
+        "afirmacion": "los legisladores acordaron por unanimidad trasladarse al predio para sesionar el miércoles próximo, a las 10, en el marco de la Semana de la Memoria",
+        "tipo": "institucion",
+        "explicita": false
+      },
+      {
+        "referenciado": "Matías Chamorro",
+        "conector": "resumió",
+        "afirmacion": "“Este jueves, en comisión, hemos aprobado el despacho por unanimidad y lo vamos a tratar en la sesión especial, donde los legisladores vamos a concurrir al Refugio Libertad, del ex Grupo de Artillería 141, que es un sitio de memoria recientemente señalizado, con todo lo que esto implica para nuestra memoria y que, además, es un espacio socioproductivo para las familias de esta región”, resumió Chamorro",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "el fundamento del proyecto",
+        "conector": "se detalló en",
+        "afirmacion": "“Córdoba construyó una política robusta en derechos humanos, y esta iniciativa pretende seguir fomentando las políticas de Memoria, Verdad y Justicia, brindando herramientas con un profundo sentido pedagógico, que redunden en un fortalecimiento democrático y sus instituciones. He decidido nombrar a este proyecto Ley Sonia Torres, en homenaje a una de nuestros más importantes referentes en derechos humanos, fallecida el 20 de octubre”, se detalló en el fundamento del proyecto",
+        "tipo": "documento",
+        "explicita": true
+      },
+      {
+        "referenciado": "Matías Chamorro",
+        "conector": "presentó",
+        "afirmacion": "Matías Chamorro, legislador de Hacemos Unidos por Córdoba, fue quien presentó un proyecto -que fue también elaborado en su momento con el exparlamentario Leandro Carpintero- que estableció que en el ámbito de las dependencias provinciales se realice “la capacitación, sensibilización y concientización obligatoria en materia de Derechos Humanos”",
+        "tipo": "persona",
+        "explicita": false
+      },
+      {
+        "referenciado": "el proyecto",
+        "conector": "se fijó",
+        "afirmacion": "se fijó como autoridad de aplicación al Ministerio de Desarrollo Humano o al órgano que determine el Ejecutivo provincial",
+        "tipo": "documento",
+        "explicita": false
+      }
+    ],
+    "105": [
+      {
+        "referenciado": "Schiaretti",
+        "conector": "publicó",
+        "afirmacion": "“En este Día Nacional de la Memoria reafirmamos el Nunca Más al terrorismo de estado, Nunca Más a los crímenes de lesa humanidad y Nunca Más a una dictadura genocida en nuestra patria”, publicó Schiaretti a través de su cuenta de X (antes Twitter).",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "la gestión libertaria",
+        "conector": "compartió",
+        "afirmacion": "la gestión libertaria compartió un video por el 24M, al que renombraron como “Día de la Memoria, la Verdad y la Justicia Completa”, con su versión de los años 70 y la última dictadura militar",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "la vicepresidenta Victoria Villarruel",
+        "conector": "aseguró",
+        "afirmacion": "la vicepresidenta Victoria Villarruel envió un desafiante mensaje donde aseguró que “no fueron 30 mil”",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Schiaretti",
+        "conector": "remarcó",
+        "afirmacion": "“Los pueblos deben tener siempre memoria de estos horrores. Negarlos es correr el riesgo de volver a repetir la tragedia que nos tocó vivir”, remarcó",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Schiaretti",
+        "conector": "cerró",
+        "afirmacion": "“Sí a los derechos humanos, sí a la democracia, sí a la pluralidad de ideas, sí a la tolerancia con quienes piensan distinto”, cerró este domingo Schiaretti",
+        "tipo": "persona",
+        "explicita": true
+      }
+    ],
+    "106": [
+      {
+        "referenciado": "la Asociación de Trabajadores de la Industria Lechera de la República Argentina (Atilra)",
+        "conector": "sostuvo que",
+        "afirmacion": "sostuvo que la empresa desvió fondos para no pagar a los empleados y acreedores",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "la Asociación de Trabajadores de la Industria Lechera de la República Argentina (Atilra)",
+        "conector": "acusa a",
+        "afirmacion": "acusa a la compañía de hacer maniobras de intermediación y triangulación con sus exportaciones a Cuba",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "la empresa",
+        "conector": "sostiene",
+        "afirmacion": "Ante ciertos comentarios maliciosos que intentan establecer una información falsa sobre supuestas maniobras relacionadas con los negocios de exportación, Sancor Cooperativas Unidas Ltda. desea hacer conocer a la opinión pública que SanCor no realiza exportación directa de leche a Cuba desde el año 2016",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "la empresa",
+        "conector": "agregó",
+        "afirmacion": "Todas las operaciones productivas y comerciales de la Cooperativa cumplen con los requisitos legales establecidos por las leyes argentinas y se encuentran sometidas al contralor de las autoridades pertinentes en la materia",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "la empresa",
+        "conector": "cerró",
+        "afirmacion": "Agradeceremos no hacer caso de operaciones mediáticas que solo intentan, de manera reiterada y maliciosa, confundir a la opinión pública",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "el responsable de Prensa del gremio",
+        "conector": "se afirma que",
+        "afirmacion": "se afirma que Sancor “viene realizando maniobras de desvío de flujos de caja, con el objeto de ocultar los activos dinerarios a los acreedores de la empresa; entre esas deudas se destacan créditos por varios miles de millones de pesos a favor de los trabajadores originada en falta de pago de salarios y a la entidad sindical, por aportes y contribuciones retenidos pero no depositados al sistema de salud”",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "Atilra",
+        "conector": "advierte a las autoridades que",
+        "afirmacion": "Atilra advierte a las autoridades que “también son perjudicados los proveedores de energía, los Fiscos tanto nacional como provinciales y la Seguridad Social de la Nación”",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "el sindicato lechero",
+        "conector": "Según",
+        "afirmacion": "Según el sindicato lechero, tras haber instado todas las acciones administrativas y van por las judiciales",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "Atilra",
+        "conector": "",
+        "afirmacion": "Deseamos advertir a las autoridades de Sancor y a aquellas empresas y entidades financieras, que se presten a facilitar de cualquier modo, mediante actos jurídicos simulados y cesiones de créditos y facturas, el desvío natural de toda empresa de vender, facturar y cobrar documentada y bancariamente, lo cual solo tiene como finalidad ocultar activos dinerarios, en fraude a los acreedores",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "Atilra",
+        "conector": "acusó ... y comunicó que",
+        "afirmacion": "Atilra acusó a la cooperativa de hacer maniobras de intermediación y triangulación con sus exportaciones a Cuba y comunicó que “las denuncias se encuentran en marcha”",
+        "tipo": "institucion",
+        "explicita": true
+      }
+    ],
+    "107": [
+      {
+        "referenciado": "La Nación",
+        "conector": "según informó",
+        "afirmacion": "El fiscal federal Mola, que investiga a Insaurralde tras el escándalo por el yate Bandido y su viaje por el Mediterráneo junto a la modelo Sofía Clerici, pidió el 5 de febrero pasado ese expediente al fiscal provincial Griecco, según informó La Nación",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "el oficio",
+        "conector": "agrega que",
+        "afirmacion": "Pero agrega que se deben tener presentes las expresiones sobre “los reiterados pedidos” sin respuesta",
+        "tipo": "documento",
+        "explicita": true
+      },
+      {
+        "referenciado": "el oficio",
+        "conector": "señaló",
+        "afirmacion": "“Se hace saber que el oficio de mención ha sido girado al Departamento de Control Disciplinario”",
+        "tipo": "documento",
+        "explicita": true
+      }
+    ],
+    "108": [
+      {
+        "referenciado": "la ministra",
+        "conector": "explicó",
+        "afirmacion": "Me van a hacer una demostración de los perros de seguridad, que protegen a la gente atacando a aquellas personas armadas, o en situación de peligro. Vamos a ver cómo me va",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Bullrich",
+        "conector": "aseguró",
+        "afirmacion": "hay un acuerdo de trabajo en conjunto entre Nación y la administración de Martín Llaryora",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Bullrich",
+        "conector": "dijo",
+        "afirmacion": "Este grupo analizará todo tipo de drogas. Sobre todo, las nuevas tendencias. Son aquellas que se está vendiendo y mata gente, y por lo que en Estados Unidos hay una crisis de muertes y una emergencia de salud en relación con el narcotráfico. Hubo 60 mil muertes que se produjeron por sobredosis de fentanilo",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Bullrich",
+        "conector": "reveló",
+        "afirmacion": "El fentanilo se utiliza medicinalmente. Nosotros, en el último tiempo, hemos tenido dos desviaciones de fentanilo. Uno, hace dos años, cuando murieron como 10 personas... morían en el acto. Fue cerca de Fuente Apache. Y el otro día, se encontró fentanilo desviado de los hospitales en la ciudad de Buenos Aires",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Bullrich",
+        "conector": "confirmó",
+        "afirmacion": "Por suerte, en ese caso, se trabajó antes y no hubo muertes",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Bullrich",
+        "conector": "precisó",
+        "afirmacion": "Este grupo tiene una participación de la DEA desde el primer día. La DEA participa en la formación. Todas las personas pasan por pruebas de integridad y en polígrafos. También de sus patrimonios. Son grupos de élite. Porque van a la investigación más profunda",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Bullrich",
+        "conector": "anunció",
+        "afirmacion": "Bullrich anunció un “convenio de colaboración” entre Nación y Provincia de lucha contra el delito y el narcotráfico; y un espacio de trabajo que denominó Mesa de Complementariedad y Conexidad de las causas en la que trabajará el Ministerio Público Fiscal de Córdoba, junto con jueces y fiscales federales",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Bullrich",
+        "conector": "adelantó",
+        "afirmacion": "adelantó que trabajarán sobre el paraguas de la ley nacional 27.502",
+        "tipo": "persona",
+        "explicita": true
+      }
+    ],
+    "110": [
+      {
+        "referenciado": "Daniel Parodi",
+        "conector": "asegura",
+        "afirmacion": "nunca pensó que se vendrían las “siete plagas de Egipto”",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "El empresario",
+        "conector": "se refiere a",
+        "afirmacion": "la firma presentó sus primeros vehículos en 2019, en medio de la crisis del dólar desatada en abril de 2018",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "El empresario",
+        "conector": "se refiere a",
+        "afirmacion": "Logró su homologación en 2020, pero llegó el Covid",
+        "tipo": "persona",
+        "explicita": false
+      },
+      {
+        "referenciado": "El empresario",
+        "conector": "se refiere a",
+        "afirmacion": "la producción enseguida se vio frenada por la falta de dólares para importar insumos y componentes",
+        "tipo": "persona",
+        "explicita": false
+      },
+      {
+        "referenciado": "VoltMotors",
+        "conector": "presentó",
+        "afirmacion": "VoltMotors presentó una promoción limitada a 50 vehículos con precio bonificado de fábrica, entrega y patentamiento inmediato, que parten de los $17,14 millones para el modelo z1 PLR; de $22,28 millones para el w1 PLR, y de $ 23,99 millones para el e1 PLR",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "VoltMotors",
+        "conector": "anunció",
+        "afirmacion": "anunció una inversión de $1.500 millones que le permitirá duplicar su capacidad instalada y multiplicar su volumen de producción",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "la firma",
+        "conector": "",
+        "afirmacion": "la firma tiene una planta de tres mil metros cuadrados (m2)",
+        "tipo": "institucion",
+        "explicita": false
+      },
+      {
+        "referenciado": "la firma",
+        "conector": "",
+        "afirmacion": "Con 75 personas, de las cuales cerca de la mitad de ellas son ingenieros, puede fabricar 500 unidades por año, dos a tres vehículos diarios trabajando en un turno",
+        "tipo": "institucion",
+        "explicita": false
+      },
+      {
+        "referenciado": "la firma",
+        "conector": "",
+        "afirmacion": "La idea es, en 120 días, expandir la planta a siete mil m2 y llegar a una capacidad productiva de tres mil vehículos por año, con 40 nuevos empleos",
+        "tipo": "institucion",
+        "explicita": false
+      },
+      {
+        "referenciado": "la firma",
+        "conector": "",
+        "afirmacion": "La ampliación incluirá un showroom de 600 m2 y áreas para accesorios y posventa",
+        "tipo": "institucion",
+        "explicita": false
+      },
+      {
+        "referenciado": "la firma",
+        "conector": "",
+        "afirmacion": "También sumará tecnología y robótica italiana de última generación para automatizar el mecanizado de partes y armado de unidades y una nueva línea de producción",
+        "tipo": "institucion",
+        "explicita": false
+      },
+      {
+        "referenciado": "Parodi",
+        "conector": "remarcó",
+        "afirmacion": "“Esta nueva inversión tiene por objetivo alinear a nuestra fábrica con los objetivos industriales y comerciales de cara al futuro; nos estamos preparando para un fuerte incremento de la demanda prevista para los próximos años, incluso con planes de expansión en países de la región”, remarcó Parodi",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "VoltMotors",
+        "conector": "",
+        "afirmacion": "Los coches de VoltMotors entran dentro de la categoría denominada citycars, destinados para movilizarse por la ciudad y homologados bajo la categoría L7B",
+        "tipo": "institucion",
+        "explicita": false
+      }
+    ],
+    "111": [
+      {
+        "referenciado": "Guillermo Francos",
+        "conector": "confirmó",
+        "afirmacion": "el aumento por decreto para los jubilados será del 12,5%",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Guillermo Francos",
+        "conector": "adelantó",
+        "afirmacion": "el porcentaje se sumará al incremento que ya pagaba el gobierno de Alberto Fernández",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Guillermo Francos",
+        "conector": "agregó",
+        "afirmacion": "desde abril las jubilaciones se actualizarán por el índice de Precios al Consumidor, con lo cual quedarán sujetas a la inflación de cada mes",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Francos",
+        "conector": "dijo",
+        "afirmacion": "El gobierno va a sacar una fórmula de ajuste de las jubilaciones. Que viene con la fórmula tradicional de ajuste que se impulsó durante el gobierno anterior y ahora lo que va a hacer es cambiar esa fórmula. Dar lo máximo que puede dar en función de los fondos que tiene para esto",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Francos",
+        "conector": "detalló",
+        "afirmacion": "El Gobierno va a sacar una fórmula que tiene que a partir del primero de abril en adelante se va a ajustar según el Índice de Precios al Consumidor (IPC), y para este período de enero-marzo, que es el primer trimestre, se va a seguir aplicando la misma fórmula que se venía aplicando más un 12,5%",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "el Gobierno",
+        "conector": "había propuesto",
+        "afirmacion": "el Gobierno había propuesto una fórmula jubilatoria que indexe por inflación a partir de abril con una compensación adicional del 10% por la inflación de enero",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "Los bloques dialoguistas de la Cámara de Diputados",
+        "conector": "exigían",
+        "afirmacion": "Los bloques dialoguistas de la Cámara de Diputados exigían una compensación mayor, que contemple enteramente lo que los jubilados y pensionados perdieron por la inflación del primer mes del año, que fue de 20,6%",
+        "tipo": "institucion",
+        "explicita": true
+      }
+    ],
+    "112": [
+      {
+        "referenciado": "El Gobierno nacional",
+        "conector": "anunció",
+        "afirmacion": "El Gobierno nacional anunció este jueves que buscará cambiar las leyes para que las Fuerzas Armadas puedan actuar en seguridad interior.",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "Bullrich",
+        "conector": "sostuvo",
+        "afirmacion": "“El país está en riesgo. ¿Quién no va a acompañar esto?. Va a quedar del lado de los delincuentes”, sostuvo Bullrich.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Bullrich",
+        "conector": "precisó",
+        "afirmacion": "“Las leyes serán enviadas la semana que viene. Es autónoma a la ley bases”, precisó.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Petri",
+        "conector": "argumentó",
+        "afirmacion": "“Estamos modificando la ley de Seguridad Interior para que las Fuerzas Armadas puedan intervenir y realizar operaciones para devolverle la paz a los rosarinos en los supuestos de terrorismo”, argumentó.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Petri",
+        "conector": "agregó",
+        "afirmacion": "“Cuando se decida su intervención van a poder equiparse, capacitarse y prepararse para intervenir y para posibilitar realizar tareas de prevención que garanticen la vida la paz de todos los argentinos”, agregó.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "El funcionario",
+        "conector": "señaló",
+        "afirmacion": "El funcionario señaló como “imprescindible” el trabajo coordinado de los tres poderes del Estado en la lucha contra las bandas de narcotráfico, para impulsar investigaciones criminales complejas y endurecer las penas.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Petri",
+        "conector": "detalló",
+        "afirmacion": "“Las Fuerzas Armadas van a quedar habilitadas a realizar tareas de operación interior, patrullajes, control de personas y vehículos, control de instalaciones y aprehensión en flagrancia para aquellas personas que cometen delitos debiendo dar intervención al juez y fiscal para dar garantías”, detalló.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Petri",
+        "conector": "concluyó",
+        "afirmacion": "“Nosotros estamos convencidos que la batalla contra los narcos se puede ganar utilizando todo el poder del estado y las herramientas que otorga la Constitución. Estamos enviando estos proyectos para que sean debatidos y aprobados y devuelvan la tranquilidad y la paz a los ciudadanos de Rosario”, concluyó Petri.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Bullrich",
+        "conector": "",
+        "afirmacion": "“Proponemos aumento de penas para quienes organicen manifestaciones, cortes de calles, obliguen a gente a que participen bajo promesa de amenazas”.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Bullrich",
+        "conector": "se refirió a",
+        "afirmacion": "se refirió a la reforma del artículo 194 del Código Penal, para poder condenar a los organizadores de las protestas callejeras y que “obliguen a la gente a que participen bajo promesa de amenazas”.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Bullrich",
+        "conector": "aseguró",
+        "afirmacion": "Bullrich allí se refirió a la línea 134 donde aseguró que se recibieron 150.000 denuncias, que están siendo investigadas en la justicia federal.",
+        "tipo": "persona",
+        "explicita": true
+      }
+    ],
+    "113": [
+      {
+        "referenciado": "esta última facción",
+        "conector": "aclaran",
+        "afirmacion": "esta última facción espera que sea Milei quien baje una orden que, aclaran, por el momento no llegó",
+        "tipo": "anonima",
+        "explicita": true
+      },
+      {
+        "referenciado": "Según una versión",
+        "conector": "Según",
+        "afirmacion": "Según una versión, Zago se resistió hasta último momento, de manera inexplicable, a firmar el dictamen de mayoría aquella madrugada en que terminó el plenario de comisiones, cuando los números estaban ajustados.",
+        "tipo": "anonima",
+        "explicita": true
+      },
+      {
+        "referenciado": "Sus detractores",
+        "conector": "advierten",
+        "afirmacion": "Sus detractores advierten, entre otras cosas, que “no contiene” a sus pares, que “el bloque no se identifica con él” y que hasta es “ineficaz”.",
+        "tipo": "anonima",
+        "explicita": true
+      },
+      {
+        "referenciado": "Menem",
+        "conector": "dijo",
+        "afirmacion": "“Bornoroni es el único dirigente en la provincia de Córdoba que representa al presidente Milei. Es el principal referente de La Libertad Avanza en la provincia. Tiene el respaldo total del presidente”, dijo Menem a La Voz.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "según señalan",
+        "conector": "señalan",
+        "afirmacion": "Tampoco estuvo José Luis Espert, una figura con vuelo propio que, según señalan, prefirió mantenerse al margen de la interna de un bloque al que acaba de ingresar.",
+        "tipo": "anonima",
+        "explicita": true
+      },
+      {
+        "referenciado": "uno de los diputados incómodos con Zago",
+        "conector": "explicó a este medio",
+        "afirmacion": "“Planteamos que deberíamos tener un método y organizarnos mejor para el funcionamiento del bloque, porque el período ordinario es más complejo: la agenda ya no la maneja el Ejecutivo, sino el Congreso. En cada comisión se va a plantear una agenda y nosotros tenemos que estar muy afilados y organizados”, explicó a este medio uno de los diputados incómodos con Zago.",
+        "tipo": "persona",
+        "explicita": true
+      }
+    ],
+    "114": [
+      {
+        "referenciado": "el Instituto Nacional de Estadística y Censos (Indec)",
+        "conector": "según difundió",
+        "afirmacion": "con una caída del Producto Interior Bruto (PIB) del 1,6% interanual en el año",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "el Instituto Nacional de Estadística y Censos (Indec)",
+        "conector": "según difundió",
+        "afirmacion": "en el cuarto trimestre, el PIB experimentó una contracción del 1,4% respecto al mismo período del año anterior y del 1,9% en comparación con el tercer trimestre del año",
+        "tipo": "institucion",
+        "explicita": false
+      },
+      {
+        "referenciado": "el Instituto Nacional de Estadística y Censos (Indec)",
+        "conector": "según difundió",
+        "afirmacion": "La caída del conjunto del año viene explicada por el resultado negativo de la formación bruta de capital fijo, que se contrajo un 1,6% interanual, y de las exportaciones, que se redujeron en un 6,7% desde 2022",
+        "tipo": "institucion",
+        "explicita": false
+      },
+      {
+        "referenciado": "el Instituto Nacional de Estadística y Censos (Indec)",
+        "conector": "según difundió",
+        "afirmacion": "el consumo privado creció un 1,1%, el consumo público un 1,2% y las importaciones hasta un 2,2%",
+        "tipo": "institucion",
+        "explicita": false
+      },
+      {
+        "referenciado": "el Instituto Nacional de Estadística y Censos (Indec)",
+        "conector": "según difundió",
+        "afirmacion": "entre los sectores de actividad que mostraron una recuperación destacan hoteles y restaurantes (expansion interanual del 7,5%), explotación de minas y canteras (7,2%) y Enseñanza (2,7%)",
+        "tipo": "institucion",
+        "explicita": false
+      },
+      {
+        "referenciado": "el Instituto Nacional de Estadística y Censos (Indec)",
+        "conector": "según difundió",
+        "afirmacion": "descendieron Agricultura, ganadería, caza y silvicultura, con hasta un retroceso del 20,2% y pesca (-6,1%)",
+        "tipo": "institucion",
+        "explicita": false
+      },
+      {
+        "referenciado": "el Instituto Nacional de Estadística y Censos (Indec)",
+        "conector": "según difundió",
+        "afirmacion": "los mayores descensos se dieron en el área de industria manufacturera (del 6% interanual), electricidad, gas y agua (del 5,1%) e intermediación financiera (4,4%)",
+        "tipo": "institucion",
+        "explicita": false
+      },
+      {
+        "referenciado": "el Instituto Nacional de Estadística y Censos (Indec)",
+        "conector": "según difundió",
+        "afirmacion": "la formación bruta de capital fijo se contrajo hasta un 6,3%, mientras que se dieron caídas del 1,5% y el 3,2% en consumo público y consumo privado, respectivamente",
+        "tipo": "institucion",
+        "explicita": false
+      },
+      {
+        "referenciado": "el Instituto Nacional de Estadística y Censos (Indec)",
+        "conector": "según difundió",
+        "afirmacion": "Tanto las exportaciones como las importaciones de bienes servicios retrocedieron en el cuarto trimestre respecto al mismo período de 2022, un 6,3% y un 1,8%, respectivamente",
+        "tipo": "institucion",
+        "explicita": false
+      }
+    ],
+    "116": [
+      {
+        "referenciado": "para muchos de los presentes",
+        "conector": "fue",
+        "afirmacion": "fue histórica por la magnitud en el largo camino desde el regreso de la democracia",
+        "tipo": "anonima",
+        "explicita": false
+      },
+      {
+        "referenciado": "Abuelas de Plaza de Mayo Córdoba",
+        "conector": "señalaron",
+        "afirmacion": "“El terror de la desaparición, la persecución y el asesinato de militantes, el robo de niños, la tortura y el exilio, sólo se entienden si nos animamos a ver de una buena vez cuáles fueron las políticas que aplicaron los dictadores y sus cómplices: cierre de empresas, despidos masivos, concentración de medios de comunicación, deuda externa impagable. Vemos con preocupación cómo hoy esas políticas pretenden instalarse como algo nuevo. Nosotros ya las hemos visto muchas veces”, señalaron desde Abuelas de Plaza de Mayo Córdoba en un comunicado",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "Abuelas de Plaza de Mayo Córdoba",
+        "conector": "agregaron",
+        "afirmacion": "“Aun respetando la voluntad popular expresada en las urnas, no podemos quedarnos callados ante este gobierno violento y negacionista que hace apología del terrorismo de estado: el presidente Milei avala en sus discursos lo que los militares asesinos le hicieron a nuestros compañeros y pone en duda nuestra bandera de los 30.000; y la vicepresidenta Villarruel, criada en los sectores mas rancios del Ejército y vinculada a las organizaciones que hace años vienen pregonando la libertad a los genocidas, prepara el indulto”, agregaron",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "Abuelas de Plaza de Mayo Córdoba",
+        "conector": "continuaron",
+        "afirmacion": "“Ellos, con sus discursos de odio, agravios y descalificaciones a los organismos de derechos humanos alientan agresiones, como el atentado que acaba de sufrir una militante de Hijos”",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "Abuelas de Plaza de Mayo Córdoba",
+        "conector": "recordaron",
+        "afirmacion": "“Nos recuerda aquellos años, cuando los grupos paramilitares buscaban a los militantes en sus casas para secuestrarlos y asesinarlos. ¡Lo repudiamos y reclamamos que no quede impune! Por todo esto, nos alarma que el gobierno avance en una reforma legal que permita a las Fuerzas Armadas intervenir en cuestiones de seguridad interior. Eso está prohibido por la Constitución del ‘94. Los militares han demostrado con creces que no pueden y no saben cómo hacerlo”, recordaron",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "Abuelas de Plaza de Mayo Córdoba",
+        "conector": "diferenciaron",
+        "afirmacion": "diferenciaron al gobierno de Córdoba del de la Nación",
+        "tipo": "institucion",
+        "explicita": false
+      }
+    ],
+    "117": [
+      {
+        "referenciado": "el Banco Central",
+        "conector": "informó",
+        "afirmacion": "el Banco Central informó este lunes que compró U$S 77 millones",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "el Banco Central",
+        "conector": "informó",
+        "afirmacion": "las reservas nacionales quedaron en U$S 27.645 millones",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "el fisco",
+        "conector": "",
+        "afirmacion": "Para el fisco, es una “planificación fiscal nociva”.",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "Fuentes conocedoras del dólar blue",
+        "conector": "afirman",
+        "afirmacion": "Fuentes conocedoras del dólar blue afirman que se trata de un mercado pequeño, en el que es posible influir con poco dinero.",
+        "tipo": "anonima",
+        "explicita": true
+      },
+      {
+        "referenciado": "Fuentes conocedoras del dólar blue",
+        "conector": "afirman",
+        "afirmacion": "en momentos de tensión, se apela a “manos amigas” para hacerlo bajar de precio",
+        "tipo": "anonima",
+        "explicita": true
+      }
+    ],
+    "118": [
+      {
+        "referenciado": "el ministro de Defensa Luis Petri",
+        "conector": "negó",
+        "afirmacion": "el ministro de Defensa Luis Petri negó este jueves que el Gobierno tena planes de otorgar el beneficio prisión domiciliaria a genocidas",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Petri",
+        "conector": "se limitó a contestar",
+        "afirmacion": "“No está en la agenda del Gobierno”, se limitó a contestar Petri cuando un periodista le consultó al respecto en la conferencia de prensa de este jueves en Casa Rosada.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Petri",
+        "conector": "",
+        "afirmacion": "La respuesta de Petri hizo referencia a las versiones que circularon principalmente en redes sociales respecto a que el gobierno de Javier Milei estaría preparando un anuncio para el 24 de marzo.",
+        "tipo": "persona",
+        "explicita": false
+      },
+      {
+        "referenciado": "el vocero presidencial Manuel Adorni",
+        "conector": "fue consultado",
+        "afirmacion": "Más temprano, el vocero presidencial Manuel Adorni fue consultado en la habitual conferencia de prensa si el Gobierno implementará el protocolo antipiquetes durante la marcha del 24M.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Adorni",
+        "conector": "respondió",
+        "afirmacion": "“Esperemos que sea un día reflexión para todos, en absoluta paz y tranquilidad”, respondió sin detallar si se aplicará o no el protocolo.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "el gobierno",
+        "conector": "",
+        "afirmacion": "el gobierno les pidió a los legisladores que apoyen la iniciativa que llevarán al Congreso",
+        "tipo": "institucion",
+        "explicita": false
+      },
+      {
+        "referenciado": "Bullrich",
+        "conector": "sostuvo",
+        "afirmacion": "“El país está en riesgo. ¿Quién no va a acompañar esto?. Va a quedar del lado de los delincuentes”, sostuvo Bullrich.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Bullrich",
+        "conector": "precisó",
+        "afirmacion": "“Las leyes serán enviadas la semana que viene. Es autónoma a la ley bases”, precisó.",
+        "tipo": "persona",
+        "explicita": true
+      }
+    ]
+  }
+}

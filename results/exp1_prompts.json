@@ -1,46 +1,90 @@
 [
   {
+    "modelo": "gemini-2.5-flash-lite",
     "id": "v0_estricto",
     "desc": "baseline v0 (prompt estricto)",
-    "model": "gemini-2.5-flash-lite",
     "P": 0.443,
     "R": 0.775,
     "F1": 0.564,
-    "origen": "cache",
     "cobertura": "16/16",
-    "completo": true
+    "completo": true,
+    "origen": "cache"
   },
   {
+    "modelo": "gemini-2.5-flash-lite",
     "id": "v1_fewshot",
     "desc": "baseline + 2 ejemplos (few-shot)",
-    "model": "gemini-2.5-flash-lite",
     "P": 0.468,
     "R": 0.725,
     "F1": 0.569,
-    "origen": "cache",
     "cobertura": "16/16",
-    "completo": true
+    "completo": true,
+    "origen": "cache"
   },
   {
+    "modelo": "gemini-2.5-flash-lite",
     "id": "v2_reglas_duras",
     "desc": "reglas negativas duras (ante la duda, excluir)",
-    "model": "gemini-2.5-flash-lite",
-    "P": 0.308,
-    "R": 0.3,
-    "F1": 0.304,
-    "origen": "cache + sin-key",
-    "cobertura": "8/16",
-    "completo": false
+    "P": 0.5,
+    "R": 0.725,
+    "F1": 0.592,
+    "cobertura": "16/16",
+    "completo": true,
+    "origen": "cache"
   },
   {
+    "modelo": "gemini-2.5-flash-lite",
     "id": "v3_justifica",
     "desc": "auto-verificación: citar evidencia o descartar",
-    "model": "gemini-2.5-flash-lite",
-    "P": 1.0,
-    "R": 0.125,
-    "F1": 0.222,
-    "origen": "cache + sin-key",
-    "cobertura": "2/16",
-    "completo": false
+    "P": 0.929,
+    "R": 0.812,
+    "F1": 0.867,
+    "cobertura": "8/16",
+    "completo": false,
+    "origen": "cache + cortado + error"
+  },
+  {
+    "modelo": "claude-sonnet-5",
+    "id": "v0_estricto",
+    "desc": "baseline v0 (prompt estricto)",
+    "P": 0.909,
+    "R": 0.75,
+    "F1": 0.822,
+    "cobertura": "16/16",
+    "completo": true,
+    "origen": "cache"
+  },
+  {
+    "modelo": "claude-sonnet-5",
+    "id": "v1_fewshot",
+    "desc": "baseline + 2 ejemplos (few-shot)",
+    "P": 0.941,
+    "R": 0.8,
+    "F1": 0.865,
+    "cobertura": "16/16",
+    "completo": true,
+    "origen": "cache"
+  },
+  {
+    "modelo": "claude-sonnet-5",
+    "id": "v2_reglas_duras",
+    "desc": "reglas negativas duras (ante la duda, excluir)",
+    "P": 0.941,
+    "R": 0.8,
+    "F1": 0.865,
+    "cobertura": "16/16",
+    "completo": true,
+    "origen": "cache"
+  },
+  {
+    "modelo": "claude-sonnet-5",
+    "id": "v3_justifica",
+    "desc": "auto-verificación: citar evidencia o descartar",
+    "P": 0.882,
+    "R": 0.75,
+    "F1": 0.811,
+    "cobertura": "16/16",
+    "completo": true,
+    "origen": "cache"
   }
 ]
