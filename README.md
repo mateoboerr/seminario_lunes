@@ -15,13 +15,16 @@ medimos contra anotaciones humanas y **documentamos aciertos y fallas** en la
 | Detector | Precisión | Recall | F1 |
 |---|---|---|---|
 | Clásico (reglas) | 0.26 | 0.25 | **0.26** |
-| LLM `gemini-2.5-flash-lite` (mejor prompt) | 0.50 | 0.72 | **0.59** |
+| LLM `gemini-2.5-flash-lite` (mejor prompt: auto-verificación) | 0.78 | 0.70 | **0.74** |
 | LLM `claude-sonnet-5` (mejor prompt, 16 notas de selección) | 0.94 | 0.80 | **0.86** |
 | Acuerdo entre anotadores | — | — | **0.71** |
 | **LLM `claude-sonnet-5` · held-out (75 notas no vistas)** | 0.71 | 0.64 | **0.67** |
 
-**El modelo importa más que el prompt** (+0.26 de F1 al cambiar de modelo, vs
-+0.03/+0.06 de la mejor variante de prompt). **Y la validación held-out cambia
+**El modelo importa más que el prompt… salvo que se acierte el prompt:** con la
+misma variante, cambiar de modelo vale +0.26–0.30 de F1; pero la variante que le
+sirve al modelo chico (pedirle que cite evidencia o descarte) achica la brecha a
+**+0.07** — y es, a la vez, la **mejor** variante de Gemini y la **peor** de
+Sonnet. Un ranking de prompts no se hereda entre modelos. **Y la validación held-out cambia
 la conclusión principal:** el 0.86 medido sobre las 16 notas con las que se
 eligieron los prompts no generaliza — sobre 75 notas nunca vistas da **0.67**
 (~0.70 contra el mismo anotador). Aun así el LLM casi triplica al clásico

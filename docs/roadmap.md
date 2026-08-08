@@ -25,18 +25,21 @@
 
 - **v0 ✅** Paquete `trust_sources` con detectores que comparten interfaz. Benchmark
   reproducible: Clásico **F1 0.26** · LLM Gemini **0.56** · acuerdo humano **0.71**.
-- **Etapa 1 (prompts × modelos) ✅** Grilla de 4 prompts en **dos modelos**.
-  Gemini: mejor variante `v2_reglas_duras` **0.59**. Sonnet: `v1_fewshot` /
-  `v2_reglas_duras` **0.86** (v0 solo ya da 0.82) — por encima del acuerdo entre
-  anotadores. Conclusión: **el modelo mueve más que el prompt** (+0.26 vs +0.06).
-  Solo falta `v3` de Gemini (8/16, cuota). [Bitácora Exp 1](experimentos.md#exp-1--variantes-de-prompt--modelos-subir-la-precisión-del-llm).
-- **Etapa 2 (salida rica v1) ✅** Medida en vivo con Sonnet (16/16): span-F1
-  global **0.54** vs clásico **0.39**; Referenciado 0.27 vs 0.09 (×3). Gemini
-  parcial (3/16, cuota). [Exp 2](experimentos.md#exp-2--salida-rica-v1-el-output-que-pidió-el-profe).
+- **Etapa 1 (prompts × modelos) ✅ completa** Grilla de 4 prompts × 2 modelos,
+  16/16 en las 8 celdas. Gemini: mejor variante `v3_justifica` **0.74**. Sonnet:
+  `v1_fewshot` / `v2_reglas_duras` **0.86**. Conclusión matizada: el modelo mueve
+  más que el prompt *promedio* (+0.26–0.30), pero **el mejor prompt se invierte
+  según el modelo** — `v3` es el mejor de Gemini y el peor de Sonnet, y con él la
+  brecha cae a **+0.07**. [Bitácora Exp 1](experimentos.md#exp-1--variantes-de-prompt--modelos-subir-la-precisión-del-llm).
+- **Etapa 2 (salida rica v1) ✅ completa** Los dos modelos 16/16: span-F1 global
+  **0.54** ambos, vs clásico **0.39**. Empatan en total pero no en detalle —
+  Sonnet ubica mejor la fuente (0.27 vs 0.19), Gemini delimita mejor verbo y cita.
+  [Exp 2](experimentos.md#exp-2--salida-rica-v1-el-output-que-pidió-el-profe).
 - **Etapa 3 (multi-LLM) ✅** Medido con Sonnet: dos pasadas **0.69** pierde contra
   single-pass **0.73** (spans 0.42 vs 0.54) — con el bug de truncamiento silencioso
   encontrado y documentado en el camino. Config cross-model (gemini extrae +
-  sonnet asigna) espera cuota. [Exp 3](experimentos.md#exp-3--pipeline-multi-llm-dos-pasadas).
+  sonnet asigna) **parcial 2/16**: es la única celda que falta en todo el
+  proyecto. [Exp 3](experimentos.md#exp-3--pipeline-multi-llm-dos-pasadas).
 - **Citas implícitas (exploratorio) ✅** LLM atrapa 5/7 débiles vs clásico 2/7
   (n chico; el flag `explicita` del modelo casi no se usa). [Exp 4](experimentos.md#exp-4--citas-implícitas-exploratorio).
 - **Validación held-out ✅** Los mismos prompts sobre **75 notas nunca vistas**:

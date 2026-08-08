@@ -3,29 +3,30 @@
 Checklist vivo de lo que falta. Estado general y detalle en
 [docs/roadmap.md](docs/roadmap.md) y la [bitácora](docs/experimentos.md).
 
-## 🟠 Espera cuota de Gemini (el free tier diario sigue agotado)
+## 🟠 Queda UNA celda, y espera cuota de Gemini
 
-Las corridas con `claude-sonnet-5` están completas; faltan las celdas de Gemini.
-Se reintentó el 2026-08-07 (2ª tanda) y **no entró ninguna nota nueva**: 429
-desde la primera llamada de cada script. Nota para el próximo intento: **un ping
-suelto no dice nada** — respondió OK y la tanda igual murió en 429 (el límite
-diario puede estar agotado con el por-minuto todavía dejando pasar alguna).
+El 2026-08-08 la cuota volvió y se completaron dos de las tres pendientes:
 
-Lo que sí quedó destrabado del reintento: los fallos de `v3` **no eran solo
-cuota** — 2 de 3 fueron truncamiento de JSON contra el tope de 800 tokens (que
-alcanzaba para Sonnet pero no para Gemini, más verboso acá). Corregido:
-presupuesto 1500 + parser de v0/v3 tolerante a truncamiento. El próximo intento
-tiene chance real.
-
-Cada script retoma desde su cache y solo llama lo que falta:
-
-- [ ] **`v3_justifica` de Gemini (8/16).** `python -m experiments.exp1_prompts`
-- [ ] **v1 a nivel de span con Gemini (3/16).** `python -m experiments.exp2_salida_v1`
-- [ ] **Multi-LLM cross-model (0/16)** — `gemini` extrae afirmaciones + `sonnet`
-      asigna fuentes (la lectura literal de la propuesta del profe).
+- [x] **`v3_justifica` de Gemini** → 16/16, **F1 0.74**: resultó la *mejor*
+      variante de Gemini y achicó la brecha con Sonnet de +0.30 a +0.07.
+- [x] **v1 a nivel de span con Gemini** → 16/16, **span-F1 0.54**: empata con
+      Sonnet.
+- [ ] **Multi-LLM cross-model — parcial 2/16.** `gemini` extrae afirmaciones +
+      `sonnet` asigna (la lectura literal de la propuesta del profe).
       `python -m experiments.exp3_multi_llm`
-- [ ] Tras completar: re-correr `python -m experiments.viz_matriz` (suma columnas
-      nuevas) y volcar los números a la bitácora.
+
+**Cómo completar la que falta.** El free tier diario de Gemini rinde ~23
+llamadas; ese día se las llevaron exp1 (8) y exp2 (13) y exp3 entró solo 2 veces.
+En la próxima ventana hay que **correr exp3 primero** (necesita 16). El cache
+retoma solo; después re-correr `python -m experiments.viz_matriz`.
+
+**Alternativa sin esperar:** poner `claude-haiku-4-5` como modelo de la etapa 1.
+Cumple el mismo rol conceptual (barato en la etapa fácil, caro en la difícil) por
+centavos y corre hoy, aunque deja de ser la comparación literal con Gemini.
+
+**Nota de método para el próximo intento:** un ping suelto no dice nada sobre la
+cuota — el 2026-08-07 respondió OK y la tanda igual murió en 429 a la primera
+llamada. Hay que mirar si aguanta una tanda.
 
 ## 🟡 Mejoras de modelado (código + medición)
 

@@ -19,10 +19,10 @@ corren offline desde los caches).
 | 0a | 2026-07-01 | Clásico (reglas: comillas+verbo+propio) | 0.26 | 0.25 | **0.26** | baseline clásico |
 | 0b | 2026-07-01 | LLM · prompt estricto v0 · `gemini-2.5-flash-lite` | 0.44 | 0.78 | **0.56** | baseline LLM; recall alto, sobre-detecta |
 | 1 · v1 | 2026-07-02 | LLM · few-shot · gemini | 0.47 | 0.72 | **0.57** | +0.03 P a costa de −0.06 R; F1 casi igual |
-| 1 · v2 | 2026-08-07 | LLM · reglas negativas duras · gemini | 0.50 | 0.72 | **0.59** | la mejor variante en Gemini: +0.06 P sin hundir R |
-| 1 · v3 | 2026-08-07 | LLM · auto-verificación · gemini | — | — | — | 🚧 8/16: JSON truncado (falla nuestra, corregida) + cuota diaria agotada |
+| 1 · v2 | 2026-08-07 | LLM · reglas negativas duras · gemini | 0.50 | 0.72 | **0.59** | +0.06 P sin hundir R (la superó `v3`, ver fila siguiente) |
+| 1 · v3 | 2026-08-08 | LLM · auto-verificación · gemini | 0.78 | 0.70 | **0.74** | la **mejor** variante de Gemini (+0.17): achica la brecha con Sonnet de +0.30 a +0.07 |
 | 1 · S | 2026-08-07 | **misma grilla · `claude-sonnet-5`** | 0.94 | 0.80 | **0.86** | few-shot y reglas duras empatan en 0.86 — por encima del acuerdo entre anotadores (0.71) |
-| 2 | 2026-08-07 | Salida rica v1 · sonnet · span-F1 | 0.49 | 0.59 | **0.54** | supera al clásico (0.39); Referenciado 0.27 vs 0.09 |
+| 2 | 2026-08-08 | Salida rica v1 · span-F1 · ambos modelos | 0.49 | 0.59 | **0.54** | los dos LLM empatan (0.54) y superan al clásico (0.39); la ventaja de Sonnet se concentra en ubicar la fuente |
 | 3 | 2026-08-07 | Multi-LLM (2 pasadas) · sonnet | 0.62 | 0.78 | **0.69** | pierde contra single-pass (0.73 refs / 0.54 spans vs 0.42) |
 | 4 | 2026-08-07 | Citas implícitas (exploratorio, n=7) | — | — | — | LLM atrapa 5/7 débiles vs clásico 2/7; el flag `explicita` casi no se usa |
 | 5 | 2026-08-07 | **Validación held-out** (75 notas no vistas) · sonnet | 0.71 | 0.64 | **0.67** | el 0.86 no generaliza: ~0.70 contra el mismo anotador; la ventaja del mejor prompt no se replica (orden fino con n=16 no confiable) |
@@ -88,10 +88,10 @@ Reproducible: `python -m experiments.exp1_prompts`.
 
 | Variante | P | R | F1 | ΔP | ΔF1 |
 |---|---|---|---|---|---|
+| `v3_justifica` | 0.78 | 0.70 | **0.74** | **+0.34** | **+0.17** |
 | `v2_reglas_duras` | 0.50 | 0.72 | **0.59** | +0.06 | +0.03 |
 | `v1_fewshot` | 0.47 | 0.72 | **0.57** | +0.03 | +0.01 |
 | `v0_estricto` | 0.44 | 0.78 | **0.56** | — | — |
-| `v3_justifica` | — | — | 🚧 | 8/16 | no comparable |
 
 ![P/R/F1 por variante — Gemini](assets/exp1_prompts_gemini.png)
 
@@ -114,14 +114,23 @@ Tablas completas, con cobertura por celda:
 [results/exp1_prompts.md](https://github.com/mateoboerr/seminario_lunes/blob/main/results/exp1_prompts.md).
 
 **Qué anduvo.**
-- **El modelo importa más que el prompt.** Con prompts idénticos, Sonnet le saca
-  **+0.26 a +0.29 de F1** a Gemini en todas las variantes. La palanca de prompt
-  más grande (reglas duras en Gemini: +0.03) es un orden de magnitud menor que
-  cambiar de modelo. La sobre-detección que intentábamos arreglar con prompts es,
-  sobre todo, una limitación del modelo chico: Sonnet parte de P 0.91 sin ayuda.
-- **La dirección del prompt se confirma en ambos modelos:** few-shot y reglas
-  duras suben precisión en Gemini (+0.03/+0.06) y en Sonnet (+0.03 ambas). En
-  Sonnet, few-shot además sube recall (+0.05): F1 0.86.
+- **El modelo importa más que el prompt… salvo que se acierte el prompt.** Con
+  el mismo prompt, Sonnet le saca a Gemini +0.26 (`v0`), +0.30 (`v1`) y +0.27
+  (`v2`). Pero con `v3_justifica` **la brecha se desploma a +0.07** (0.74 vs
+  0.81): la auto-verificación le da a Gemini casi todo lo que le faltaba. O sea:
+  cambiar de modelo mueve más que la variante *promedio* de prompt, pero la
+  variante *correcta* para el modelo débil casi cierra la diferencia — a una
+  fracción del costo por llamada.
+- **El mejor prompt DEPENDE del modelo, y no es un detalle: se invierte.**
+  `v3_justifica` es la **mejor** variante de Gemini (+0.17 de F1, precisión
+  0.44 → **0.78**) y la **peor** de Sonnet (−0.01). Mecánicamente tiene sentido:
+  pedir "citá la evidencia o descartá" es una muleta que le corrige al modelo
+  débil justo su defecto —sobre-detectar— mientras que al fuerte, que ya arranca
+  con P 0.91, solo lo vuelve conservador de más y le cuesta recall. **Corolario
+  práctico: una grilla de prompts elegida con un modelo no se hereda a otro.**
+- **La dirección "subir precisión" se confirma en ambos**, pero con palancas
+  distintas: few-shot y reglas duras suben P un poco en los dos (+0.03/+0.06);
+  la auto-verificación la sube muchísimo solo en el chico.
 - **Sonnet supera el "techo humano" (0.71).** Leerlo con cuidado: ese techo es el
   **acuerdo entre los dos anotadores** (lch vs xig), no un máximo teórico. Que el
   modelo dé 0.86 contra lch significa que **coincide con lch más que xig con
@@ -145,12 +154,17 @@ Tablas completas, con cobertura por celda:
   excepción y se perdía la nota entera; ahora rescata las fuentes completas.
   La moraleja: **un error de parseo puede disfrazarse de "el modelo es malo"** —
   antes de concluir, mirar la respuesta cruda.
-- **La auto-verificación no ayudó (en Sonnet):** v3 con presupuesto corregido da
-  0.81 — baja recall (0.75) sin ganar precisión (0.88 < 0.94). Pedir evidencia
-  hace al modelo más conservador de lo que conviene acá.
+- **La auto-verificación no ayudó *en Sonnet*:** v3 da 0.81 — baja recall (0.75)
+  sin ganar precisión (0.88 < 0.94). Ojo con generalizar: en Gemini la misma
+  variante es la ganadora por lejos. Es la evidencia más clara del proyecto de
+  que **una conclusión sobre prompts no vale fuera del modelo donde se midió**.
 - **La cuota diaria del free tier de Gemini se agotó** a mitad de corrida (429
-  sostenido, ya no por-minuto): `v3` de Gemini quedó 8/16 (sus métricas parciales
-  no se publican como comparables). Se completa en otra ventana; el cache retoma.
+  sostenido, ya no por-minuto): `v3` de Gemini quedó 8/16 y sus métricas
+  parciales no se publicaron como comparables. **Se completó el 2026-08-08 y la
+  decisión de no publicarlas se justificó sola:** en 8/16 daba F1 **0.87** y
+  completa da **0.74**. Trece puntos de diferencia que eran puro artefacto de
+  cobertura — las notas que faltaban eran las difíciles. Es exactamente el
+  escenario contra el que se adoptó la regla de calidad-vs-cobertura.
 
 **Hallazgo metodológico (de la primera tanda, sigue vigente).** Reproducir
 experimentos LLM con herramientas **gratuitas** tiene un costo oculto: el
@@ -229,23 +243,32 @@ Lectura: el clásico ancla bien la **cita** (Afirmacion 0.56) y el **verbo**
 heurística de nombre propio falla seguido. Esa es justo la debilidad que el LLM
 debería cubrir. Es la vara a superar cuando midamos v1 en vivo.
 
-**Resultado en vivo (2026-08-07, `claude-sonnet-5`, 16/16).** Span-F1 contra la
-anotación humana (IoU ≥ 0.5), al lado del baseline clásico:
+**Resultado en vivo (Sonnet 2026-08-07, Gemini 2026-08-08; ambos 16/16).**
+Span-F1 contra la anotación humana (IoU ≥ 0.5), al lado del baseline clásico:
 
-| Componente | clásico (reglas) | v1 `claude-sonnet-5` |
-|---|---|---|
-| Referenciado | 0.09 | **0.27** |
-| Conector | 0.46 | **0.60** |
-| Afirmacion | 0.56 | **0.72** |
-| **global** | **0.39** | **0.54** |
+| Componente | clásico (reglas) | v1 `gemini-2.5-flash-lite` | v1 `claude-sonnet-5` |
+|---|---|---|---|
+| Referenciado | 0.09 | 0.19 | **0.27** |
+| Conector | 0.46 | **0.65** | 0.60 |
+| Afirmacion | 0.56 | **0.74** | 0.72 |
+| **global** | **0.39** | **0.54** | **0.54** |
 
-(Gemini quedó **3/16** por la cuota — parcial, no comparable; detalle en
-[results/exp2_spans.md](https://github.com/mateoboerr/seminario_lunes/blob/main/results/exp2_spans.md).)
+Detalle en
+[results/exp2_spans.md](https://github.com/mateoboerr/seminario_lunes/blob/main/results/exp2_spans.md).
 
-**Qué anduvo.** El LLM supera al clásico **en los tres componentes**, y justo
-donde el clásico es inútil (Referenciado 0.09 → 0.27, ×3) es donde más mejora.
-La Afirmacion llega a 0.72: cuando hay cita o declaración, el modelo la delimita
-casi como el humano.
+**Los dos modelos empatan a nivel de span (0.54), y eso es informativo.** En la
+lista de fuentes Sonnet le sacaba +0.26 a +0.30; acá, con el mismo prompt v1, la
+diferencia global desaparece — y se reparte distinto: Sonnet ubica mejor **la
+fuente** (Referenciado 0.27 vs 0.19), Gemini delimita mejor **el verbo y la
+cita** (Conector 0.65 vs 0.60, Afirmacion 0.74 vs 0.72). Lectura: recortar texto
+que ya está en la nota es una tarea bastante más fácil que decidir *quién es
+fuente*, y ahí el modelo chico alcanza. La ventaja del modelo caro se concentra
+justo en la parte de juicio.
+
+**Qué anduvo.** Los dos LLM superan al clásico **en los tres componentes**, y
+justo donde el clásico es inútil (Referenciado 0.09 → 0.19/0.27) es donde más
+mejoran. La Afirmacion llega a 0.72–0.74: cuando hay cita o declaración, ambos
+modelos la delimitan casi como el humano.
 
 **Qué no — y por qué el Referenciado "solo" da 0.27 en spans.** A nivel de
 **lista** de fuentes, este mismo modelo da F1 0.73–0.86 (Exp 1/3); a nivel de
@@ -253,7 +276,8 @@ casi como el humano.
 marca "el gobernador Martín Llaryora" y el modelo copia "Llaryora" (o al revés) —
 con IoU ≥ 0.5 eso cuenta como error aunque la fuente esté bien identificada. El
 span exacto es un problema de *alineación con la convención del anotador*, no de
-detección.
+detección. Es también el componente donde el empate global entre modelos se
+rompe: 0.27 vs 0.19 a favor de Sonnet.
 
 **Una falla nuestra que vale documentar (métrica engañosa, ya corregida).** La
 primera versión de este reporte publicó span-F1 **0.14** para v1 al lado del 0.39
@@ -264,9 +288,8 @@ sobre las mismas 3 notas cubiertas daba 0.47). Regla adoptada en todos los
 reportes: **las métricas se calculan solo sobre notas con predicción y la
 cobertura se reporta aparte** (ver [metodología](metodologia.md)).
 
-**Próximo paso.** Completar Gemini 16/16 para la comparación de modelos a nivel
-de span; modelar la **relación** afirmación↔fuente explícita (hoy va implícita
-dentro de cada `Source`). Citas implícitas: medidas aparte en el Exp 4.
+**Próximo paso.** Modelar la **relación** afirmación↔fuente explícita (hoy va
+implícita dentro de cada `Source`). Citas implícitas: medidas aparte en el Exp 4.
 
 ## Exp 3 — pipeline multi-LLM (dos pasadas)
 
@@ -321,8 +344,13 @@ truncamiento, parseo.
 
 **Qué falta.** La config **cross-model** (`gemini` extrae + `sonnet` asigna — la
 lectura literal de la propuesta del profe, con el modelo barato en la etapa
-barata) quedó **0/16**: la cuota diaria de Gemini se agotó. El harness ya la
-soporta (`CONFIGS` en `exp3_multi_llm.py`); se corre en una ventana fresca.
+barata) sigue **parcial: 2/16** al 2026-08-08. Sus métricas no se publican como
+comparables. El cuello de botella es de cuota, no de código: el free tier diario
+de Gemini rinde ~23 llamadas, y ese día se las llevaron `exp1` (8) y `exp2` (13).
+Para completarla hay que correr **exp3 primero** en una ventana fresca (necesita
+16). Alternativa sin esperar: usar otro modelo barato en la etapa 1 —
+`claude-haiku-4-5` cumple el mismo rol conceptual por centavos, aunque deja de
+ser la comparación literal con Gemini.
 
 ## Exp 4 — citas implícitas (exploratorio)
 
@@ -439,9 +467,15 @@ clásico. Reproducible offline: `python -m experiments.viz_matriz`.
 ![Matriz de aciertos/fallas por nota](assets/matriz_aciertos.png)
 
 Lecturas rápidas: la columna del clásico es casi toda pálida (7 de 16 notas en
-0.00); Gemini resuelve las notas "fáciles" pero se cae en el tramo difícil de
-abajo (≤0.33 en cinco notas); Sonnet es el único que se mantiene ≥0.5 en **todas**
-las notas; y la 107 es la de peor promedio general.
+0.00); `gemini·v0` resuelve las "fáciles" pero se derrumba en el tramo difícil de
+abajo (cuatro notas ≤0.33); Sonnet se mantiene ≥0.50 en **todas** las notas
+(mínimos 0.50 en v0 y 0.57 en v1); y la 107 es la de peor promedio general (0.40).
+
+**La columna `gemini·v3` es la confirmación visual del hallazgo del Exp 1:**
+rescata **3 de las 4** notas donde `gemini·v0` se caía (101: 0.20 → 0.67 · 107:
+0.14 → 0.67 · 110: 0.29 → 0.80), y falla solo en la 106. La auto-verificación no
+mejora al modelo chico de forma pareja: le arregla justo las notas difíciles,
+que son las que separaban a los dos modelos.
 
 <!-- PLANTILLA para nuevos experimentos (copiar y completar):
 

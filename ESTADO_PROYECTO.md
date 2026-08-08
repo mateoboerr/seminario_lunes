@@ -119,7 +119,8 @@ ya no depende de `LLM_PROVIDER`). Resultados y decisiones:
 
 - **Exp 1 (grilla de prompts × modelos):** Sonnet — v0 0.82, few-shot **0.86**,
   reglas duras **0.86**, justifica 0.81 (16/16). Gemini — v2 completada: **0.59**
-  (su mejor variante); v3 quedó 8/16 (cuota diaria agotada). Conclusión: **el
+  (su mejor variante *en ese momento*; el 2026-08-08 `v3` la superó con 0.74 —
+  ver §11); v3 quedó 8/16 (cuota diaria agotada). Conclusión: **el
   modelo mueve más que el prompt** (+0.26 vs +0.06) y Sonnet supera el acuerdo
   entre anotadores (0.71) — el gold de 16 notas ya es el límite de la medición.
 - **Exp 2 (v1 span-F1, Sonnet 16/16):** global **0.54** vs clásico 0.39;
@@ -205,3 +206,31 @@ held-out para separar error del modelo vs criterio del anotador.
   llaves: una `}` **dentro de un string** lo descuadraba. Presupuesto de v3 a
   1500. **34 tests** (+2 de regresión). Verificado que los resultados publicados
   se regeneran idénticos tras el refactor.
+
+## 11) Actualización 2026-08-08 — vuelve la cuota y cambian dos conclusiones
+
+Se completaron 2 de las 3 celdas pendientes de Gemini, y ninguna dio lo esperado:
+
+- **`v3_justifica` de Gemini: 16/16, F1 0.74** — la **mejor** variante de Gemini
+  (+0.17 sobre su baseline; precisión 0.44 → **0.78**) y la **peor** de Sonnet
+  (0.81). **El mejor prompt se invierte según el modelo.** Con esa variante la
+  brecha entre modelos cae de +0.30 a **+0.07**: pedir "citá la evidencia o
+  descartá" es una muleta que le corrige al modelo débil justo su defecto
+  (sobre-detectar) y al fuerte solo lo vuelve conservador de más. Corolario para
+  el proyecto: **una grilla de prompts elegida con un modelo no se hereda a
+  otro** — y matiza el titular "el modelo importa más que el prompt".
+- **v1 span-F1 de Gemini: 16/16, 0.54 — empata con Sonnet.** La ventaja del
+  modelo caro se reparte, no desaparece: Sonnet ubica mejor la fuente
+  (Referenciado 0.27 vs 0.19), Gemini delimita mejor verbo y cita (Conector 0.65
+  vs 0.60, Afirmacion 0.74 vs 0.72). Recortar texto que ya está en la nota es
+  más fácil que decidir *quién* es fuente; ahí el chico alcanza.
+- **La regla de calidad-vs-cobertura quedó vindicada con un caso propio:** `v3`
+  de Gemini daba **0.87** en 8/16 y da **0.74** completo — 13 puntos que eran
+  artefacto de cobertura (faltaban las notas difíciles). Documentado en
+  `docs/metodologia.md` como evidencia de por qué las parciales no se publican.
+- **Matriz regenerada** con la columna `gemini·v3`: rescata 3 de las 4 notas
+  donde `gemini·v0` se derrumbaba (101, 107, 110), lo que confirma visualmente
+  que la mejora se concentra en el tramo difícil.
+- **Pendiente:** solo el cross-model del Exp 3 (**2/16**). El free tier rinde
+  ~23 llamadas/día y ese día se las llevaron exp1 y exp2 — hay que correr exp3
+  primero en la próxima ventana, o usar `claude-haiku-4-5` en la etapa 1.

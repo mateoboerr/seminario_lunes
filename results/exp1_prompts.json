@@ -36,12 +36,12 @@
     "modelo": "gemini-2.5-flash-lite",
     "id": "v3_justifica",
     "desc": "auto-verificación: citar evidencia o descartar",
-    "P": 0.929,
-    "R": 0.812,
-    "F1": 0.867,
-    "cobertura": "8/16",
-    "completo": false,
-    "origen": "cache + cortado + error"
+    "P": 0.778,
+    "R": 0.7,
+    "F1": 0.737,
+    "cobertura": "16/16",
+    "completo": true,
+    "origen": "cache + gemini:gemini-2.5-flash-lite"
   },
   {
     "modelo": "claude-sonnet-5",

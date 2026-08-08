@@ -1,5 +1,143 @@
 {
-  "multi_gemini_sonnet": {},
+  "multi_gemini_sonnet": {
+    "100": [
+      {
+        "referenciado": "La embajada de China en Argentina",
+        "conector": "desmintió",
+        "afirmacion": "La embajada de China en Argentina desmintió este viernes al Gobierno nacional luego de que el vocero Manuel Adorni expresó su sorpresa por la donación de 30 camiones “destinados para enfrentar la pandemia del Covid-19″.",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "desde la embajada del país asiático",
+        "conector": "calificaron",
+        "afirmacion": "Tras esas declaraciones, desde la embajada del país asiático calificaron de “completamente incorrecta” la supuesta información que brindó el vocero.",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "la embajada del país asiático",
+        "conector": "aclararon",
+        "afirmacion": "“Estos camiones son instalaciones logísticas de hospitales móviles de asistencia gratuita de parte del Ministerio de Defensa Nacional de la República Popular China para la Argentina”, aclararon.",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "la embajada del país asiático",
+        "conector": "resaltaron",
+        "afirmacion": "Por último, resaltaron que los camiones “no tienen nada que ver con los supuestos camiones para enfrentar al Covid que han llegado con cierto atraso”.",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "la embajada del país asiático",
+        "conector": "cerraron",
+        "afirmacion": "“El Ministerio de Defensa del actual gobierno argentino tiene muy claro el propósito de este lote de materiales”.",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "el vocero presidencial Manuel Adorni",
+        "conector": "dijo",
+        "afirmacion": "“Quiero contarles algunas cosas que no dejan de sorprendernos. Nos han llegado desde la República Popular China, 30 camiones que están destinados para enfrentar la pandemia del Covid-19″, dijo el vocero presidencial Manuel Adorni este viernes su habitual conferencia de prensa en uno de los salones de la Casa Rosada.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Adorni",
+        "conector": "agregó",
+        "afirmacion": "“Por supuesto que agradecemos al gobierno de China y a Xi-Jinping por la donación hecha a la Argentina y seguramente esos camiones serán destinados a otras áreas de Gobierno”, agregó Adorni.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Adorni",
+        "conector": "finalizó",
+        "afirmacion": "“Esto habla a las claras de cómo fue la gestión de la pandemia en el anterior gobierno”, finalizó, en clara alusión a las decisiones tomadas durante la pandemia del coronavirus por el expresidente, Alberto Fernández.",
+        "tipo": "persona",
+        "explicita": true
+      }
+    ],
+    "101": [
+      {
+        "referenciado": "Villarruel",
+        "conector": "condenó",
+        "afirmacion": "“No, lo dije en campaña y lo sigo sosteniendo. La función de las Fuerzas Armadas no es combatir a civiles, creo que había quedado claro con el tema de los ‘70. El narco es un civil para el derecho”, condenó.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Villarruel",
+        "conector": "agregó",
+        "afirmacion": "“Me parece que si vos vas a enviar a un agente del Estado a luchar contra un terrorista, un narcoterrorista, o lo que consideres, primero el plexo legal actual no te lo permite”, agregó.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Villarruel",
+        "conector": "condenó",
+        "afirmacion": "“Los militares solo pueden combatir dentro de nuestro país ante una declaración de estado de sitio o ante un enemigo estatal del exterior”, condenó.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Villarruel",
+        "conector": "reconoció",
+        "afirmacion": "Durante la entrevista, Villarruel reconoció que ella quería dar el aumento, pero que no lo hizo porque se lo “pidió el presidente”.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Villarruel",
+        "conector": "apuntó",
+        "afirmacion": "“Creo que todos tienen que ganar de acuerdo a la responsabilidad que tienen”, apuntó.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Villarruel",
+        "conector": "apuntó",
+        "afirmacion": "“Yo lo que creía es que el aumento que se les dio estaba por debajo de la inflación. Si acá hay empleados públicos de la casa, es decir del Senado, que van a cobrar más que un senador, se rompió cualquier paridad”, apuntó.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "la vicepresidenta",
+        "conector": "apuntó",
+        "afirmacion": "“Está bien. Somos dos personas que se complementan. Él es más vehemente en la vida pública y más tranquilo en la privada y yo soy al revés. Soy más templada en la vida pública y en privado soy más extrovertida”.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Villarruel",
+        "conector": "",
+        "afirmacion": "“Nació para eso, yo también y por eso nos complementamos. Creo que por eso nos eligió el pueblo argentino”.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "la vicepresidenta",
+        "conector": "apuntó",
+        "afirmacion": "“Yo no me sentí tocada por el comunicado. No siento que me haya equivocado por convocar a sesión por el DNU”, apuntó la vicepresidenta.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Villarruel",
+        "conector": "mencionó",
+        "afirmacion": "“Esto no es un reino, esto es un poder deliberativo. Acá se dirimen las leyes que van a regular la vida de cualquiera de los argentinos y extranjeros que viven en el país. Tiene que funcionar y debatirse y yo tengo que regular eso”, mencionó.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Villarruel",
+        "conector": "aseveró",
+        "afirmacion": "“Tenía muchos pedidos de varios senadores para tratar el DNU. Podía buscar el momento y no podía estar eternamente reteniéndolo si ya habíamos abierto el período de sesiones”, aseveró.",
+        "tipo": "persona",
+        "explicita": true
+      }
+    ]
+  },
   "multi_sonnet": {
     "100": [
       {

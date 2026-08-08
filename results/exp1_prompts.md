@@ -8,15 +8,10 @@
 
 | Variante | Descripción | P | R | F1 | ΔP | ΔF1 |
 |---|---|---|---|---|---|---|
+| `v3_justifica` | auto-verificación: citar evidencia o descartar | 0.78 | 0.70 | **0.74** | +0.34 | +0.17 |
 | `v2_reglas_duras` | reglas negativas duras (ante la duda, excluir) | 0.50 | 0.72 | **0.59** | +0.06 | +0.03 |
 | `v1_fewshot` | baseline + 2 ejemplos (few-shot) | 0.47 | 0.72 | **0.57** | +0.03 | +0.01 |
 | `v0_estricto` | baseline v0 (prompt estricto) | 0.44 | 0.78 | **0.56** | +0.00 | +0.00 |
-
-Celdas incompletas (sus métricas son sobre las notas cubiertas y NO son comparables con las corridas 16/16):
-
-| Variante | Cobertura | P | R | F1 (parcial) |
-|---|---|---|---|---|
-| `v3_justifica` | 8/16 | 0.93 | 0.81 | 0.87 |
 
 ![P/R/F1 por variante](../docs/assets/exp1_prompts_gemini.png)
 
@@ -38,5 +33,6 @@ Celdas incompletas (sus métricas son sobre las notas cubiertas y NO son compara
 | `v0_estricto` | 0.56 | 0.82 | +0.26 |
 | `v1_fewshot` | 0.57 | 0.86 | +0.30 |
 | `v2_reglas_duras` | 0.59 | 0.86 | +0.27 |
+| `v3_justifica` | 0.74 | 0.81 | +0.07 |
 
 ![F1 por variante y modelo](../docs/assets/exp1_modelos.png)

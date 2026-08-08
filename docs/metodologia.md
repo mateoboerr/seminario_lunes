@@ -52,6 +52,11 @@ humano y se calcula:
   produce números que se leen como calidad pero miden cobertura (nos pasó: un
   span-F1 de 0.14 que parecía "el LLM es 3× peor que las reglas" y solo decía
   "faltan 13 notas"). Solo corridas 16/16 son comparables entre sí.
+  **Y una corrida parcial tampoco es una estimación insesgada de la completa**,
+  aunque sus métricas estén bien calculadas: `v3_justifica` de Gemini daba F1
+  **0.87** con 8/16 y **0.74** al completarse — las notas que faltaban eran las
+  difíciles. Por eso las parciales se marcan como no comparables en vez de
+  publicarse con un asterisco.
 - **Cache por (modelo, variante, nota).** Cada celda de una tabla comparativa
   tiene que ser 100% de un modelo. Antes el cache no distinguía modelo: completar
   una variante parcial con otro proveedor habría mezclado dos modelos en la misma
