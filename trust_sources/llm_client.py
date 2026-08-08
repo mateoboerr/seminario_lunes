@@ -147,7 +147,7 @@ def client_for_model(model: str) -> LLMClient | None:
 
     Los experimentos comparan proveedores entre sí, así que el modelo tiene que
     ser explícito y determinista (con `make_client`, la misma corrida cambiaría
-    de modelo según el entorno — y el cache quedaría mezclado sin rastro).
+    de modelo según el entorno, y el cache quedaría mezclado sin rastro).
     None si falta la key del proveedor correspondiente.
     """
     if model.startswith("claude"):

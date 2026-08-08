@@ -1,5 +1,5 @@
 """
-Detector multi-LLM (Etapa 3): pipeline de DOS pasadas, como propuso el profe.
+Detector multi-LLM (Etapa 3): pipeline de DOS pasadas, según la propuesta de la cátedra.
 
   - LLM 1 (extractor): lee la nota y lista TODAS las afirmaciones (declaraciones o
     datos presentados como dichos/hechos).

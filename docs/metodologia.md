@@ -54,7 +54,7 @@ humano y se calcula:
   "faltan 13 notas"). Solo corridas 16/16 son comparables entre sí.
   **Y una corrida parcial tampoco es una estimación insesgada de la completa**,
   aunque sus métricas estén bien calculadas: `v3_justifica` de Gemini daba F1
-  **0.87** con 8/16 y **0.74** al completarse — las notas que faltaban eran las
+  **0.87** con 8/16 y **0.74** al completarse: las notas que faltaban eran las
   difíciles. Por eso las parciales se marcan como no comparables en vez de
   publicarse con un asterisco.
 - **Cache por (modelo, variante, nota).** Cada celda de una tabla comparativa
@@ -72,7 +72,7 @@ humano y se calcula:
 - **Nunca dejar que un JSON truncado se lea como un mal resultado.** Cuando el
   modelo excede su presupuesto de tokens, la respuesta llega cortada: el parser
   estricto o bien tira excepción (se pierde la nota) o bien devuelve `[]` en
-  silencio (se publica un F1 falso — nos pasó, ver Exp 3). Todos los parsers
+  silencio (se publica un F1 falso: nos pasó, ver Exp 3). Todos los parsers
   rescatan los items completos de un array cortado vía
   `detectors.llm.items_sueltos`, y cada variante fija su propio presupuesto.
 - **El set de selección no da el número final.** Los prompts se eligieron
@@ -104,9 +104,9 @@ humano y se calcula:
 - **TLS en Windows:** el SDK de Anthropic (httpx) moría con
   `CERTIFICATE_VERIFY_FAILED` porque un middlebox local intercepta TLS y su raíz
   está en el almacén de Windows pero no en `certifi`. Se resolvió con
-  `truststore` (validar contra el almacén del sistema) — **no** con
+  `truststore` (validar contra el almacén del sistema): **no** con
   `verify=False`, que expondría la API key.
 - **Razonamiento del modelo apagado** en el cliente Anthropic
   (`thinking: disabled`): los modelos nuevos razonan por defecto y esos tokens
   salen del mismo `max_tokens` que la respuesta (truncarían el JSON); además
-  deja la comparación con Gemini pareja — una pasada, sin razonamiento, en ambos.
+  deja la comparación con Gemini pareja, una pasada, sin razonamiento, en ambos.

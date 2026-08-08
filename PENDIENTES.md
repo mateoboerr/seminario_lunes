@@ -13,7 +13,7 @@ El 2026-08-08 se cerraron las tres pendientes:
       Sonnet.
 - [x] **Multi-LLM cross-model** → se midió con `claude-haiku-4-5` extrayendo y
       Sonnet asignando (16/16): span-F1 **0.36**, la peor de las tres configs.
-      Responde la propuesta del profe y además aísla la variable (mismo
+      Responde la propuesta de la cátedra y además aísla la variable (mismo
       proveedor en las dos etapas: mide "barato vs caro", no "Google vs
       Anthropic").
 
@@ -24,7 +24,7 @@ experiments.exp3_multi_llm` **primero** en una ventana de cuota fresca (necesita
 16 llamadas; el free tier rinde ~23/día y el 2026-08-08 se las llevaron exp1 y
 exp2), y después `python -m experiments.viz_matriz`.
 
-**Nota de método:** un ping suelto no dice nada sobre la cuota — el 2026-08-07
+**Nota de método:** un ping suelto no dice nada sobre la cuota, el 2026-08-07
 respondió OK y la tanda igual murió en 429 a la primera llamada. Hay que mirar
 si aguanta una tanda.
 

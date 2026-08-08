@@ -1,104 +1,106 @@
 {
-  "100": [
-    "Embajada de China en Argentina",
-    "Manuel Adorni"
-  ],
-  "101": [
-    "Victoria Villarruel",
-    "Patricia Bullrich",
-    "Luis Petri",
-    "Jonatan Viale",
-    "TN",
-    "Javier Milei",
-    "Cristina Kirchner",
-    "Hijos"
-  ],
-  "102": [
-    "Victoria Villarruel",
-    "Javier Milei"
-  ],
-  "104": [
-    "Secretaria de Derechos Humanos de la Nación",
-    "Agencia Administradora de Bienes del Estado (AABE)",
-    "Unión de Trabajadores y Trabajadoras de la Economía Popular (UTEP)",
-    "Matías Chamorro",
-    "Sonia Torres"
-  ],
-  "105": [
-    "Juan Schiaretti",
-    "Sonia Torres",
-    "Abuelas de Plaza de Mayo de Córdoba",
-    "Victoria Villarruel",
-    "Alejandra Vigo",
-    "Hijos"
-  ],
-  "106": [
-    "Asociación de Trabajadores de la Industria Lechera de la República Argentina (Atilra)",
-    "Sancor Cooperativas Unidas Ltda."
-  ],
-  "107": [
-    "Procurador General de Buenos Aires",
-    "fiscal Jorge Griecco",
-    "fiscal de la Justicia federal Sergio Mola",
-    "La Nación",
-    "fiscal provincial Pablo Rossi",
-    "Sebastián Bisquert",
-    "jefe de gabinete de Axel Kicillof",
-    "fiscal federal Mola",
-    "procurador bonaerense Julio Conte Grand",
-    "fiscal general de Lomas de Zamora, Carlos Baccini",
-    "Daniel Lago",
-    "Procuración",
-    "procuraduría especializada en lavado de dinero (Procelac)"
-  ],
-  "108": [
-    "Patricia Bullrich"
-  ],
-  "110": [
-    "Daniel Parodi",
-    "Ciudad Empresaria",
-    "VoltMotors",
-    "Gobierno nacional",
-    "Mapsa",
-    "D TA",
-    "Corven",
-    "Model Plac",
-    "Sherwin Williams",
-    "Banco Interamericano de Desarrollo (BID)",
-    "Banco de Inversión y Comercio Exterior (Bice)"
-  ],
-  "111": [
-    "Guillermo Francos"
-  ],
-  "112": [
-    "Patricia Bullrich",
-    "Luis Petri",
-    "Gobierno de Milei",
-    "Código Penal"
-  ],
-  "113": [
-    "Martín Menem",
-    "uno de los diputados incómodos con Zago",
-    "sus detractores"
-  ],
-  "114": [
-    "Instituto Nacional de Estadística y Censos (Indec)"
-  ],
-  "116": [
-    "Abuelas de Plaza de Mayo Córdoba",
-    "Martín Llaryora",
-    "Juan Schiaretti",
-    "Natalia de la Sota",
-    "Luis Juez"
-  ],
-  "117": [
-    "Banco Central",
-    "Fuentes conocedoras del dólar blue"
-  ],
-  "118": [
-    "Luis Petri",
-    "Manuel Adorni",
-    "Patricia Bullrich",
-    "el Gobierno nacional"
-  ]
+  "gemini-2.5-flash-lite": {
+    "100": [
+      "Embajada de China en Argentina",
+      "Manuel Adorni"
+    ],
+    "101": [
+      "Victoria Villarruel",
+      "Patricia Bullrich",
+      "Luis Petri",
+      "Jonatan Viale",
+      "TN",
+      "Javier Milei",
+      "Cristina Kirchner",
+      "Hijos"
+    ],
+    "102": [
+      "Victoria Villarruel",
+      "Javier Milei"
+    ],
+    "104": [
+      "Secretaria de Derechos Humanos de la Nación",
+      "Agencia Administradora de Bienes del Estado (AABE)",
+      "Unión de Trabajadores y Trabajadoras de la Economía Popular (UTEP)",
+      "Matías Chamorro",
+      "Sonia Torres"
+    ],
+    "105": [
+      "Juan Schiaretti",
+      "Sonia Torres",
+      "Abuelas de Plaza de Mayo de Córdoba",
+      "Victoria Villarruel",
+      "Alejandra Vigo",
+      "Hijos"
+    ],
+    "106": [
+      "Asociación de Trabajadores de la Industria Lechera de la República Argentina (Atilra)",
+      "Sancor Cooperativas Unidas Ltda."
+    ],
+    "107": [
+      "Procurador General de Buenos Aires",
+      "fiscal Jorge Griecco",
+      "fiscal de la Justicia federal Sergio Mola",
+      "La Nación",
+      "fiscal provincial Pablo Rossi",
+      "Sebastián Bisquert",
+      "jefe de gabinete de Axel Kicillof",
+      "fiscal federal Mola",
+      "procurador bonaerense Julio Conte Grand",
+      "fiscal general de Lomas de Zamora, Carlos Baccini",
+      "Daniel Lago",
+      "Procuración",
+      "procuraduría especializada en lavado de dinero (Procelac)"
+    ],
+    "108": [
+      "Patricia Bullrich"
+    ],
+    "110": [
+      "Daniel Parodi",
+      "Ciudad Empresaria",
+      "VoltMotors",
+      "Gobierno nacional",
+      "Mapsa",
+      "D TA",
+      "Corven",
+      "Model Plac",
+      "Sherwin Williams",
+      "Banco Interamericano de Desarrollo (BID)",
+      "Banco de Inversión y Comercio Exterior (Bice)"
+    ],
+    "111": [
+      "Guillermo Francos"
+    ],
+    "112": [
+      "Patricia Bullrich",
+      "Luis Petri",
+      "Gobierno de Milei",
+      "Código Penal"
+    ],
+    "113": [
+      "Martín Menem",
+      "uno de los diputados incómodos con Zago",
+      "sus detractores"
+    ],
+    "114": [
+      "Instituto Nacional de Estadística y Censos (Indec)"
+    ],
+    "116": [
+      "Abuelas de Plaza de Mayo Córdoba",
+      "Martín Llaryora",
+      "Juan Schiaretti",
+      "Natalia de la Sota",
+      "Luis Juez"
+    ],
+    "117": [
+      "Banco Central",
+      "Fuentes conocedoras del dólar blue"
+    ],
+    "118": [
+      "Luis Petri",
+      "Manuel Adorni",
+      "Patricia Bullrich",
+      "el Gobierno nacional"
+    ]
+  }
 }

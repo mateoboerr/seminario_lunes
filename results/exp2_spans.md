@@ -1,10 +1,10 @@
-# Exp 2 — salida v1: evaluación a nivel de span
+# Exp 2: salida v1: evaluación a nivel de span
 
 - Notas: **16** · solapamiento mínimo (IoU) para acierto: 0.5
 - Métricas calculadas **solo sobre las notas con predicción** (la cobertura se reporta aparte). Corridas parciales: no comparables.
-- Baseline clásico (sin LLM): global F1 **0.39** — ver [exp2_spans_clasico.md](exp2_spans_clasico.md).
+- Baseline clásico (sin LLM): global F1 **0.39**: ver [exp2_spans_clasico.md](exp2_spans_clasico.md).
 
-## `gemini-2.5-flash-lite` — cobertura 16/16
+## `gemini-2.5-flash-lite`: cobertura 16/16
 
 | Componente | P | R | F1 |
 |---|---|---|---|
@@ -13,7 +13,7 @@
 | Afirmacion | 0.71 | 0.77 | **0.74** |
 | global | 0.49 | 0.59 | **0.54** |
 
-## `claude-sonnet-5` — cobertura 16/16
+## `claude-sonnet-5`: cobertura 16/16
 
 | Componente | P | R | F1 |
 |---|---|---|---|

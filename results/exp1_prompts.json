@@ -41,7 +41,7 @@
     "F1": 0.737,
     "cobertura": "16/16",
     "completo": true,
-    "origen": "cache + gemini:gemini-2.5-flash-lite"
+    "origen": "cache"
   },
   {
     "modelo": "claude-sonnet-5",

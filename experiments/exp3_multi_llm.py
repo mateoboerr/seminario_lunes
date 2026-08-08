@@ -1,7 +1,7 @@
 """
 Experimento 3 (Etapa 3): pipeline MULTI-LLM (dos pasadas) vs una sola pasada.
 
-Propuesta del profe: un LLM detecta/lista las afirmaciones y OTRO LLM les asigna la
+Propuesta de la cátedra: un LLM detecta/lista las afirmaciones y OTRO LLM les asigna la
 fuente. Este script:
   1) DEMO DETERMINISTA con stubs de dos etapas (sin API): valida que el pipeline
      encadena bien (afirmaciones → fuentes) y produce la salida v1 con spans.
@@ -38,8 +38,8 @@ MODELO_SONNET = "claude-sonnet-5"
 
 # Configuraciones del pipeline (cache separado por config):
 #  - multi_sonnet: dos pasadas del MISMO modelo (¿separar la tarea ayuda per se?)
-#  - multi_gemini_sonnet: DOS MODELOS — la lectura literal de la propuesta del
-#    profe ("un LLM detecta afirmaciones, otro les asigna la fuente"): el
+#  - multi_gemini_sonnet: DOS MODELOS: la lectura literal de la propuesta de la
+#    cátedra ("un LLM detecta afirmaciones, otro les asigna la fuente"): el
 #    barato/gratis extrae, el fuerte asigna.
 #  - multi_haiku_sonnet: la MISMA idea con otro modelo barato. Existe porque la
 #    config con Gemini depende del free tier (~23 llamadas/día) y quedó parcial;
@@ -160,7 +160,7 @@ def _run_config(cfg: dict, arts, cache: dict) -> dict | None:
 
 def _single_pass_sonnet(arts) -> dict | None:
     """Fila de referencia: single-pass v1 con Sonnet, desde el cache de Exp 2
-    (mismas notas, mismas métricas — comparación directa sin re-llamar)."""
+    (mismas notas, mismas métricas: comparación directa sin re-llamar)."""
     if not CACHE_EXP2.exists():
         return None
     cache2 = json.loads(CACHE_EXP2.read_text(encoding="utf-8"))
@@ -187,7 +187,7 @@ def corrida_real() -> None:
     sp = _single_pass_sonnet(arts)
     comparables = ([sp] if sp else []) + filas
 
-    md = ["# Exp 3 — multi-LLM (dos pasadas) vs single-pass\n",
+    md = ["# Exp 3: multi-LLM (dos pasadas) vs single-pass\n",
           f"- Notas: **{len(arts)}** · métricas **solo sobre notas con "
           "predicción** (cobertura aparte); corridas parciales no comparables.",
           "- Configs: " + " · ".join(f"`{c['id']}` ({c['desc']})" for c in CONFIGS) + "\n",
@@ -200,7 +200,7 @@ def corrida_real() -> None:
                   f"**{f['ref']['F1']:.2f}** (P {f['ref']['P']:.2f} / R {f['ref']['R']:.2f}) | "
                   f"**{f['spans']['global']['F1']:.2f}** |")
     for f in filas:
-        md += ["", f"## `{f['id']}` — spans por componente (cobertura {f['cobertura']})\n",
+        md += ["", f"## `{f['id']}`: spans por componente (cobertura {f['cobertura']})\n",
                "| Componente | P | R | F1 |", "|---|---|---|---|"]
         for lab in ["Referenciado", "Conector", "Afirmacion", "global"]:
             m = f["spans"][lab]
@@ -211,7 +211,7 @@ def corrida_real() -> None:
 
 def main() -> None:
     load_dotenv(ROOT / ".env")
-    print("Exp 3 — pipeline multi-LLM")
+    print("Exp 3: pipeline multi-LLM")
     demo_stub()
     corrida_real()
 

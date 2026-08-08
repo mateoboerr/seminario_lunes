@@ -1,5 +1,5 @@
 """
-trust_sources — detección de fuentes periodísticas para trust-monitor.
+trust_sources: detección de fuentes periodísticas para trust-monitor.
 
 Paquete del Proyecto 1. Expone:
   - schema: Source / Span (estructura de salida, estilo Trust get_explicit_sources)

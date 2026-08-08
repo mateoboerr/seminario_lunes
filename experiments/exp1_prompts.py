@@ -1,5 +1,5 @@
 """
-Experimento 1 (Etapa 1): comparar variantes de PROMPT del detector LLM — y, de
+Experimento 1 (Etapa 1): comparar variantes de PROMPT del detector LLM, y, de
 paso, comparar MODELOS con la misma grilla de prompts.
 
 Objetivo: **subir la precisión** del LLM (baseline Gemini 0.44) sin perder
@@ -14,7 +14,7 @@ invalidaría la comparación de prompts (cada variante debe ser 100% de un model
 Sin keys funciona offline con lo cacheado; con keys corre en vivo lo que falte.
 
 Metodología de reporte: las métricas se calculan SOLO sobre las notas con
-predicción (calidad), y la cobertura se reporta aparte — nunca se publica una
+predicción (calidad), y la cobertura se reporta aparte: nunca se publica una
 métrica aplastada por cobertura parcial como si fuera calidad. Solo variantes
 16/16 son comparables entre sí.
 
@@ -213,7 +213,7 @@ def _chart_variantes(rows: list[dict], modelo: str) -> Path | None:
     ax.set_ylim(0, 1.18); ax.set_ylabel("score")
     _estilo(ax)
     ax.legend(fontsize=8, frameon=False, ncol=4, loc="upper center")
-    ax.set_title(f"Exp 1 — variantes de prompt · {modelo}", color=INK)
+    ax.set_title(f"Exp 1: variantes de prompt · {modelo}", color=INK)
     for i, r in zip(x, rows):
         ax.text(i + w, r["F1"] + 0.02, f"{r['F1']:.2f}", ha="center", fontsize=8, color=INK)
     fig.tight_layout()
@@ -256,7 +256,7 @@ def _chart_modelos(rows: list[dict]) -> Path | None:
     ax.set_ylim(0, 1.18); ax.set_ylabel("F1")
     _estilo(ax)
     ax.legend(fontsize=8, frameon=False, ncol=3, loc="upper center")
-    ax.set_title("Exp 1/4 — mismos prompts, dos modelos (F1 sobre 16 notas)", color=INK)
+    ax.set_title("Exp 1/4: mismos prompts, dos modelos (F1 sobre 16 notas)", color=INK)
     fig.tight_layout()
     out = ASSETS / "exp1_modelos.png"
     fig.savefig(out, dpi=130); plt.close(fig)
@@ -295,7 +295,7 @@ def main() -> None:
     cache = _load_cache()
     rows = []
     for modelo in MODELOS:
-        print(f"— {modelo}")
+        print(f"- {modelo}")
         for v in VARIANTES:
             r = _run_cell(modelo, v, arts, cache)
             _save_cache(cache)  # persistimos por celda: un corte no pierde lo hecho
@@ -306,10 +306,10 @@ def main() -> None:
 
     # --- Reporte markdown -------------------------------------------------
     n = len(arts)
-    md = ["# Exp 1 — variantes de prompt (LLM) × modelos\n",
+    md = ["# Exp 1: variantes de prompt (LLM) × modelos\n",
           f"- Artículos: **{n}** (lote doble-anotado) · techo humano **F1 0.71**",
           "- Objetivo: subir la **precisión** sin perder recall; misma grilla de "
-          "prompts en cada modelo (cache por modelo+variante — nunca mezclados).",
+          "prompts en cada modelo (cache por modelo+variante: nunca mezclados).",
           "- Las métricas se calculan **solo sobre notas con predicción**; la "
           "cobertura se reporta aparte. Solo celdas 16/16 son comparables.\n"]
     for modelo in MODELOS:

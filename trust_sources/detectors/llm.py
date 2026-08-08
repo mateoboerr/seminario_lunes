@@ -43,7 +43,7 @@ def items_sueltos(raw: str, clave: str) -> list:
 
     Sirve para cualquier forma de item (strings, dicts, anidados) porque
     `raw_decode` parsea el siguiente valor JSON sea cual sea. Nota: escanear
-    balanceando llaves a mano —como hacía la primera versión— se descuadra si
+    balanceando llaves a mano (como hacía la primera versión) se descuadra si
     hay una `}` DENTRO de un string; `raw_decode` no tiene ese problema.
     """
     m = raw.find(f'"{clave}"')
@@ -100,7 +100,7 @@ class LLMSourceDetector(SourceDetector):
         self.prompt = prompt
         self.max_chars = max_chars
         # Presupuesto de salida: los prompts que piden campos extra (p. ej.
-        # evidencia) necesitan más — con 400 el JSON se TRUNCA y no parsea.
+        # evidencia) necesitan más: con 400 el JSON se TRUNCA y no parsea.
         self.max_tokens = max_tokens
 
     def detect(self, text: str) -> list[Source]:

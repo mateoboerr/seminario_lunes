@@ -1,5 +1,5 @@
 """
-Experimento 2 (Etapa 2): salida RICA v1 — afirmacion + conector + referenciado
+Experimento 2 (Etapa 2): salida RICA v1: afirmacion + conector + referenciado
 (con spans) + tipo de fuente, y evaluación a nivel de span.
 
 Dos partes:
@@ -109,7 +109,7 @@ def baseline_clasico_spans() -> dict:
     clasico = ClassicSourceDetector()
     preds = {a.index: clasico.detect(a.cuerpo) for a in arts}
     ev = evaluate_spans(arts, preds)
-    md = ["# Exp 2 (baseline) — clásico a nivel de span\n",
+    md = ["# Exp 2 (baseline): clásico a nivel de span\n",
           f"- Artículos: **{len(arts)}** · IoU mínimo 0.5 · sin LLM (reproducible offline)\n",
           "| Componente | P | R | F1 |", "|---|---|---|---|"]
     for lab in ["Referenciado", "Conector", "Afirmacion", "global"]:
@@ -124,7 +124,7 @@ def baseline_clasico_spans() -> dict:
 
 def _load_cache() -> dict:
     """Cache {modelo: {index: [fuentes]}}. Migra el formato viejo (plano, por
-    index), que era 100% Gemini — mezclar modelos bajo la misma clave haría
+    index), que era 100% Gemini: mezclar modelos bajo la misma clave haría
     imposible saber qué respondió cada uno."""
     if not CACHE.exists():
         return {}
@@ -136,7 +136,7 @@ def _load_cache() -> dict:
 
 def _predecir_modelo(modelo: str, arts, cache: dict) -> dict[str, list]:
     """Completa el cache del modelo (vivo si hay key) y devuelve las fuentes
-    crudas por index — SOLO de las notas cubiertas."""
+    crudas por index: SOLO de las notas cubiertas."""
     mcache = cache.setdefault(modelo, {})
     client = client_for_model(modelo)
     detector = LLMSourceDetectorV1(client) if client else None
@@ -173,16 +173,16 @@ def corrida_real(ev_clasico: dict | None = None) -> None:
 
     Regla de reporte: las métricas se calculan SOLO sobre las notas con
     predicción (calidad); la cobertura va aparte. Una corrida parcial se marca
-    como no comparable — nunca se publica recall aplastado por cobertura."""
+    como no comparable: nunca se publica recall aplastado por cobertura."""
     arts, _ = load_double_annotated()
     cache = _load_cache()
     n = len(arts)
 
-    md = ["# Exp 2 — salida v1: evaluación a nivel de span\n",
+    md = ["# Exp 2: salida v1: evaluación a nivel de span\n",
           f"- Notas: **{n}** · solapamiento mínimo (IoU) para acierto: 0.5",
           "- Métricas calculadas **solo sobre las notas con predicción** (la "
           "cobertura se reporta aparte). Corridas parciales: no comparables.",
-          "- Baseline clásico (sin LLM): global F1 **{:.2f}** — ver "
+          "- Baseline clásico (sin LLM): global F1 **{:.2f}**: ver "
           "[exp2_spans_clasico.md](exp2_spans_clasico.md).\n".format(
               ev_clasico["global"]["F1"] if ev_clasico else 0.39)]
     resumen = []
@@ -200,7 +200,7 @@ def corrida_real(ev_clasico: dict | None = None) -> None:
         ev = evaluate_spans(arts_cov, preds)
         completo = len(arts_cov) == n
         estado = "" if completo else " · **PARCIAL, no comparable**"
-        md += [f"## `{modelo}` — cobertura {len(arts_cov)}/{n}{estado}\n",
+        md += [f"## `{modelo}`: cobertura {len(arts_cov)}/{n}{estado}\n",
                "| Componente | P | R | F1 |", "|---|---|---|---|"]
         for lab in ["Referenciado", "Conector", "Afirmacion", "global"]:
             m = ev[lab]
@@ -234,7 +234,7 @@ def corrida_real(ev_clasico: dict | None = None) -> None:
 
 def main() -> None:
     load_dotenv(ROOT / ".env")
-    print("Exp 2 — salida rica v1")
+    print("Exp 2: salida rica v1")
     dicts = demo_stub()
     _write_ejemplo(dicts)
     ev_clasico = baseline_clasico_spans()

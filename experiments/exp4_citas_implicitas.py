@@ -1,14 +1,14 @@
 """
-Experimento 4: citas implícitas — ¿los detectores ven la atribución sin verbo?
+Experimento 4: citas implícitas: ¿los detectores ven la atribución sin verbo?
 
 El gold tiene la etiqueta `Afirmacion Debil` (atribución débil/implícita: el dato
 se presenta como de una fuente pero sin verbo de habla directo). Es nuestra
-aproximación operativa a la "cita implícita" que pidió tener en cuenta el profe.
+aproximación operativa a la "cita implícita" que pide tener en cuenta la consigna.
 ADVERTENCIA metodológica: son POCAS (n≈7 en el anotador principal), así que esto
 es un análisis exploratorio con números chicos, no una métrica robusta. Se mide y
-documenta igual — con el caveat al frente.
+documenta igual: con el caveat al frente.
 
-Qué mide (todo offline, desde los caches de Exp 2 — no gasta cuota):
+Qué mide (todo offline, desde los caches de Exp 2: no gasta cuota):
   1) Recall por tipo de afirmación (fuerte vs débil, IoU >= 0.5): para el clásico
      y para cada modelo v1 con corrida completa. Un span gold cuenta como
      "atrapado" si alguna afirmación predicha en la misma nota lo solapa.
@@ -91,12 +91,12 @@ def main() -> None:
                            {a.index: _sources_desde_cache(a, mcache[a.index])
                             for a in arts}, mcache))
 
-    md = ["# Exp 4 — citas implícitas (`Afirmacion Debil`)\n",
+    md = ["# Exp 4: citas implícitas (`Afirmacion Debil`)\n",
           "**Caveat metodológico primero:** el gold del lote doble-anotado tiene "
-          "muy pocas atribuciones débiles/implícitas — los números de esa columna "
+          "muy pocas atribuciones débiles/implícitas: los números de esa columna "
           "son exploratorios (cada acierto mueve ~15 puntos). Se reportan igual "
           "porque la pregunta (¿el LLM ve lo que el clásico no puede?) es parte "
-          "del pedido del profe; la conclusión fuerte requiere más anotación.\n",
+          "del pedido de la consigna; la conclusión fuerte requiere más anotación.\n",
           f"- Notas: **{n}** · IoU mínimo {IOU_MIN} · un span gold cuenta como "
           "atrapado si alguna afirmación predicha lo solapa.\n",
           "| Detector | Recall afirm. fuertes | Recall afirm. débiles/implícitas |",
@@ -105,7 +105,7 @@ def main() -> None:
         r = _recall_por_tipo(arts, preds)
         (af, tf), (ad, td) = r["fuerte"], r["debil"]
         md.append(f"| {nombre} | {af}/{tf} ({af/tf:.2f}) | {ad}/{td} "
-                  f"({(ad/td):.2f}) |" if td else f"| {nombre} | {af}/{tf} | — |")
+                  f"({(ad/td):.2f}) |" if td else f"| {nombre} | {af}/{tf} | - |")
         print(f"  {nombre}: fuertes {af}/{tf} · débiles {ad}/{td}")
 
     md += ["", "## El flag `explicita` de la salida v1\n",

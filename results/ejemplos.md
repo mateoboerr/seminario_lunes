@@ -1,4 +1,4 @@
-# Ejemplos — LLM vs Clásico
+# Ejemplos: LLM vs Clásico
 
 ## Información incorrecta. Camiones para enfrentar al Covid-19: China des
 - LLM atrapó y el clásico no: ['embajada de China']

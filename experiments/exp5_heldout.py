@@ -2,20 +2,19 @@
 Experimento 5: ¿el F1 de la selección GENERALIZA? Validación held-out.
 
 Motivación (hallazgo del Exp 1/4): Sonnet llegó a F1 0.86 sobre las 16 notas
-doble-anotadas — por encima del acuerdo entre anotadores (0.71). Pero esas 16
+doble-anotadas: por encima del acuerdo entre anotadores (0.71). Pero esas 16
 notas se usaron para ELEGIR el prompt ganador, así que medir ahí sobreestima
 (sobreajuste de selección). Este experimento mide los mismos prompts sobre las
 ~75 notas anotadas que el modelo nunca vio (`load_heldout`).
 
-Diseño: dos variantes a propósito —
-  - `v0_estricto`: el baseline, que NO fue elegido mirando las 16 → su caída
+Diseño: dos variantes a propósito: - `v0_estricto`: el baseline, que NO fue elegido mirando las 16 → su caída
     esperada es solo ruido de gold.
   - `v1_fewshot`: el GANADOR elegido contra las 16 → si cae más que v0, esa
     diferencia es sobreajuste de selección; si ambos aguantan, generaliza.
 Más el detector clásico como referencia (offline, sin API).
 
 Advertencia metodológica (va también en el reporte): el gold del held-out es de
-UN solo anotador por nota (56 lch, 16 jcc, 3 xig) — más ruidoso que el lote
+UN solo anotador por nota (56 lch, 16 jcc, 3 xig): más ruidoso que el lote
 doble-anotado, y acá no hay techo humano. Los números de selección y held-out se
 comparan entre sí como Δ, no contra el 0.71.
 
@@ -145,7 +144,7 @@ def _chart(rows: list[dict], clasico_sel: float, clasico_held: float,
     ax.set_ylim(0, 1.12); ax.set_ylabel("F1 (referenciados)")
     _estilo(ax)
     ax.legend(fontsize=8, frameon=False, ncol=2, loc="upper center")
-    ax.set_title(f"Exp 5 — ¿generaliza? selección vs held-out · {MODELO}", color=INK)
+    ax.set_title(f"Exp 5: ¿generaliza? selección vs held-out · {MODELO}", color=INK)
     fig.tight_layout()
     fig.savefig(ASSETS / "exp5_heldout.png", dpi=130); plt.close(fig)
 
@@ -179,7 +178,7 @@ def main() -> None:
     cl_held = _clasico(arts_held)["F1"]
     print(f"  {'clasico':16s} held-out F1={cl_held:.2f} · selección F1={cl_sel:.2f}")
 
-    md = ["# Exp 5 — validación held-out: ¿el F1 de la selección generaliza?\n",
+    md = ["# Exp 5: validación held-out: ¿el F1 de la selección generaliza?\n",
           f"- Held-out: **{len(arts_held)} notas** anotadas nunca vistas "
           f"(gold de UN anotador por nota: {comp}); las 16 de selección se "
           "excluyen por link.",
@@ -192,9 +191,9 @@ def main() -> None:
           f"| Detector | F1 selección (16) | F1 held-out ({len(arts_held)}) | Δ | Cobertura |",
           "|---|---|---|---|---|"]
     for r in rows:
-        f1s = f"{r['F1_sel']:.2f}" if r["F1_sel"] is not None else "—"
+        f1s = f"{r['F1_sel']:.2f}" if r["F1_sel"] is not None else "-"
         d = (f"{r['F1'] - r['F1_sel']:+.2f}" if r["F1_sel"] is not None
-             and r["completo"] else "—")
+             and r["completo"] else "-")
         f1h = f"**{r['F1']:.2f}**" if r["completo"] else f"{r['F1']:.2f} (parcial)"
         md.append(f"| `{r['id']}` ({MODELO}) | {f1s} | {f1h} | {d} | {r['cobertura']} |")
     md.append(f"| clásico (reglas) | {cl_sel:.2f} | **{cl_held:.2f}** | "
@@ -206,7 +205,7 @@ def main() -> None:
     md += ["", "## Descomposición por anotador del gold\n",
            "El subgrupo **lch** usa la misma vara que la selección (mismo "
            "anotador): su F1 es la brecha de generalización limpia. jcc y xig "
-           "marcan menos fuentes por nota que lch — contra su gold, parte de la "
+           "marcan menos fuentes por nota que lch: contra su gold, parte de la "
            "caída es diferencia de criterio, no del modelo.\n"]
     for r in rows:
         if not r["completo"]:

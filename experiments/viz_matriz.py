@@ -1,5 +1,5 @@
 """
-Matriz de aciertos/fallas por nota — la visualización prometida en el roadmap.
+Matriz de aciertos/fallas por nota: la visualización prometida en el roadmap.
 
 Heatmap: filas = las 16 notas doble-anotadas, columnas = detectores (clásico,
 LLM por modelo/variante, pipelines multi-LLM), celda = F1 de referenciados EN ESA
@@ -29,7 +29,7 @@ CACHE_EXP1 = ROOT / "experiments" / "cache" / "exp1_prompts.json"
 CACHE_EXP3 = ROOT / "experiments" / "cache" / "exp3_multi.json"
 
 # Tinta y rampa secuencial (azul 100→700 de la paleta validada): una celda clara
-# = falla, oscura = acierto. Un solo tono — la magnitud la lleva la luminosidad.
+# = falla, oscura = acierto. Un solo tono: la magnitud la lleva la luminosidad.
 RAMPA = ["#cde2fb", "#9ec5f4", "#6da7ec", "#3987e5", "#256abf", "#184f95", "#0d366b"]
 INK, MUTED, GRID = "#0b0b0b", "#898781", "#e1e0d9"
 
@@ -38,7 +38,7 @@ ETIQUETA_CONFIG = {"multi_sonnet": "multi s+s", "multi_gemini_sonnet": "multi g�
 
 
 def _columnas(arts) -> list[tuple[str, dict[str, list[str]]]]:
-    """[(etiqueta, {index: [referenciados]})] — solo corridas completas."""
+    """[(etiqueta, {index: [referenciados]})]: solo corridas completas."""
     n = len(arts)
     cols: list[tuple[str, dict[str, list[str]]]] = []
     clasico = ClassicSourceDetector()
@@ -108,7 +108,7 @@ def main() -> None:
         for j, v in enumerate(fila):
             ax.text(j, i, f"{v:.2f}", ha="center", va="center", fontsize=8,
                     color="white" if v > 0.55 else INK)
-    ax.set_title("Aciertos y fallas por nota — F1 de referenciados "
+    ax.set_title("Aciertos y fallas por nota: F1 de referenciados "
                  "(fila = nota, ordenadas de fácil a difícil)", color=INK, fontsize=11)
     cb = fig.colorbar(im, ax=ax, shrink=0.7)
     cb.outline.set_visible(False)

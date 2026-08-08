@@ -6,7 +6,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 nb = new_notebook()
 nb.cells = [
-    md("# Demo — detección de fuentes (paquete `trust_sources`)\n\n"
+    md("# Demo: detección de fuentes (paquete `trust_sources`)\n\n"
        "Muestra los dos detectores, la salida estructurada (formato tipo Trust) "
        "y el benchmark v0."),
     code("import sys; sys.path.insert(0, '..')\n"
@@ -18,7 +18,7 @@ nb.cells = [
     code("a = next(x for x in arts if x.index == '105')\n"
          "print(a.titulo)\n"
          "print('FUENTES (humano):', a.referenciados)"),
-    md("## Detector clásico — salida estructurada (formato tipo Trust `get_explicit_sources`)"),
+    md("## Detector clásico: salida estructurada (formato tipo Trust `get_explicit_sources`)"),
     code("import json\n"
          "srcs = ClassicSourceDetector().detect(a.cuerpo)\n"
          "print(json.dumps([s.to_dict() for s in srcs[:1]], ensure_ascii=False, indent=1))"),

@@ -1,4 +1,4 @@
-# trust-sources — detección de fuentes periodísticas con LLMs
+# trust-sources: detección de fuentes periodísticas con LLMs
 
 Proyecto del seminario, sobre **[trust-monitor](https://github.com/timmd-9216/trust)**.
 Objetivo: **detectar las fuentes de una noticia** (a quién se le atribuye cada
@@ -7,7 +7,7 @@ lenguaje (LLMs). Es una investigación: comparamos enfoques, probamos prompts,
 medimos contra anotaciones humanas y **documentamos aciertos y fallas** en la
 **[GitHub Page](https://mateoboerr.github.io/seminario_lunes/)**.
 
-> El proyecto **trust-monitor** (repo del profe) se usa **solo como fuente de
+> El proyecto **trust-monitor** (repositorio de la cátedra) se usa **solo como fuente de
 > datos**: se clona aparte en `trust-monitor/` (gitignoreado), no se toca ni se sube.
 
 ## Resultado actual
@@ -17,21 +17,21 @@ medimos contra anotaciones humanas y **documentamos aciertos y fallas** en la
 | Clásico (reglas) | 0.26 | 0.25 | **0.26** |
 | LLM `gemini-2.5-flash-lite` (mejor prompt: auto-verificación) | 0.78 | 0.70 | **0.74** |
 | LLM `claude-sonnet-5` (mejor prompt, 16 notas de selección) | 0.94 | 0.80 | **0.86** |
-| Acuerdo entre anotadores | — | — | **0.71** |
+| Acuerdo entre anotadores | - | - | **0.71** |
 | **LLM `claude-sonnet-5` · held-out (75 notas no vistas)** | 0.71 | 0.64 | **0.67** |
 
 **El modelo importa más que el prompt… salvo que se acierte el prompt:** con la
 misma variante, cambiar de modelo vale +0.26–0.30 de F1; pero la variante que le
-sirve al modelo chico (pedirle que cite evidencia o descarte) achica la brecha a
-**+0.07** — y es, a la vez, la **mejor** variante de Gemini y la **peor** de
+sirve al modelo más pequeño (pedirle que cite evidencia o descarte) achica la brecha a
+**+0.07**, y es, a la vez, la **mejor** variante de Gemini y la **peor** de
 Sonnet. Un ranking de prompts no se hereda entre modelos. **Y la validación held-out cambia
 la conclusión principal:** el 0.86 medido sobre las 16 notas con las que se
-eligieron los prompts no generaliza — sobre 75 notas nunca vistas da **0.67**
+eligieron los prompts no generaliza: sobre 75 notas nunca vistas da **0.67**
 (~0.70 contra el mismo anotador). Aun así el LLM casi triplica al clásico
 (0.24) en el held-out. En salida rica (spans), v1 con Sonnet da **0.54** vs
 **0.39** del clásico; y el pipeline multi-LLM de dos pasadas **pierde** contra la
 pasada única (0.69 vs 0.73), con la variante barato+caro (Haiku→Sonnet) peor
-todavía en spans (0.36) — y el daño concentrado justo en el componente que
+todavía en spans (0.36), y el daño concentrado justo en el componente que
 produce la primera etapa. Detalle, fallas incluidas, en la
 [bitácora](docs/experimentos.md).
 
@@ -41,7 +41,7 @@ produce la primera etapa. Detalle, fallas incluidas, en la
 
 ```
 trust_sources/            # paquete (código reusable)
-  schema.py               # Source / Span — estructura de salida (estilo Trust)
+  schema.py               # Source / Span, estructura de salida (estilo Trust)
   io_anotaciones.py       # carga de anotaciones humanas (Label Studio)
   matching.py             # normalización + emparejamiento difuso + métricas
   evaluation.py           # P/R/F1 + techo humano
@@ -58,7 +58,7 @@ experiments/
   exp3_multi_llm.py       # multi-LLM (2 pasadas) vs single-pass
   exp4_citas_implicitas.py# citas implícitas (Afirmacion Debil, exploratorio)
   viz_matriz.py           # matriz de aciertos/fallas por nota (heatmap)
-  cache/                  # caches por (modelo, variante, nota) — reproducible sin key
+  cache/                  # caches por (modelo, variante, nota): reproducible sin key
 results/                  # métricas y gráficos generados
 docs/                     # contenido de la GitHub Page (experimentos, metodología)
 trust-monitor/            # repo de datos (gitignoreado; se clona)
@@ -129,10 +129,10 @@ sources = adapter.get_explicit_sources(texto)   # list[dict] forma Trust
 
 ## Documentación
 
-- 🔬 **[docs/experimentos.md](docs/experimentos.md) — BITÁCORA de experimentos** (el
-  corazón del proyecto: cada prompt/modelo/pipeline probado, qué anduvo y qué no).
-- [docs/esquema_salida.md](docs/esquema_salida.md) — el formato de salida (v0 → v1, compatible con Trust)
-- [docs/metodologia.md](docs/metodologia.md) — datasets y cómo se evalúa
-- [docs/roadmap.md](docs/roadmap.md) — plan, experimentos y **next steps**
-- [ESTADO_PROYECTO.md](ESTADO_PROYECTO.md) — handoff completo (todo lo que se hizo y se sabe)
-- [PENDIENTES.md](PENDIENTES.md) — checklist de lo que falta (casi todo espera Anthropic)
+- 🔬 **[docs/experimentos.md](docs/experimentos.md): BITÁCORA de experimentos** (el
+  corazón del proyecto: cada prompt/modelo/pipeline probado, qué funcionó y qué no).
+- [docs/esquema_salida.md](docs/esquema_salida.md), el formato de salida (v0 → v1, compatible con Trust)
+- [docs/metodologia.md](docs/metodologia.md): datasets y cómo se evalúa
+- [docs/roadmap.md](docs/roadmap.md): plan, experimentos y **next steps**
+- [ESTADO_PROYECTO.md](ESTADO_PROYECTO.md): handoff completo (todo lo que se hizo y se sabe)
+- [PENDIENTES.md](PENDIENTES.md): checklist de lo que falta (ya no queda nada bloqueante)

@@ -1,4 +1,4 @@
-# Exp 2 (baseline) — clásico a nivel de span
+# Exp 2 (baseline): clásico a nivel de span
 
 - Artículos: **16** · IoU mínimo 0.5 · sin LLM (reproducible offline)
 

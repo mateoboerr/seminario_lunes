@@ -1,5 +1,5 @@
 """Tests de la carga de anotaciones. Necesitan el clon de trust-monitor
-(gitignoreado), así que se saltan si no está — el resto de la suite es offline."""
+(gitignoreado), así que se saltan si no está, el resto de la suite es offline."""
 import pytest
 
 from trust_sources.io_anotaciones import OUTPUTS, load_double_annotated, load_heldout

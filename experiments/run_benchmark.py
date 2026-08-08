@@ -32,7 +32,7 @@ GEMINI_LEGACY = "gemini-2.5-flash-lite"  # modelo de las corridas pre-namespace
 
 def _load_cache() -> dict:
     """Cache {modelo: {index: [fuentes]}}. Migra el formato viejo (plano), que
-    era 100% Gemini — sin el namespace, correr con otro proveedor PISABA las
+    era 100% Gemini: sin el namespace, correr con otro proveedor PISABA las
     respuestas del anterior y mezclaba modelos en la misma tabla."""
     if not CACHE.exists():
         return {}
@@ -84,10 +84,10 @@ def main() -> None:
         "|---|---|---|---|",
         f"| Clásico (reglas) vs humano | {m_clasico['P']:.2f} | {m_clasico['R']:.2f} | **{m_clasico['F1']:.2f}** |",
         f"| LLM vs humano | {m_llm['P']:.2f} | {m_llm['R']:.2f} | **{m_llm['F1']:.2f}** |",
-        f"| Techo humano (lch vs xig) | — | — | **{techo['F1']:.2f}** |",
+        f"| Techo humano (lch vs xig) | - | - | **{techo['F1']:.2f}** |",
     ]
     md = [
-        "# Benchmark v0 — detección de fuentes (referenciados)\n",
+        "# Benchmark v0: detección de fuentes (referenciados)\n",
         f"- Artículos: **{len(arts)}** (lote doble-anotado lch_100_119 ↔ xig_20_39)",
         f"- Origen columna LLM: **{origen}**\n",
         "\n".join(tabla), "",
@@ -101,7 +101,7 @@ def main() -> None:
          "origen_llm": origen}, ensure_ascii=False, indent=2), encoding="utf-8")
 
     # --- Ejemplos: LLM gana al clásico ---
-    ej = ["# Ejemplos — LLM vs Clásico\n"]
+    ej = ["# Ejemplos: LLM vs Clásico\n"]
     n = 0
     for a in arts:
         cl = matching.cluster(pred_clasico[a.index])

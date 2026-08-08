@@ -136,6 +136,103 @@
         "tipo": "persona",
         "explicita": true
       }
+    ],
+    "102": [
+      {
+        "referenciado": "Javier Milei",
+        "conector": "escribió",
+        "afirmacion": "El aborto es un asesinato agravado por el vínculo y la desproporción de las fuerzas.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Javier Milei",
+        "conector": "escribió",
+        "afirmacion": "Si Usted está viendo este post y es de los que pondera positivamente este tipo de aberraciones, agradezca a su madre por no pensar del mismo modo.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Javier Milei",
+        "conector": "escribió",
+        "afirmacion": "VIDA, LIBERTAD Y PROPIEDAD...!!!",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Villarruel",
+        "conector": "escribió",
+        "afirmacion": "Terminar con la vida de un ser humano indefenso no es un derecho.",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Villarruel",
+        "conector": "escribió",
+        "afirmacion": "Argentina siempre debe ser tierra de Vida.",
+        "tipo": "persona",
+        "explicita": true
+      }
+    ],
+    "104": [
+      {
+        "referenciado": "Secretaria de Derechos Humanos de la Nación",
+        "conector": "fue señalizado por",
+        "afirmacion": "Este espacio fue señalizado por la Secretaria de Derechos Humanos de la Nación en julio de 2022 como un nuevo espacio de memoria.",
+        "tipo": "institucion",
+        "explicita": true
+      },
+      {
+        "referenciado": "Registro Único de Víctimas del Terrorismo de Estado",
+        "conector": "cuenta con el reconocimiento del",
+        "afirmacion": "Desde 2018 cuenta con el reconocimiento del Registro Único de Víctimas del Terrorismo de Estado.",
+        "tipo": "institucion",
+        "explicita": false
+      },
+      {
+        "referenciado": "Matías Chamorro",
+        "conector": "resumió",
+        "afirmacion": "“Este jueves, en comisión, hemos aprobado el despacho por unanimidad y lo vamos a tratar en la sesión especial, donde los legisladores vamos a concurrir al Refugio Libertad, del ex Grupo de Artillería 141, que es un sitio de memoria recientemente señalizado, con todo lo que esto implica para nuestra memoria y que, además, es un espacio socioproductivo para las familias de esta región”",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "el fundamento del proyecto",
+        "conector": "se detalló en",
+        "afirmacion": "“Córdoba construyó una política robusta en derechos humanos, y esta iniciativa pretende seguir fomentando las políticas de Memoria, Verdad y Justicia, brindando herramientas con un profundo sentido pedagógico, que redunden en un fortalecimiento democrático y sus instituciones.",
+        "tipo": "documento",
+        "explicita": true
+      },
+      {
+        "referenciado": "el fundamento del proyecto",
+        "conector": "se detalló en",
+        "afirmacion": "He decidido nombrar a este proyecto Ley Sonia Torres, en homenaje a una de nuestros más importantes referentes en derechos humanos, fallecida el 20 de octubre”, se detalló en el fundamento del proyecto, el que contó con el apoyo en su tratamiento en comisión de los justicialistas Karen Acuña, Pablo Ovejeros, Silvina Jurich y Rodrigo Rufeil; de las legisladoras radicales Inés Contrera y Ariela Szpanic; y la juecista Viviana Martoccia.",
+        "tipo": "documento",
+        "explicita": true
+      }
+    ],
+    "105": [
+      {
+        "referenciado": "Schiaretti",
+        "conector": "publicó",
+        "afirmacion": "“En este Día Nacional de la Memoria reafirmamos el Nunca Más al terrorismo de estado, Nunca Más a los crímenes de lesa humanidad y Nunca Más a una dictadura genocida en nuestra patria”",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Schiaretti",
+        "conector": "remarcó",
+        "afirmacion": "“Los pueblos deben tener siempre memoria de estos horrores. Negarlos es correr el riesgo de volver a repetir la tragedia que nos tocó vivir”",
+        "tipo": "persona",
+        "explicita": true
+      },
+      {
+        "referenciado": "Schiaretti",
+        "conector": "cerró",
+        "afirmacion": "“Sí a los derechos humanos, sí a la democracia, sí a la pluralidad de ideas, sí a la tolerancia con quienes piensan distinto”",
+        "tipo": "persona",
+        "explicita": true
+      }
     ]
   },
   "multi_sonnet": {

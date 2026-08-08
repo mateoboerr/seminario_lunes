@@ -1,4 +1,4 @@
-# Exp 5 — validación held-out: ¿el F1 de la selección generaliza?
+# Exp 5: validación held-out: ¿el F1 de la selección generaliza?
 
 - Held-out: **75 notas** anotadas nunca vistas (gold de UN anotador por nota: lch 56 · jcc 16 · xig 3); las 16 de selección se excluyen por link.
 - Las 16 de selección se usaron para ELEGIR prompts → medir solo ahí sobreestima. Acá los mismos prompts corren sobre notas no vistas.
@@ -13,7 +13,7 @@
 
 ## Descomposición por anotador del gold
 
-El subgrupo **lch** usa la misma vara que la selección (mismo anotador): su F1 es la brecha de generalización limpia. jcc y xig marcan menos fuentes por nota que lch — contra su gold, parte de la caída es diferencia de criterio, no del modelo.
+El subgrupo **lch** usa la misma vara que la selección (mismo anotador): su F1 es la brecha de generalización limpia. jcc y xig marcan menos fuentes por nota que lch: contra su gold, parte de la caída es diferencia de criterio, no del modelo.
 
 ### `v0_estricto`
 

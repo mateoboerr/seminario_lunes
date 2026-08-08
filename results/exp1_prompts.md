@@ -1,7 +1,7 @@
-# Exp 1 — variantes de prompt (LLM) × modelos
+# Exp 1: variantes de prompt (LLM) × modelos
 
 - Artículos: **16** (lote doble-anotado) · techo humano **F1 0.71**
-- Objetivo: subir la **precisión** sin perder recall; misma grilla de prompts en cada modelo (cache por modelo+variante — nunca mezclados).
+- Objetivo: subir la **precisión** sin perder recall; misma grilla de prompts en cada modelo (cache por modelo+variante: nunca mezclados).
 - Las métricas se calculan **solo sobre notas con predicción**; la cobertura se reporta aparte. Solo celdas 16/16 son comparables.
 
 ## `gemini-2.5-flash-lite`

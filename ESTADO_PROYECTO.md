@@ -1,17 +1,17 @@
-# ESTADO DEL PROYECTO — handoff completo
+# ESTADO DEL PROYECTO: handoff completo
 
 > Documento maestro para retomar el trabajo desde cero. Reúne TODO lo hecho, lo
-> acordado con el profe y los next steps. (Docs específicas en `docs/`.)
+> acordado con la cátedra y los next steps. (Docs específicas en `docs/`.)
 
 ## 0) Qué es
 
 Proyecto del seminario: **detección de fuentes periodísticas con LLMs**, sobre el
-proyecto **trust-monitor** (versión del profe:
+proyecto **trust-monitor** (versión de la cátedra:
 https://github.com/timmd-9216/trust). Se eligió esta línea (era el "Proyecto 1"
-entre 3 alternativas exploradas; las otras dos —agente corrector y precios SEPA—
+entre 3 alternativas exploradas; las otras dos (agente corrector y precios SEPA)
 se **descartaron y borraron**).
 
-## 1) Acuerdos con el profe (todo lo que se habló)
+## 1) Requerimientos del trabajo
 
 - **Entregable:** repo de GitHub + **GitHub Page** documentando **experimentos,
   aciertos y fallas**. No alcanza con "que funcione": hay que **investigar bien**,
@@ -31,7 +31,7 @@ se **descartaron y borraron**).
 
 ```
 trust_sources/            # PAQUETE (código reusable)
-  schema.py               # Source / Span — estructura de salida (estilo Trust)
+  schema.py               # Source / Span, estructura de salida (estilo Trust)
   io_anotaciones.py       # carga de anotaciones humanas (Label Studio); Articulo
   matching.py             # normalize / mentions_match / cluster / prf1
   evaluation.py           # evaluate_referenciados / human_ceiling
@@ -60,7 +60,7 @@ carga, matching, evaluación, cliente, esquema. Sin capas ni abstracciones de m�
 |---|---|---|---|
 | Clásico (reglas) | 0.26 | 0.25 | **0.26** |
 | LLM (Gemini gratis, `gemini-2.5-flash-lite`) | 0.44 | 0.78 | **0.56** |
-| Techo humano (lch vs xig) | — | — | **0.71** |
+| Techo humano (lch vs xig) | - | - | **0.71** |
 
 Comando: `python -m experiments.run_benchmark` (offline usa cache; con
 `GEMINI_API_KEY` corre en vivo). El LLM duplica al clásico pero sobre-detecta.
@@ -88,15 +88,15 @@ Comando: `python -m experiments.run_benchmark` (offline usa cache; con
 ## 6) Next steps (detalle y estado en docs/roadmap.md + docs/experimentos.md)
 
 Avance al **2026-07-02** (Etapas 0-3 arrancadas; ver bitácora):
-0. **Subir a GitHub + Pages** — prep local ✅ (`_config.yml`, bitácora); subida
+0. **Subir a GitHub + Pages**: prep local ✅ (`_config.yml`, bitácora); subida
    **diferida** por decisión del usuario (será público).
-1. **Mejorar el LLM (prompts)** 🟡 — `v1_fewshot` 0.57 vs baseline 0.56 medido y
+1. **Mejorar el LLM (prompts)** 🟡: `v1_fewshot` 0.57 vs baseline 0.56 medido y
    documentado; `v2`/`v3` parciales (free tier agotado).
-2. **Salida rica v1** 🟢 — `LLMSourceDetectorV1` + `evaluate_spans` hechos y
+2. **Salida rica v1** 🟢: `LLMSourceDetectorV1` + `evaluate_spans` hechos y
    validados con stub; **medición en vivo pendiente**.
-3. **Multi-LLM** 🟢 — `MultiLLMSourceDetector` (2 pasadas) hecho y validado con
+3. **Multi-LLM** 🟢: `MultiLLMSourceDetector` (2 pasadas) hecho y validado con
    stub; **comparación en vivo pendiente**.
-4. **Integrar a Trust** 🟢 — `TrustSourceAdapter` expone cualquier detector con la
+4. **Integrar a Trust** 🟢: `TrustSourceAdapter` expone cualquier detector con la
    interfaz `get_explicit_sources` de Trust (mismo contrato de salida).
 
 **Calidad/ingeniería (sin API):** suite de **tests** (`pytest tests/`, 29 casos),
@@ -111,25 +111,24 @@ de v1 y la comparación multi-LLM vs single-pass. Ver README.
 ## 7) Pendiente menor
 - Renombrar la carpeta raíz `prototipos/` a `trust-sources` al crear el repo.
 
-## 8) Actualización 2026-08-07 — corridas en vivo con Claude Sonnet completadas
+## 8) Actualización 2026-08-07: corridas en vivo con Claude Sonnet completadas
 
 Todo lo que en las secciones de arriba figura como "pendiente con Anthropic" se
 corrió hoy con **`claude-sonnet-5`** (elegido explícitamente en los experimentos;
 ya no depende de `LLM_PROVIDER`). Resultados y decisiones:
 
-- **Exp 1 (grilla de prompts × modelos):** Sonnet — v0 0.82, few-shot **0.86**,
-  reglas duras **0.86**, justifica 0.81 (16/16). Gemini — v2 completada: **0.59**
-  (su mejor variante *en ese momento*; el 2026-08-08 `v3` la superó con 0.74 —
-  ver §11); v3 quedó 8/16 (cuota diaria agotada). Conclusión: **el
+- **Exp 1 (grilla de prompts × modelos):** Sonnet: v0 0.82, few-shot **0.86**,
+  reglas duras **0.86**, justifica 0.81 (16/16). Gemini: v2 completada: **0.59**
+  (su mejor variante *en ese momento*; el 2026-08-08 `v3` la superó con 0.74: ver §11); v3 quedó 8/16 (cuota diaria agotada). Conclusión: **el
   modelo mueve más que el prompt** (+0.26 vs +0.06) y Sonnet supera el acuerdo
-  entre anotadores (0.71) — el gold de 16 notas ya es el límite de la medición.
+  entre anotadores (0.71), el gold de 16 notas ya es el límite de la medición.
 - **Exp 2 (v1 span-F1, Sonnet 16/16):** global **0.54** vs clásico 0.39;
   Referenciado 0.27 vs 0.09.
 - **Exp 3 (multi-LLM):** dos pasadas Sonnet+Sonnet **0.69** referenciados / 0.42
-  spans — **pierde contra single-pass** (0.73 / 0.54). La config cross-model
+  spans: **pierde contra single-pass** (0.73 / 0.54). La config cross-model
   (gemini extrae + sonnet asigna) espera cuota de Gemini (0/16).
 - **Exp 4 (citas implícitas, nuevo, exploratorio):** LLM 5/7 débiles vs clásico
-  2/7 (n=7 — leer con cautela); el flag `explicita` casi no se usa (1/94).
+  2/7 (n=7: leer con cautela); el flag `explicita` casi no se usa (1/94).
 - **Matriz de aciertos/fallas por nota** (nueva, `viz_matriz.py`) →
   `docs/assets/matriz_aciertos.png`.
 
@@ -149,10 +148,10 @@ ya no depende de `LLM_PROVIDER`). Resultados y decisiones:
   tokens + comparación pareja con Gemini). **30 tests** (se sumó regresión del
   parser truncado).
 
-**Pendiente:** solo las celdas de Gemini que esperan ventana de cuota — ver
+**Pendiente:** solo las celdas de Gemini que esperan ventana de cuota: ver
 `PENDIENTES.md`.
 
-## 9) Actualización 2026-08-07 (2ª tanda) — Exp 5: validación held-out
+## 9) Actualización 2026-08-07 (2ª tanda), Exp 5: validación held-out
 
 El 0.86 de Sonnet tenía dos sospechas encima: los prompts se **eligieron** con
 esas 16 notas, y las 16 doble-anotadas son los casos claros (solo entraron notas
@@ -161,15 +160,15 @@ sobre las **75 notas anotadas restantes** (nunca vistas; `load_heldout()` en
 `io_anotaciones.py`, dedup por link, índice sintético `anotador_batch_n` porque
 el `index` crudo colisiona entre archivos).
 
-- **Resultado: el 0.86 NO generaliza** — held-out 0.67 (few-shot) / 0.66 (v0);
+- **Resultado: el 0.86 NO generaliza**: held-out 0.67 (few-shot) / 0.66 (v0);
   clásico 0.24 (cae solo −0.02). Descomposición: contra **lch** (misma vara que
   la selección) da **0.70** estable (0.69–0.73 por batch, excluido un resto de
   n=1); contra **jcc** 0.57, pero jcc marca 2,5 fuentes/nota donde lch marca 4,4
   (criterio, no modelo). El residuo contra lch mezcla sesgo del lote (13/16 con
-  fuentes también en xig) y ruido del gold single-anotado — no separables sin
+  fuentes también en xig) y ruido del gold single-anotado: no separables sin
   doble anotación.
 - La ventaja del few-shot sobre v0 pasa de +0.04 a +0.02: **la ventaja del
-  ganador no se replica — el orden fino de prompts con n=16 no es confiable.**
+  ganador no se replica, el orden fino de prompts con n=16 no es confiable.**
 - **El número honesto del proyecto es ~0.70**, y así quedó reportado en README,
   index y bitácora (Exp 5). El LLM sigue casi triplicando al clásico.
 - Nuevos: `experiments/exp5_heldout.py` (cache propio por modelo/variante/nota,
@@ -179,7 +178,7 @@ el `index` crudo colisiona entre archivos).
 **Pendiente que abre:** doble anotación o adjudicación de una muestra del
 held-out para separar error del modelo vs criterio del anotador.
 
-## 10) Actualización 2026-08-07 (3ª tanda) — auditoría, Page /docs y robustez
+## 10) Actualización 2026-08-07 (3ª tanda): auditoría, Page /docs y robustez
 
 - **Auditoría externa** de la tanda Sonnet + Exp 5: números verificados al
   centésimo desde los caches, sin hallazgos críticos, veredicto "listo para
@@ -189,7 +188,7 @@ held-out para separar error del modelo vs criterio del anotador.
   el residuo de la descomposición ahora declara que mezcla sesgo del lote **y**
   ruido del gold single-anotado (no separables sin doble anotación); y se
   calibraron dos claims (+0.02 en vez de +0.01; "la ventaja del ganador no se
-  replica" en vez de "el ranking era ruido" — v2/v3 y Gemini no se re-midieron).
+  replica" en vez de "el ranking era ruido": v2/v3 y Gemini no se re-midieron).
 - **La Page pasó a servirse desde `/docs`** (Settings→Pages): home =
   `docs/index.md`, manda `docs/_config.yml` (el de la raíz se borró) y las URLs
   perdieron el prefijo `/docs/`. Los anclajes cortos (`#exp-1`…) apuntaban a IDs
@@ -197,7 +196,7 @@ held-out para separar error del modelo vs criterio del anotador.
   HTML publicado y verificados en vivo (7/7 resuelven).
 - **Reintento de las celdas Gemini: sin datos nuevos** (429 desde la primera
   llamada; ver `PENDIENTES.md`). Los tres scripts reprodujeron resultados
-  **byte-idénticos** desde cache — buena verificación de reproducibilidad.
+  **byte-idénticos** desde cache: buena verificación de reproducibilidad.
 - **Tercera aparición de la familia "JSON truncado"**, ahora en el parser de
   v0/v3: `_parse_fuentes` hacía `json.loads` estricto y un corte perdía la nota
   entera. Se unificaron los tres rescatadores duplicados en un único
@@ -207,44 +206,44 @@ held-out para separar error del modelo vs criterio del anotador.
   1500. **34 tests** (+2 de regresión). Verificado que los resultados publicados
   se regeneran idénticos tras el refactor.
 
-## 11) Actualización 2026-08-08 — vuelve la cuota y cambian dos conclusiones
+## 11) Actualización 2026-08-08: vuelve la cuota y cambian dos conclusiones
 
 Se completaron 2 de las 3 celdas pendientes de Gemini, y ninguna dio lo esperado:
 
-- **`v3_justifica` de Gemini: 16/16, F1 0.74** — la **mejor** variante de Gemini
+- **`v3_justifica` de Gemini: 16/16, F1 0.74**: la **mejor** variante de Gemini
   (+0.17 sobre su baseline; precisión 0.44 → **0.78**) y la **peor** de Sonnet
   (0.81). **El mejor prompt se invierte según el modelo.** Con esa variante la
   brecha entre modelos cae de +0.30 a **+0.07**: pedir "citá la evidencia o
-  descartá" es una muleta que le corrige al modelo débil justo su defecto
+  descarte el candidato corrige en el modelo débil justo su defecto
   (sobre-detectar) y al fuerte solo lo vuelve conservador de más. Corolario para
   el proyecto: **una grilla de prompts elegida con un modelo no se hereda a
-  otro** — y matiza el titular "el modelo importa más que el prompt".
-- **v1 span-F1 de Gemini: 16/16, 0.54 — empata con Sonnet.** La ventaja del
+  otro**, y matiza el titular "el modelo importa más que el prompt".
+- **v1 span-F1 de Gemini: 16/16, 0.54, empata con Sonnet.** La ventaja del
   modelo caro se reparte, no desaparece: Sonnet ubica mejor la fuente
   (Referenciado 0.27 vs 0.19), Gemini delimita mejor verbo y cita (Conector 0.65
   vs 0.60, Afirmacion 0.74 vs 0.72). Recortar texto que ya está en la nota es
-  más fácil que decidir *quién* es fuente; ahí el chico alcanza.
+  más fácil que decidir *quién* es fuente; ahí el modelo más pequeño alcanza.
 - **La regla de calidad-vs-cobertura quedó vindicada con un caso propio:** `v3`
-  de Gemini daba **0.87** en 8/16 y da **0.74** completo — 13 puntos que eran
+  de Gemini daba **0.87** en 8/16 y da **0.74** completo: 13 puntos que eran
   artefacto de cobertura (faltaban las notas difíciles). Documentado en
   `docs/metodologia.md` como evidencia de por qué las parciales no se publican.
 - **Matriz regenerada** con la columna `gemini·v3`: rescata 3 de las 4 notas
-  donde `gemini·v0` se derrumbaba (101, 107, 110), lo que confirma visualmente
+  donde `gemini·v0` colapsaba (101, 107, 110), lo que confirma visualmente
   que la mejora se concentra en el tramo difícil.
 - **Cross-model resuelto con Haiku (16/16), sin esperar cuota.** Se agregó la
   config `multi_haiku_sonnet` (`claude-haiku-4-5` extrae + Sonnet asigna):
-  referenciados F1 0.69, **span-F1 0.36 — la peor de las tres configs**. El
+  referenciados F1 0.69, **span-F1 0.36: la peor de las tres configs**. El
   desglose es lo valioso: Referenciado (0.21) y Conector (0.54) quedan incluso
   algo mejor que con Sonnet en ambas etapas, y **todo el daño se concentra en
   `Afirmacion`: 0.53 → 0.33**. Coincide con el mecanismo: la etapa 1 es la que
   *produce* las afirmaciones, así que un modelo débil ahí daña justo ese
   componente y la etapa 2 no lo puede recuperar (recibe el recorte hecho); la
   identificación de la fuente, tarea de la etapa 2, no se resiente (0.69 igual).
-  **Respuesta a la propuesta del profe: la etapa 1 no es la "fácil"** — delimitar
+  **Respuesta a la propuesta de la cátedra: la etapa 1 no es la "fácil"**: delimitar
   qué es una afirmación determina la calidad de spans de todo el pipeline.
   Ventaja metodológica sobre la config con Gemini: mismo proveedor y familia en
   ambas etapas, así que mide "barato vs caro" y no "Google vs Anthropic".
   Costo: ~USD 0,25.
 - **Pendiente: nada bloqueante.** Solo queda opcional la config cross-model con
-  Gemini (**2/16**, cuota) — agregaría un segundo punto de datos, no una
+  Gemini (**2/16**, cuota): agregaría un segundo punto de datos, no una
   conclusión. Correr exp3 primero en una ventana fresca si se quiere cerrar.
