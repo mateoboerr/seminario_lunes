@@ -3,30 +3,30 @@
 Checklist vivo de lo que falta. Estado general y detalle en
 [docs/roadmap.md](docs/roadmap.md) y la [bitácora](docs/experimentos.md).
 
-## 🟠 Queda UNA celda, y espera cuota de Gemini
+## 🟢 Todas las preguntas del proyecto tienen respuesta
 
-El 2026-08-08 la cuota volvió y se completaron dos de las tres pendientes:
+El 2026-08-08 se cerraron las tres pendientes:
 
 - [x] **`v3_justifica` de Gemini** → 16/16, **F1 0.74**: resultó la *mejor*
       variante de Gemini y achicó la brecha con Sonnet de +0.30 a +0.07.
 - [x] **v1 a nivel de span con Gemini** → 16/16, **span-F1 0.54**: empata con
       Sonnet.
-- [ ] **Multi-LLM cross-model — parcial 2/16.** `gemini` extrae afirmaciones +
-      `sonnet` asigna (la lectura literal de la propuesta del profe).
-      `python -m experiments.exp3_multi_llm`
+- [x] **Multi-LLM cross-model** → se midió con `claude-haiku-4-5` extrayendo y
+      Sonnet asignando (16/16): span-F1 **0.36**, la peor de las tres configs.
+      Responde la propuesta del profe y además aísla la variable (mismo
+      proveedor en las dos etapas: mide "barato vs caro", no "Google vs
+      Anthropic").
 
-**Cómo completar la que falta.** El free tier diario de Gemini rinde ~23
-llamadas; ese día se las llevaron exp1 (8) y exp2 (13) y exp3 entró solo 2 veces.
-En la próxima ventana hay que **correr exp3 primero** (necesita 16). El cache
-retoma solo; después re-correr `python -m experiments.viz_matriz`.
+**Opcional, no bloquea nada:** la misma config con **Gemini** en la etapa 1 (la
+lectura literal) quedó **2/16** por cuota. Agregaría un segundo punto de datos,
+no una conclusión nueva. Para completarla: correr `python -m
+experiments.exp3_multi_llm` **primero** en una ventana de cuota fresca (necesita
+16 llamadas; el free tier rinde ~23/día y el 2026-08-08 se las llevaron exp1 y
+exp2), y después `python -m experiments.viz_matriz`.
 
-**Alternativa sin esperar:** poner `claude-haiku-4-5` como modelo de la etapa 1.
-Cumple el mismo rol conceptual (barato en la etapa fácil, caro en la difícil) por
-centavos y corre hoy, aunque deja de ser la comparación literal con Gemini.
-
-**Nota de método para el próximo intento:** un ping suelto no dice nada sobre la
-cuota — el 2026-08-07 respondió OK y la tanda igual murió en 429 a la primera
-llamada. Hay que mirar si aguanta una tanda.
+**Nota de método:** un ping suelto no dice nada sobre la cuota — el 2026-08-07
+respondió OK y la tanda igual murió en 429 a la primera llamada. Hay que mirar
+si aguanta una tanda.
 
 ## 🟡 Mejoras de modelado (código + medición)
 

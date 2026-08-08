@@ -37,9 +37,11 @@
   [Exp 2](experimentos.md#exp-2--salida-rica-v1-el-output-que-pidió-el-profe).
 - **Etapa 3 (multi-LLM) ✅** Medido con Sonnet: dos pasadas **0.69** pierde contra
   single-pass **0.73** (spans 0.42 vs 0.54) — con el bug de truncamiento silencioso
-  encontrado y documentado en el camino. Config cross-model (gemini extrae +
-  sonnet asigna) **parcial 2/16**: es la única celda que falta en todo el
-  proyecto. [Exp 3](experimentos.md#exp-3--pipeline-multi-llm-dos-pasadas).
+  encontrado y documentado en el camino. **Cross-model medido 16/16** con
+  `claude-haiku-4-5` extrayendo: span-F1 **0.36**, la peor de las tres — y el
+  daño se concentra en `Afirmacion` (0.53→0.33), el componente que produce la
+  etapa 1. La misma config con Gemini quedó 2/16 (cuota), pero ya no aporta
+  conclusión nueva. [Exp 3](experimentos.md#exp-3--pipeline-multi-llm-dos-pasadas).
 - **Citas implícitas (exploratorio) ✅** LLM atrapa 5/7 débiles vs clásico 2/7
   (n chico; el flag `explicita` del modelo casi no se usa). [Exp 4](experimentos.md#exp-4--citas-implícitas-exploratorio).
 - **Validación held-out ✅** Los mismos prompts sobre **75 notas nunca vistas**:
@@ -53,8 +55,9 @@
 - **Calidad:** suite de **tests** (`pytest tests/`, 34 casos) y **CLI** de demo
   (`python -m trust_sources`). El clásico y los tests corren **sin API**; los
   experimentos son reproducibles offline desde los caches (por modelo).
-- **Pendiente:** las celdas de Gemini que esperan cuota (ver
-  [PENDIENTES.md](https://github.com/mateoboerr/seminario_lunes/blob/main/PENDIENTES.md)).
+- **Pendiente:** nada que bloquee. Solo una variante opcional (cross-model con
+  Gemini, 2/16 por cuota) cuya pregunta ya está contestada. Ver
+  [PENDIENTES.md](https://github.com/mateoboerr/seminario_lunes/blob/main/PENDIENTES.md).
 
 ## Next steps (en orden)
 

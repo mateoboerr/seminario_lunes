@@ -50,6 +50,7 @@ Detalle completo en la [bitácora](experimentos.md).
 |---|---|---|---|---|
 | 5 | 2026-08-07 | **Validación held-out** (75 notas no vistas) | **0.67** | el 0.86 no generaliza (~0.70 vs mismo anotador); la ventaja del mejor prompt no se replica |
 | 4 | 2026-08-07 | Citas implícitas (exploratorio, n=7) | — | LLM atrapa 5/7 vs clásico 2/7 |
+| 3 · X | 2026-08-08 | Multi-LLM cross-model (haiku→sonnet) | 0.69 | la **peor** en spans (0.36): el daño se concentra en `Afirmacion`, que produce la etapa 1 |
 | 3 | 2026-08-07 | Multi-LLM (2 pasadas) vs single-pass | 0.69 | **pierde** vs una pasada (0.73); el bug de truncamiento que casi arruina la comparación está documentado |
 | 2 | 2026-08-08 | Salida rica v1 · span-F1 · ambos modelos | 0.54 | los dos LLM **empatan** y superan al clásico (0.39); [ejemplo de salida](https://github.com/mateoboerr/seminario_lunes/blob/main/results/ejemplo_v1.md) |
 | 1 · S | 2026-08-07 | Misma grilla de prompts · claude-sonnet-5 | **0.86** | few-shot y reglas duras empatan; v0 solo ya da 0.82 |
@@ -59,8 +60,10 @@ Detalle completo en la [bitácora](experimentos.md).
 | 0b | 2026-07-01 | v0 · prompt estricto · gemini-2.5-flash-lite | 0.56 | baseline LLM |
 | 0a | 2026-07-01 | v0 · clásico (reglas) | 0.26 | baseline clásico |
 
-_Al 2026-08-08 la grilla de prompts y la salida v1 están **completas en los dos
-modelos** (8 celdas 16/16). Queda una sola celda en todo el proyecto: la config
-**cross-model** del multi-LLM (2/16), frenada por la cuota diaria del free tier
-de Gemini. Ver [bitácora](experimentos.md) y
+_Al 2026-08-08 **todos los experimentos tienen su respuesta**: la grilla de
+prompts y la salida v1 están completas en los dos modelos (8 celdas 16/16), y el
+multi-LLM se midió en tres configuraciones. La única celda parcial es la variante
+cross-model **con Gemini** (2/16, cuota del free tier) — pero la pregunta que
+respondía ya la contesta la variante con Haiku, medida 16/16. Ver
+[bitácora](experimentos.md) y
 [PENDIENTES](https://github.com/mateoboerr/seminario_lunes/blob/main/PENDIENTES.md)._

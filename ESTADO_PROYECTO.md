@@ -231,6 +231,20 @@ Se completaron 2 de las 3 celdas pendientes de Gemini, y ninguna dio lo esperado
 - **Matriz regenerada** con la columna `gemini·v3`: rescata 3 de las 4 notas
   donde `gemini·v0` se derrumbaba (101, 107, 110), lo que confirma visualmente
   que la mejora se concentra en el tramo difícil.
-- **Pendiente:** solo el cross-model del Exp 3 (**2/16**). El free tier rinde
-  ~23 llamadas/día y ese día se las llevaron exp1 y exp2 — hay que correr exp3
-  primero en la próxima ventana, o usar `claude-haiku-4-5` en la etapa 1.
+- **Cross-model resuelto con Haiku (16/16), sin esperar cuota.** Se agregó la
+  config `multi_haiku_sonnet` (`claude-haiku-4-5` extrae + Sonnet asigna):
+  referenciados F1 0.69, **span-F1 0.36 — la peor de las tres configs**. El
+  desglose es lo valioso: Referenciado (0.21) y Conector (0.54) quedan incluso
+  algo mejor que con Sonnet en ambas etapas, y **todo el daño se concentra en
+  `Afirmacion`: 0.53 → 0.33**. Coincide con el mecanismo: la etapa 1 es la que
+  *produce* las afirmaciones, así que un modelo débil ahí daña justo ese
+  componente y la etapa 2 no lo puede recuperar (recibe el recorte hecho); la
+  identificación de la fuente, tarea de la etapa 2, no se resiente (0.69 igual).
+  **Respuesta a la propuesta del profe: la etapa 1 no es la "fácil"** — delimitar
+  qué es una afirmación determina la calidad de spans de todo el pipeline.
+  Ventaja metodológica sobre la config con Gemini: mismo proveedor y familia en
+  ambas etapas, así que mide "barato vs caro" y no "Google vs Anthropic".
+  Costo: ~USD 0,25.
+- **Pendiente: nada bloqueante.** Solo queda opcional la config cross-model con
+  Gemini (**2/16**, cuota) — agregaría un segundo punto de datos, no una
+  conclusión. Correr exp3 primero en una ventana fresca si se quiere cerrar.

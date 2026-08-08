@@ -23,7 +23,8 @@ corren offline desde los caches).
 | 1 · v3 | 2026-08-08 | LLM · auto-verificación · gemini | 0.78 | 0.70 | **0.74** | la **mejor** variante de Gemini (+0.17): achica la brecha con Sonnet de +0.30 a +0.07 |
 | 1 · S | 2026-08-07 | **misma grilla · `claude-sonnet-5`** | 0.94 | 0.80 | **0.86** | few-shot y reglas duras empatan en 0.86 — por encima del acuerdo entre anotadores (0.71) |
 | 2 | 2026-08-08 | Salida rica v1 · span-F1 · ambos modelos | 0.49 | 0.59 | **0.54** | los dos LLM empatan (0.54) y superan al clásico (0.39); la ventaja de Sonnet se concentra en ubicar la fuente |
-| 3 | 2026-08-07 | Multi-LLM (2 pasadas) · sonnet | 0.62 | 0.78 | **0.69** | pierde contra single-pass (0.73 refs / 0.54 spans vs 0.42) |
+| 3 | 2026-08-07 | Multi-LLM (2 pasadas) · sonnet→sonnet | 0.62 | 0.78 | **0.69** | pierde contra single-pass (0.73 refs / 0.54 spans vs 0.42) |
+| 3 · X | 2026-08-08 | Multi-LLM cross-model · haiku→sonnet | 0.60 | 0.80 | **0.69** | la peor de las tres en spans (0.36): el daño se concentra en `Afirmacion` (0.53→0.33), que la produce la etapa 1 |
 | 4 | 2026-08-07 | Citas implícitas (exploratorio, n=7) | — | — | — | LLM atrapa 5/7 débiles vs clásico 2/7; el flag `explicita` casi no se usa |
 | 5 | 2026-08-07 | **Validación held-out** (75 notas no vistas) · sonnet | 0.71 | 0.64 | **0.67** | el 0.86 no generaliza: ~0.70 contra el mismo anotador; la ventaja del mejor prompt no se replica (orden fino con n=16 no confiable) |
 
@@ -313,21 +314,49 @@ spans correctos — sin llamar a ninguna API.
 
 **Resultado (2026-08-07, `claude-sonnet-5` en ambas etapas, 16/16).**
 
-| Pipeline | Referenciados F1 | span-F1 global |
-|---|---|---|
-| **una pasada** (v1, Exp 2) | **0.73** (P 0.69 / R 0.78) | **0.54** |
-| **dos pasadas** (afirmaciones → fuentes) | 0.69 (P 0.62 / R 0.78) | 0.42 |
+| Pipeline | Cobertura | Referenciados F1 | span-F1 global |
+|---|---|---|---|
+| **una pasada** (v1, Exp 2) | 16/16 | **0.73** (P 0.69 / R 0.78) | **0.54** |
+| **dos pasadas**, mismo modelo (Sonnet→Sonnet) | 16/16 | 0.69 (P 0.62 / R 0.78) | 0.42 |
+| **dos modelos**, barato+caro (Haiku→Sonnet) | 16/16 | 0.69 (P 0.60 / R 0.80) | **0.36** |
+| dos modelos (Gemini→Sonnet) | 2/16 ⚠ | *parcial, no comparable* | — |
 
 Spans por componente en
 [results/exp3_multi.md](https://github.com/mateoboerr/seminario_lunes/blob/main/results/exp3_multi.md).
 
-**Conclusión: con el mismo modelo, separar la tarea en dos pasadas NO mejora —
-empeora.** Mismo recall de fuentes (0.78) pero menos precisión (0.62 vs 0.69) y
-spans mucho peores (0.42 vs 0.54). La hipótesis de "cada modelo enfocado en una
-tarea rinde más" no se sostiene acá: la segunda etapa hereda los errores de la
-primera (afirmaciones mal recortadas → spans corridos) y el requisito de "copiá
-el texto exacto" se degrada al pasar por dos manos. Además cuesta el doble de
-llamadas. Para este problema y este modelo, **single-pass gana**.
+**Dónde se rompe exactamente** (spans por componente):
+
+| Componente | una pasada | Sonnet→Sonnet | Haiku→Sonnet |
+|---|---|---|---|
+| Referenciado | **0.27** | 0.19 | 0.21 |
+| Conector | **0.60** | 0.52 | 0.54 |
+| Afirmacion | **0.72** | 0.53 | **0.33** |
+
+**Conclusión 1: separar la tarea en dos pasadas NO mejora — empeora.** Con el
+mismo modelo en ambas etapas, mismo recall de fuentes (0.78) pero menos precisión
+(0.62 vs 0.69) y spans mucho peores (0.42 vs 0.54). La hipótesis de "cada modelo
+enfocado en una tarea rinde más" no se sostiene acá: la segunda etapa hereda los
+errores de la primera y el requisito de "copiá el texto exacto" se degrada al
+pasar por dos manos. Además cuesta el doble de llamadas.
+
+**Conclusión 2: poner el modelo barato en la etapa "fácil" empeora más — y el
+desglose por componente muestra por qué.** Con `claude-haiku-4-5` extrayendo y
+Sonnet asignando, el span-F1 cae a **0.36**. Pero la caída **no está repartida**:
+Referenciado (0.21) y Conector (0.54) quedan incluso un poco **mejor** que con
+Sonnet en ambas etapas, y todo el daño se concentra en **Afirmacion: 0.53 →
+0.33**. Es exactamente lo que predice el mecanismo — la etapa 1 es la que
+*produce las afirmaciones*, así que un modelo más débil ahí daña justo ese
+componente, y la etapa 2 (que sigue siendo Sonnet) no puede recuperarlo porque
+recibe el recorte ya hecho. La identificación de la fuente, que sí es tarea de la
+etapa 2, no se resiente: referenciados F1 empata en 0.69.
+
+**Por qué esta config vale como respuesta a la propuesta del profe.** La idea era
+"el barato hace lo fácil, el caro lo difícil". El resultado dice que **la etapa 1
+no es la fácil**: delimitar qué es una afirmación determina la calidad de los
+spans de todo el pipeline. Además, usar Haiku en vez de Gemini aísla la variable
+—las dos etapas son del mismo proveedor y familia— así que lo medido es "barato
+vs caro", no "Google vs Anthropic". Para este problema, **single-pass gana**, y
+la variante de dos modelos es la peor de las tres.
 
 **La falla que casi arruina la comparación (documentada porque es la más
 instructiva del proyecto).** La primera medición dio **0.37** de F1 — el pipeline
@@ -342,15 +371,14 @@ Re-medido: 0.69. **Moraleja repetida** (ya pasó en Exp 1 con v3): cuando un LLM
 "rinde mal", primero descartar que el harness lo esté degradando — cobertura,
 truncamiento, parseo.
 
-**Qué falta.** La config **cross-model** (`gemini` extrae + `sonnet` asigna — la
-lectura literal de la propuesta del profe, con el modelo barato en la etapa
-barata) sigue **parcial: 2/16** al 2026-08-08. Sus métricas no se publican como
-comparables. El cuello de botella es de cuota, no de código: el free tier diario
-de Gemini rinde ~23 llamadas, y ese día se las llevaron `exp1` (8) y `exp2` (13).
-Para completarla hay que correr **exp3 primero** en una ventana fresca (necesita
-16). Alternativa sin esperar: usar otro modelo barato en la etapa 1 —
-`claude-haiku-4-5` cumple el mismo rol conceptual por centavos, aunque deja de
-ser la comparación literal con Gemini.
+**Qué falta (y por qué ya no bloquea nada).** La config con **Gemini** en la
+etapa 1 —la lectura literal de la propuesta— sigue **parcial: 2/16**, frenada por
+la cuota diaria del free tier (~23 llamadas/día, que ese día se llevaron `exp1` y
+`exp2`). Sus métricas no se publican como comparables. Pero **la pregunta que
+esa celda iba a contestar ya está contestada** por la config con Haiku, con
+16/16 y con la ventaja de aislar la variable. Completarla agregaría un segundo
+punto de datos, no una conclusión nueva: correr `exp3` primero en una ventana de
+cuota fresca (necesita 16 llamadas).
 
 ## Exp 4 — citas implícitas (exploratorio)
 

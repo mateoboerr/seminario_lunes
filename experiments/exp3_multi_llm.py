@@ -33,18 +33,26 @@ CACHE = ROOT / "experiments" / "cache" / "exp3_multi.json"
 CACHE_EXP2 = ROOT / "experiments" / "cache" / "exp2_v1.json"
 
 MODELO_GEMINI = "gemini-2.5-flash-lite"
+MODELO_HAIKU = "claude-haiku-4-5"
 MODELO_SONNET = "claude-sonnet-5"
 
-# Dos configuraciones del pipeline (cache separado por config):
+# Configuraciones del pipeline (cache separado por config):
 #  - multi_sonnet: dos pasadas del MISMO modelo (¿separar la tarea ayuda per se?)
-#  - multi_gemini_sonnet: DOS MODELOS distintos — la lectura literal de la
-#    propuesta del profe ("un LLM detecta afirmaciones, otro les asigna la
-#    fuente"): el barato/gratis extrae, el fuerte asigna.
+#  - multi_gemini_sonnet: DOS MODELOS — la lectura literal de la propuesta del
+#    profe ("un LLM detecta afirmaciones, otro les asigna la fuente"): el
+#    barato/gratis extrae, el fuerte asigna.
+#  - multi_haiku_sonnet: la MISMA idea con otro modelo barato. Existe porque la
+#    config con Gemini depende del free tier (~23 llamadas/día) y quedó parcial;
+#    Haiku cumple el mismo rol conceptual, corre sin esperar cuota y además
+#    aísla la variable: acá las dos etapas son del mismo proveedor y familia, así
+#    que lo que se mide es "barato vs caro", no "Google vs Anthropic".
 CONFIGS = [
     {"id": "multi_sonnet", "extractor": MODELO_SONNET, "asignador": MODELO_SONNET,
      "desc": f"dos pasadas, mismo modelo (`{MODELO_SONNET}`)"},
     {"id": "multi_gemini_sonnet", "extractor": MODELO_GEMINI, "asignador": MODELO_SONNET,
      "desc": f"dos modelos: `{MODELO_GEMINI}` extrae, `{MODELO_SONNET}` asigna"},
+    {"id": "multi_haiku_sonnet", "extractor": MODELO_HAIKU, "asignador": MODELO_SONNET,
+     "desc": f"dos modelos: `{MODELO_HAIKU}` extrae, `{MODELO_SONNET}` asigna"},
 ]
 
 

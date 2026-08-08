@@ -29,8 +29,10 @@ la conclusión principal:** el 0.86 medido sobre las 16 notas con las que se
 eligieron los prompts no generaliza — sobre 75 notas nunca vistas da **0.67**
 (~0.70 contra el mismo anotador). Aun así el LLM casi triplica al clásico
 (0.24) en el held-out. En salida rica (spans), v1 con Sonnet da **0.54** vs
-**0.39** del clásico; y el pipeline multi-LLM de dos pasadas **pierde** contra
-la pasada única (0.69 vs 0.73). Detalle, fallas incluidas, en la
+**0.39** del clásico; y el pipeline multi-LLM de dos pasadas **pierde** contra la
+pasada única (0.69 vs 0.73), con la variante barato+caro (Haiku→Sonnet) peor
+todavía en spans (0.36) — y el daño concentrado justo en el componente que
+produce la primera etapa. Detalle, fallas incluidas, en la
 [bitácora](docs/experimentos.md).
 
 ![F1 selección vs held-out](docs/assets/exp5_heldout.png)
