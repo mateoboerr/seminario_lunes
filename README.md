@@ -127,6 +127,23 @@ adapter = TrustSourceAdapter(LLMSourceDetectorV1(client))
 sources = adapter.get_explicit_sources(texto)   # list[dict] forma Trust
 ```
 
+## Licencia
+
+Código y documentación bajo [MIT](LICENSE). Se eligió una licencia permisiva y
+**compatible con GPL-3.0** a propósito: el proyecto [trust-monitor](https://github.com/timmd-9216/trust)
+es GPL-3.0, así que este detector puede integrarse a su pipeline sin fricción de
+licencias.
+
+Dos aclaraciones de alcance:
+
+- Este repositorio **no contiene ni redistribuye** trust-monitor. Se usa solo como
+  fuente de datos y se clona aparte (está gitignoreado). El detector clásico es
+  una reimplementación propia, no una copia de su código.
+- Los caches de `experiments/cache/` incluyen **fragmentos de texto de las
+  noticias** analizadas (afirmaciones y menciones recortadas). Ese material es de
+  sus autores originales y **no está cubierto por la licencia MIT**: se incluye
+  solo para que los experimentos sean reproducibles sin volver a llamar a las APIs.
+
 ## Documentación
 
 - 🔬 **[docs/experimentos.md](docs/experimentos.md): BITÁCORA de experimentos** (el
